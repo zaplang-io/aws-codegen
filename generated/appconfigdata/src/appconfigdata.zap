@@ -167,14 +167,14 @@ struct AppConfigDataClient:
         auto host = endpoints.regional_host(appconfigdata_service(), self.region)
         dict[str, str] query = {}
         query["configuration_token"] = input.ConfigurationToken
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfigdata_service(), self.region, host)
 
     # StartConfigurationSession  POST /configurationsessions
     # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def start_configuration_session(self, StartConfigurationSessionRequest input) -> str:
         auto host = endpoints.regional_host(appconfigdata_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationsessions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationsessions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartConfigurationSessionDocument(ApplicationIdentifier=input.ApplicationIdentifier, EnvironmentIdentifier=input.EnvironmentIdentifier, ConfigurationProfileIdentifier=input.ConfigurationProfileIdentifier, RequiredMinimumPollIntervalInSeconds=input.RequiredMinimumPollIntervalInSeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appconfigdata_service(), self.region, host)

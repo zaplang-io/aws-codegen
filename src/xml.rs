@@ -27,7 +27,9 @@
 //! shape graph — makes the operation *skipped* with a documented reason rather
 //! than emitting wrong output.
 
-use crate::binding::{PrefixHeadersBind, ScalarBind};
+use crate::binding::{
+    query_list_elem_ok, scalar_bind_fmt, PrefixHeadersBind, QueryListBind, ScalarBind, Slot,
+};
 use crate::model::{Model, Operation, Shape, ShapeRef, XmlNamespace};
 use crate::naming::escape_ident;
 use crate::types::{resolve, ZapType};
@@ -166,14 +168,12 @@ pub struct RestXmlOp {
     pub input_shape: Option<String>,
     pub labels: Vec<ScalarBind>,
     pub query: Vec<ScalarBind>,
+    /// List members bound to `httpQuery`, emitted as repeated query parameters
+    /// (zaplang-io/zap#425).
+    pub query_lists: Vec<QueryListBind>,
     pub headers: Vec<ScalarBind>,
     pub prefix_headers: Option<PrefixHeadersBind>,
     pub body: XmlBody,
-}
-
-/// A scalar type bindable to a URI/query/header slot (same rule as rest-json).
-fn is_bindable_scalar(ty: &ZapType) -> bool {
-    matches!(ty, ZapType::Str | ZapType::Enum(_) | ZapType::Int)
 }
 
 /// The generated field type for a bound slot: an enum is carried as its plain
@@ -423,6 +423,7 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
         input_shape: None,
         labels: Vec::new(),
         query: Vec::new(),
+        query_lists: Vec::new(),
         headers: Vec::new(),
         prefix_headers: None,
         body: XmlBody::Empty,
@@ -492,12 +493,9 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
 
         match r.location.as_deref() {
             Some("uri") => {
-                if !is_bindable_scalar(&ty) {
-                    return Err(format!(
-                        "httpLabel `{mn}` has unsupported type {}",
-                        ty.render()
-                    ));
-                }
+                let fmt = scalar_bind_fmt(model, r, &ty, Slot::Label).ok_or_else(|| {
+                    format!("httpLabel `{mn}` has unsupported type {}", ty.render())
+                })?;
                 plan.labels.push(ScalarBind {
                     field,
                     wire: wire.clone(),
@@ -505,31 +503,37 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     ty: bound_wire_type(&ty),
                     optional,
                     member: mn.clone(),
+                    fmt,
                 });
             }
             Some("querystring") => {
-                if !is_bindable_scalar(&ty) {
+                if let Some(fmt) = scalar_bind_fmt(model, r, &ty, Slot::Query) {
+                    plan.query.push(ScalarBind {
+                        field,
+                        wire,
+                        ty: bound_wire_type(&ty),
+                        optional,
+                        greedy: false,
+                        member: mn.clone(),
+                        fmt,
+                    });
+                } else if query_list_elem_ok(&ty) {
+                    plan.query_lists.push(QueryListBind {
+                        field,
+                        wire,
+                        optional,
+                    });
+                } else {
                     return Err(format!(
                         "httpQuery `{mn}` has unsupported type {}",
                         ty.render()
                     ));
                 }
-                plan.query.push(ScalarBind {
-                    field,
-                    wire,
-                    ty: bound_wire_type(&ty),
-                    optional,
-                    greedy: false,
-                    member: mn.clone(),
-                });
             }
             Some("header") => {
-                if !is_bindable_scalar(&ty) {
-                    return Err(format!(
-                        "httpHeader `{mn}` has unsupported type {}",
-                        ty.render()
-                    ));
-                }
+                let fmt = scalar_bind_fmt(model, r, &ty, Slot::Header).ok_or_else(|| {
+                    format!("httpHeader `{mn}` has unsupported type {}", ty.render())
+                })?;
                 plan.headers.push(ScalarBind {
                     field,
                     wire,
@@ -537,6 +541,7 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     optional,
                     greedy: false,
                     member: mn.clone(),
+                    fmt,
                 });
             }
             Some("headers") => match &ty {

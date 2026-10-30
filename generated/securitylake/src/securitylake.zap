@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 29 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   96 structs (57 @derive(Json)), 6 enums, 6 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -714,12 +714,6 @@ def securitylake_error_from_code(str code) -> SecurityLakeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListDataLakes (httpQuery `regions` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -863,7 +857,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_aws_log_source(self, CreateAwsLogSourceRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sources:
@@ -876,7 +870,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_custom_log_source(self, CreateCustomLogSourceRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/custom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/custom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"configuration\":" + input.configuration.to_json())
         if input.eventClasses.is_some():
@@ -896,7 +890,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_data_lake(self, CreateDataLakeRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.configurations:
@@ -916,7 +910,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_data_lake_exception_subscription(self, CreateDataLakeExceptionSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDataLakeExceptionSubscriptionDocument(exceptionTimeToLive=input.exceptionTimeToLive, notificationEndpoint=input.notificationEndpoint, subscriptionProtocol=input.subscriptionProtocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
@@ -925,7 +919,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_data_lake_organization_configuration(self, CreateDataLakeOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.autoEnableNewAccount.is_some():
             auto u0 = input.autoEnableNewAccount.unwrap()
@@ -940,7 +934,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def create_subscriber(self, CreateSubscriberRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accessTypes.is_some():
             auto u0 = input.accessTypes.unwrap()
@@ -972,7 +966,7 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSubscriberNotificationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
@@ -981,7 +975,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_aws_log_source(self, DeleteAwsLogSourceRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/aws/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sources:
@@ -999,14 +993,14 @@ struct SecurityLakeClient:
         dict[str, str] query = {}
         if input.sourceVersion.is_some():
             query["sourceVersion"] = input.sourceVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/logsources/custom/{sourceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/logsources/custom/{sourceName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # DeleteDataLake  POST /v1/datalake/delete
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_data_lake(self, DeleteDataLakeRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.regions:
@@ -1019,14 +1013,14 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_data_lake_exception_subscription(self) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # DeleteDataLakeOrganizationConfiguration  POST /v1/datalake/organization/configuration/delete
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def delete_data_lake_organization_configuration(self, DeleteDataLakeOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/organization/configuration/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.autoEnableNewAccount.is_some():
             auto u0 = input.autoEnableNewAccount.unwrap()
@@ -1043,7 +1037,7 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # DeleteSubscriberNotification  DELETE /v1/subscribers/{subscriberId}/notification
@@ -1052,35 +1046,35 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # DeregisterDataLakeDelegatedAdministrator  DELETE /v1/datalake/delegate
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def deregister_data_lake_delegated_administrator(self) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/delegate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/datalake/delegate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # GetDataLakeExceptionSubscription  GET /v1/datalake/exceptions/subscription
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_data_lake_exception_subscription(self) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # GetDataLakeOrganizationConfiguration  GET /v1/datalake/organization/configuration
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_data_lake_organization_configuration(self) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/datalake/organization/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # GetDataLakeSources  POST /v1/datalake/sources
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_data_lake_sources(self, GetDataLakeSourcesRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accounts.is_some():
             auto u0 = input.accounts.unwrap()
@@ -1103,14 +1097,14 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # ListDataLakeExceptions  POST /v1/datalake/exceptions
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def list_data_lake_exceptions(self, ListDataLakeExceptionsRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/exceptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -1127,11 +1121,21 @@ struct SecurityLakeClient:
         auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
+    # ListDataLakes  GET /v1/datalakes
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_data_lakes(self, ListDataLakesRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        if input.regions.is_some():
+            multi_query["regions"] = input.regions.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/datalakes", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
+
     # ListLogSources  POST /v1/datalake/logsources/list
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def list_log_sources(self, ListLogSourcesRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/logsources/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accounts.is_some():
             auto u0 = input.accounts.unwrap()
@@ -1169,7 +1173,7 @@ struct SecurityLakeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/subscribers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/subscribers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -1178,14 +1182,14 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
 
     # RegisterDataLakeDelegatedAdministrator  POST /v1/datalake/delegate
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def register_data_lake_delegated_administrator(self, RegisterDataLakeDelegatedAdministratorRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/delegate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datalake/delegate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterDataLakeDelegatedAdministratorDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
@@ -1196,7 +1200,7 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -1205,11 +1209,22 @@ struct SecurityLakeClient:
         auto bp = restjson.rest_json_document(b, securitylake_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(securitylake_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, securitylake_service(), self.region, host)
+
     # UpdateDataLake  PUT /v1/datalake
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_data_lake(self, UpdateDataLakeRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.configurations:
@@ -1225,7 +1240,7 @@ struct SecurityLakeClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_data_lake_exception_subscription(self, UpdateDataLakeExceptionSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/datalake/exceptions/subscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataLakeExceptionSubscriptionDocument(exceptionTimeToLive=input.exceptionTimeToLive, notificationEndpoint=input.notificationEndpoint, subscriptionProtocol=input.subscriptionProtocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)
@@ -1236,7 +1251,7 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/subscribers/{subscriberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sources.is_some():
             auto u0 = input.sources.unwrap()
@@ -1262,7 +1277,7 @@ struct SecurityLakeClient:
         auto host = endpoints.regional_host(securitylake_service(), self.region)
         dict[str, str] labels = {}
         labels["subscriberId"] = input.subscriberId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/subscribers/{subscriberId}/notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriberNotificationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securitylake_service(), self.region, host)

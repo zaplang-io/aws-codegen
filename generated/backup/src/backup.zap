@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 115 operations — 103 with a generated method,
-#   12 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 115 operations — 115 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   285 structs (166 @derive(Json)), 30 enums, 10 error variants.
-#   15 paginators generated (10 paginated ops skipped) from paginators-1.json.
+#   25 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Backup rest-json protocol: SigV4 service "backup" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2845,35 +2846,6 @@ def backup_error_from_code(str code) -> BackupError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetPITRMalwareScanResults (httpQuery `ScanEndTime` has unsupported type DateTime)
-#   ListBackupJobs (httpQuery `ByCreatedBefore` has unsupported type DateTime)
-#   ListBackupPlans (httpQuery `IncludeDeleted` has unsupported type bool)
-#   ListBackupVaults (httpQuery `ByShared` has unsupported type bool)
-#   ListCopyJobs (httpQuery `ByCreatedBefore` has unsupported type DateTime)
-#   ListIndexedRecoveryPoints (httpQuery `CreatedBefore` has unsupported type DateTime)
-#   ListRecoveryPointsByBackupVault (httpQuery `ByCreatedBefore` has unsupported type DateTime)
-#   ListRecoveryPointsByResource (httpQuery `ManagedByAWSBackupOnly` has unsupported type bool)
-#   ListReportJobs (httpQuery `ByCreationBefore` has unsupported type DateTime)
-#   ListRestoreJobs (httpQuery `ByCreatedBefore` has unsupported type DateTime)
-#   ListRestoreJobsByProtectedResource (httpQuery `ByRecoveryPointCreationDateAfter` has unsupported type DateTime)
-#   ListScanJobs (httpQuery `ByCompleteAfter` has unsupported type DateTime)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListBackupJobs (operation not generated)
-#   ListBackupPlans (operation not generated)
-#   ListBackupVaults (operation not generated)
-#   ListCopyJobs (operation not generated)
-#   ListIndexedRecoveryPoints (operation not generated)
-#   ListRecoveryPointsByBackupVault (operation not generated)
-#   ListRecoveryPointsByResource (operation not generated)
-#   ListRestoreJobs (operation not generated)
-#   ListRestoreJobsByProtectedResource (operation not generated)
-#   ListScanJobs (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3420,6 +3392,12 @@ def tiering_configuration_input_for_update_to_json(TieringConfigurationInputForU
     parts.append("\"BackupVaultName\":" + backup_json_str(v.BackupVaultName))
     return backup_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def backup_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Backup client: credentials + region, threaded into every operation.
 struct BackupClient:
     core.Credentials creds
@@ -3431,7 +3409,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/mpaApprovalTeam", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/mpaApprovalTeam", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateBackupVaultMpaApprovalTeamDocument(MpaApprovalTeamArn=input.MpaApprovalTeamArn, RequesterComment=input.RequesterComment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -3446,14 +3424,14 @@ struct BackupClient:
         query["cancelDescription"] = input.CancelDescription
         if input.RetainRecordInDays.is_some():
             query["retainRecordInDays"] = str(input.RetainRecordInDays.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/legal-holds/{legalHoldId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/legal-holds/{legalHoldId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # CreateBackupAccessPoint  PUT /backup-access-point/create
     # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def create_backup_access_point(self, CreateBackupAccessPointRequest input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-access-point/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-access-point/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccessPointMetadata.is_some():
             auto u0 = input.AccessPointMetadata.unwrap()
@@ -3479,7 +3457,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_backup_plan(self, CreateBackupPlanInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"BackupPlan\":" + backup_plan_input_to_json(input.BackupPlan))
         if input.BackupPlanTags.is_some():
@@ -3500,7 +3478,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/{backupPlanId}/selections/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup/plans/{backupPlanId}/selections/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"BackupSelection\":" + backup_selection_to_json(input.BackupSelection))
         if input.CreatorRequestId.is_some():
@@ -3515,7 +3493,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BackupVaultTags.is_some():
             auto u0 = input.BackupVaultTags.unwrap()
@@ -3536,7 +3514,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_framework(self, CreateFrameworkInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/frameworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/frameworks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FrameworkName\":" + backup_json_str(input.FrameworkName))
         if input.FrameworkDescription.is_some():
@@ -3562,7 +3540,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_legal_hold(self, CreateLegalHoldInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/legal-holds/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/legal-holds/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Title\":" + backup_json_str(input.Title))
         parts.append("\"Description\":" + backup_json_str(input.Description))
@@ -3587,7 +3565,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BackupVaultTags.is_some():
             auto u0 = input.BackupVaultTags.unwrap()
@@ -3610,7 +3588,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_report_plan(self, CreateReportPlanInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/report-plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/report-plans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ReportPlanName\":" + backup_json_str(input.ReportPlanName))
         if input.ReportPlanDescription.is_some():
@@ -3634,7 +3612,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def create_restore_access_backup_vault(self, CreateRestoreAccessBackupVaultInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-access-backup-vaults", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-access-backup-vaults", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceBackupVaultArn\":" + backup_json_str(input.SourceBackupVaultArn))
         if input.BackupVaultName.is_some():
@@ -3659,7 +3637,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_restore_testing_plan(self, CreateRestoreTestingPlanInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CreatorRequestId.is_some():
             auto u0 = input.CreatorRequestId.unwrap()
@@ -3680,7 +3658,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CreatorRequestId.is_some():
             auto u0 = input.CreatorRequestId.unwrap()
@@ -3693,7 +3671,7 @@ struct BackupClient:
     # errors: AlreadyExistsException, ConflictException, InvalidParameterValueException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def create_tiering_configuration(self, CreateTieringConfigurationInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TieringConfiguration\":" + tiering_configuration_input_for_create_to_json(input.TieringConfiguration))
         if input.TieringConfigurationTags.is_some():
@@ -3714,7 +3692,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["AccessPointArn"] = input.AccessPointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-access-point/delete/{AccessPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-access-point/delete/{AccessPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupPlan  DELETE /backup/plans/{backupPlanId}
@@ -3723,7 +3701,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup/plans/{backupPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup/plans/{backupPlanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupSelection  DELETE /backup/plans/{backupPlanId}/selections/{selectionId}
@@ -3733,7 +3711,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
         labels["selectionId"] = input.SelectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup/plans/{backupPlanId}/selections/{selectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup/plans/{backupPlanId}/selections/{selectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupVault  DELETE /backup-vaults/{backupVaultName}
@@ -3742,7 +3720,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupVaultAccessPolicy  DELETE /backup-vaults/{backupVaultName}/access-policy
@@ -3751,7 +3729,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupVaultLockConfiguration  DELETE /backup-vaults/{backupVaultName}/vault-lock
@@ -3760,7 +3738,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/vault-lock", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/vault-lock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteBackupVaultNotifications  DELETE /backup-vaults/{backupVaultName}/notification-configuration
@@ -3769,7 +3747,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteFramework  DELETE /audit/frameworks/{frameworkName}
@@ -3778,7 +3756,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkName"] = input.FrameworkName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteRecoveryPoint  DELETE /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}
@@ -3788,7 +3766,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteReportPlan  DELETE /audit/report-plans/{reportPlanName}
@@ -3797,7 +3775,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["reportPlanName"] = input.ReportPlanName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteRestoreTestingPlan  DELETE /restore-testing/plans/{RestoreTestingPlanName}
@@ -3806,7 +3784,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteRestoreTestingSelection  DELETE /restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}
@@ -3816,7 +3794,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
         labels["RestoreTestingSelectionName"] = input.RestoreTestingSelectionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DeleteTieringConfiguration  DELETE /tiering-configurations/{tieringConfigurationName}
@@ -3825,7 +3803,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["tieringConfigurationName"] = input.TieringConfigurationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeBackupAccessPoint  GET /backup-access-point/{AccessPointArn}
@@ -3834,7 +3812,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["AccessPointArn"] = input.AccessPointArn
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-access-point/{AccessPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-access-point/{AccessPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeBackupJob  GET /backup-jobs/{backupJobId}
@@ -3843,7 +3821,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupJobId"] = input.BackupJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-jobs/{backupJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-jobs/{backupJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeBackupVault  GET /backup-vaults/{backupVaultName}
@@ -3855,7 +3833,7 @@ struct BackupClient:
         dict[str, str] query = {}
         if input.BackupVaultAccountId.is_some():
             query["backupVaultAccountId"] = input.BackupVaultAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeCopyJob  GET /copy-jobs/{copyJobId}
@@ -3864,7 +3842,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["copyJobId"] = input.CopyJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/copy-jobs/{copyJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/copy-jobs/{copyJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeFramework  GET /audit/frameworks/{frameworkName}
@@ -3873,14 +3851,14 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkName"] = input.FrameworkName
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeGlobalSettings  GET /global-settings
     # errors: InvalidRequestException, ServiceUnavailableException
     def describe_global_settings(self) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/global-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeProtectedResource  GET /resources/{resourceArn}
@@ -3889,7 +3867,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resources/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeRecoveryPoint  GET /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}
@@ -3902,14 +3880,14 @@ struct BackupClient:
         dict[str, str] query = {}
         if input.BackupVaultAccountId.is_some():
             query["backupVaultAccountId"] = input.BackupVaultAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeRegionSettings  GET /account-settings
     # errors: ServiceUnavailableException
     def describe_region_settings(self) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeReportJob  GET /audit/report-jobs/{reportJobId}
@@ -3918,7 +3896,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["reportJobId"] = input.ReportJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-jobs/{reportJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-jobs/{reportJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeReportPlan  GET /audit/report-plans/{reportPlanName}
@@ -3927,7 +3905,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["reportPlanName"] = input.ReportPlanName
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeRestoreJob  GET /restore-jobs/{restoreJobId}
@@ -3936,7 +3914,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["restoreJobId"] = input.RestoreJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-jobs/{restoreJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-jobs/{restoreJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DescribeScanJob  GET /scan/jobs/{ScanJobId}
@@ -3945,7 +3923,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["ScanJobId"] = input.ScanJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/scan/jobs/{ScanJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scan/jobs/{ScanJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DisassociateBackupVaultMpaApprovalTeam  POST /backup-vaults/{backupVaultName}/mpaApprovalTeam?delete
@@ -3954,7 +3932,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/mpaApprovalTeam?delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/mpaApprovalTeam?delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateBackupVaultMpaApprovalTeamDocument(RequesterComment=input.RequesterComment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -3966,7 +3944,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # DisassociateRecoveryPointFromParent  DELETE /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/parentAssociation
@@ -3976,7 +3954,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/parentAssociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/parentAssociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ExportBackupPlanTemplate  GET /backup/plans/{backupPlanId}/toTemplate/
@@ -3985,7 +3963,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/toTemplate/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/toTemplate/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetBackupPlan  GET /backup/plans/{backupPlanId}/
@@ -3998,15 +3976,16 @@ struct BackupClient:
         if input.VersionId.is_some():
             query["versionId"] = input.VersionId.unwrap_or("")
         if input.MaxScheduledRunsPreview.is_some():
-            query["MaxScheduledRunsPreview"] = str(input.MaxScheduledRunsPreview.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = str(input.MaxScheduledRunsPreview.unwrap_or(0))
+            query["MaxScheduledRunsPreview"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetBackupPlanFromJSON  POST /backup/template/json/toPlan
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ServiceUnavailableException
     def get_backup_plan_from_json(self, GetBackupPlanFromJSONInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/backup/template/json/toPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup/template/json/toPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackupPlanFromJSONDocument(BackupPlanTemplateJson=input.BackupPlanTemplateJson)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4017,7 +3996,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["templateId"] = input.BackupPlanTemplateId
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/template/plans/{templateId}/toPlan", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/template/plans/{templateId}/toPlan", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetBackupSelection  GET /backup/plans/{backupPlanId}/selections/{selectionId}
@@ -4027,7 +4006,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
         labels["selectionId"] = input.SelectionId
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/selections/{selectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/selections/{selectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetBackupVaultAccessPolicy  GET /backup-vaults/{backupVaultName}/access-policy
@@ -4036,7 +4015,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetBackupVaultNotifications  GET /backup-vaults/{backupVaultName}/notification-configuration
@@ -4045,7 +4024,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetLegalHold  GET /legal-holds/{legalHoldId}/
@@ -4054,7 +4033,20 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["legalHoldId"] = input.LegalHoldId
-        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/{legalHoldId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/{legalHoldId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # GetPITRMalwareScanResults  GET /scan/pitr-malware-scan-results
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def get_pitr_malware_scan_results(self, GetPITRMalwareScanResultsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        query["RecoveryPointArn"] = input.RecoveryPointArn
+        query["BackupVaultName"] = input.BackupVaultName
+        auto qt0 = datetime.strftime(input.ScanEndTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["ScanEndTime"] = qt0
+        query["MalwareScanner"] = input.MalwareScanner
+        auto b = binding.HttpBinding(method="GET", path_template="/scan/pitr-malware-scan-results", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRecoveryPointIndexDetails  GET /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index
@@ -4064,7 +4056,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRecoveryPointRestoreMetadata  GET /backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/restore-metadata
@@ -4077,7 +4069,7 @@ struct BackupClient:
         dict[str, str] query = {}
         if input.BackupVaultAccountId.is_some():
             query["backupVaultAccountId"] = input.BackupVaultAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/restore-metadata", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/restore-metadata", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRestoreJobMetadata  GET /restore-jobs/{restoreJobId}/metadata
@@ -4086,7 +4078,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["restoreJobId"] = input.RestoreJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-jobs/{restoreJobId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-jobs/{restoreJobId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRestoreTestingInferredMetadata  GET /restore-testing/inferred-metadata
@@ -4098,7 +4090,7 @@ struct BackupClient:
             query["BackupVaultAccountId"] = input.BackupVaultAccountId.unwrap_or("")
         query["BackupVaultName"] = input.BackupVaultName
         query["RecoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/inferred-metadata", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/inferred-metadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRestoreTestingPlan  GET /restore-testing/plans/{RestoreTestingPlanName}
@@ -4107,7 +4099,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetRestoreTestingSelection  GET /restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}
@@ -4117,14 +4109,14 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
         labels["RestoreTestingSelectionName"] = input.RestoreTestingSelectionName
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetSupportedResourceTypes  GET /supported-resource-types
     # errors: ServiceUnavailableException
     def get_supported_resource_types(self) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/supported-resource-types", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/supported-resource-types", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # GetTieringConfiguration  GET /tiering-configurations/{tieringConfigurationName}
@@ -4133,7 +4125,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["tieringConfigurationName"] = input.TieringConfigurationName
-        auto b = binding.HttpBinding(method="GET", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupAccessPoints  GET /backup-access-point
@@ -4145,7 +4137,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-access-point", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-access-point", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupAccessPointsByRecoveryPoint  POST /backup-access-point/recovery-point/{RecoveryPointArn}
@@ -4159,7 +4151,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-access-point/recovery-point/{RecoveryPointArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-access-point/recovery-point/{RecoveryPointArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupAccessPointsByResource  POST /backup-access-point/resource/{ResourceArn}
@@ -4173,7 +4165,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-access-point/resource/{ResourceArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-access-point/resource/{ResourceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupJobSummaries  GET /audit/backup-job-summaries
@@ -4195,7 +4187,45 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/backup-job-summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/backup-job-summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListBackupJobs  GET /backup-jobs/
+    # errors: InvalidParameterValueException, ServiceUnavailableException
+    def list_backup_jobs(self, ListBackupJobsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.ByResourceArn.is_some():
+            query["resourceArn"] = input.ByResourceArn.unwrap_or("")
+        if input.ByState.is_some():
+            query["state"] = input.ByState.unwrap_or("")
+        if input.ByBackupVaultName.is_some():
+            query["backupVaultName"] = input.ByBackupVaultName.unwrap_or("")
+        if input.ByCreatedBefore.is_some():
+            auto qt0 = datetime.strftime(input.ByCreatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.ByCreatedAfter.is_some():
+            auto qt1 = datetime.strftime(input.ByCreatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.ByResourceType.is_some():
+            query["resourceType"] = input.ByResourceType.unwrap_or("")
+        if input.ByAccountId.is_some():
+            query["accountId"] = input.ByAccountId.unwrap_or("")
+        if input.ByCompleteAfter.is_some():
+            auto qt2 = datetime.strftime(input.ByCompleteAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeAfter"] = qt2
+        if input.ByCompleteBefore.is_some():
+            auto qt3 = datetime.strftime(input.ByCompleteBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeBefore"] = qt3
+        if input.ByParentJobId.is_some():
+            query["parentJobId"] = input.ByParentJobId.unwrap_or("")
+        if input.ByMessageCategory.is_some():
+            query["messageCategory"] = input.ByMessageCategory.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-jobs/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupPlanTemplates  GET /backup/template/plans
@@ -4207,7 +4237,7 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/template/plans", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/template/plans", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupPlanVersions  GET /backup/plans/{backupPlanId}/versions/
@@ -4221,7 +4251,22 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/versions/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/versions/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListBackupPlans  GET /backup/plans/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_backup_plans(self, ListBackupPlansInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.IncludeDeleted.is_some():
+            auto qt0 = backup_bind_bool(input.IncludeDeleted.unwrap_or(False))
+            query["includeDeleted"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListBackupSelections  GET /backup/plans/{backupPlanId}/selections/
@@ -4235,7 +4280,23 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/selections/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup/plans/{backupPlanId}/selections/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListBackupVaults  GET /backup-vaults/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_backup_vaults(self, ListBackupVaultsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.ByVaultType.is_some():
+            query["vaultType"] = input.ByVaultType.unwrap_or("")
+        if input.ByShared.is_some():
+            query["shared"] = backup_bind_bool(input.ByShared.unwrap_or(False))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListCopyJobSummaries  GET /audit/copy-job-summaries
@@ -4257,7 +4318,48 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/copy-job-summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/copy-job-summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListCopyJobs  GET /copy-jobs/
+    # errors: InvalidParameterValueException, ServiceUnavailableException
+    def list_copy_jobs(self, ListCopyJobsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.ByResourceArn.is_some():
+            query["resourceArn"] = input.ByResourceArn.unwrap_or("")
+        if input.ByState.is_some():
+            query["state"] = input.ByState.unwrap_or("")
+        if input.ByCreatedBefore.is_some():
+            auto qt0 = datetime.strftime(input.ByCreatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.ByCreatedAfter.is_some():
+            auto qt1 = datetime.strftime(input.ByCreatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.ByResourceType.is_some():
+            query["resourceType"] = input.ByResourceType.unwrap_or("")
+        if input.ByDestinationVaultArn.is_some():
+            query["destinationVaultArn"] = input.ByDestinationVaultArn.unwrap_or("")
+        if input.ByAccountId.is_some():
+            query["accountId"] = input.ByAccountId.unwrap_or("")
+        if input.ByCompleteBefore.is_some():
+            auto qt2 = datetime.strftime(input.ByCompleteBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeBefore"] = qt2
+        if input.ByCompleteAfter.is_some():
+            auto qt3 = datetime.strftime(input.ByCompleteAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeAfter"] = qt3
+        if input.ByParentJobId.is_some():
+            query["parentJobId"] = input.ByParentJobId.unwrap_or("")
+        if input.ByMessageCategory.is_some():
+            query["messageCategory"] = input.ByMessageCategory.unwrap_or("")
+        if input.BySourceRecoveryPointArn.is_some():
+            auto qt4 = input.BySourceRecoveryPointArn.unwrap_or("")
+            query["sourceRecoveryPointArn"] = qt4
+        auto b = binding.HttpBinding(method="GET", path_template="/copy-jobs/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListFrameworks  GET /audit/frameworks
@@ -4269,7 +4371,31 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/frameworks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/frameworks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListIndexedRecoveryPoints  GET /indexes/recovery-point/
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_indexed_recovery_points(self, ListIndexedRecoveryPointsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.SourceResourceArn.is_some():
+            query["sourceResourceArn"] = input.SourceResourceArn.unwrap_or("")
+        if input.CreatedBefore.is_some():
+            auto qt0 = datetime.strftime(input.CreatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.CreatedAfter.is_some():
+            auto qt1 = datetime.strftime(input.CreatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.ResourceType.is_some():
+            query["resourceType"] = input.ResourceType.unwrap_or("")
+        if input.IndexStatus.is_some():
+            query["indexStatus"] = input.IndexStatus.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/indexes/recovery-point/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListLegalHolds  GET /legal-holds/
@@ -4281,7 +4407,7 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListProtectedResources  GET /resources/
@@ -4293,7 +4419,7 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/resources/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListProtectedResourcesByBackupVault  GET /backup-vaults/{backupVaultName}/resources/
@@ -4309,7 +4435,38 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/resources/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/resources/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListRecoveryPointsByBackupVault  GET /backup-vaults/{backupVaultName}/recovery-points/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_recovery_points_by_backup_vault(self, ListRecoveryPointsByBackupVaultInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["backupVaultName"] = input.BackupVaultName
+        dict[str, str] query = {}
+        if input.BackupVaultAccountId.is_some():
+            query["backupVaultAccountId"] = input.BackupVaultAccountId.unwrap_or("")
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.ByResourceArn.is_some():
+            query["resourceArn"] = input.ByResourceArn.unwrap_or("")
+        if input.ByResourceType.is_some():
+            query["resourceType"] = input.ByResourceType.unwrap_or("")
+        if input.ByBackupPlanId.is_some():
+            query["backupPlanId"] = input.ByBackupPlanId.unwrap_or("")
+        if input.ByCreatedBefore.is_some():
+            auto qt0 = datetime.strftime(input.ByCreatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.ByCreatedAfter.is_some():
+            auto qt1 = datetime.strftime(input.ByCreatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.ByParentRecoveryPointArn.is_some():
+            auto qt2 = input.ByParentRecoveryPointArn.unwrap_or("")
+            query["parentRecoveryPointArn"] = qt2
+        auto b = binding.HttpBinding(method="GET", path_template="/backup-vaults/{backupVaultName}/recovery-points/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListRecoveryPointsByLegalHold  GET /legal-holds/{legalHoldId}/recovery-points
@@ -4323,7 +4480,46 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/{legalHoldId}/recovery-points", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/legal-holds/{legalHoldId}/recovery-points", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListRecoveryPointsByResource  GET /resources/{resourceArn}/recovery-points/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_recovery_points_by_resource(self, ListRecoveryPointsByResourceInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.ManagedByAWSBackupOnly.is_some():
+            auto qt0 = backup_bind_bool(input.ManagedByAWSBackupOnly.unwrap_or(False))
+            query["managedByAWSBackupOnly"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/{resourceArn}/recovery-points/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListReportJobs  GET /audit/report-jobs
+    # errors: InvalidParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_report_jobs(self, ListReportJobsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.ByReportPlanName.is_some():
+            query["ReportPlanName"] = input.ByReportPlanName.unwrap_or("")
+        if input.ByCreationBefore.is_some():
+            auto qt0 = datetime.strftime(input.ByCreationBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["CreationBefore"] = qt0
+        if input.ByCreationAfter.is_some():
+            auto qt1 = datetime.strftime(input.ByCreationAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["CreationAfter"] = qt1
+        if input.ByStatus.is_some():
+            query["Status"] = input.ByStatus.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListReportPlans  GET /audit/report-plans
@@ -4335,7 +4531,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-plans", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/report-plans", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListRestoreAccessBackupVaults  GET /logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/
@@ -4349,7 +4545,7 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListRestoreJobSummaries  GET /audit/restore-job-summaries
@@ -4369,7 +4565,63 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/restore-job-summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/restore-job-summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListRestoreJobs  GET /restore-jobs/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_restore_jobs(self, ListRestoreJobsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.ByAccountId.is_some():
+            query["accountId"] = input.ByAccountId.unwrap_or("")
+        if input.ByResourceType.is_some():
+            query["resourceType"] = input.ByResourceType.unwrap_or("")
+        if input.ByCreatedBefore.is_some():
+            auto qt0 = datetime.strftime(input.ByCreatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.ByCreatedAfter.is_some():
+            auto qt1 = datetime.strftime(input.ByCreatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.ByStatus.is_some():
+            query["status"] = input.ByStatus.unwrap_or("")
+        if input.ByCompleteBefore.is_some():
+            auto qt2 = datetime.strftime(input.ByCompleteBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeBefore"] = qt2
+        if input.ByCompleteAfter.is_some():
+            auto qt3 = datetime.strftime(input.ByCompleteAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["completeAfter"] = qt3
+        if input.ByRestoreTestingPlanArn.is_some():
+            query["restoreTestingPlanArn"] = input.ByRestoreTestingPlanArn.unwrap_or("")
+        if input.ByParentJobId.is_some():
+            query["parentJobId"] = input.ByParentJobId.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-jobs/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListRestoreJobsByProtectedResource  GET /resources/{resourceArn}/restore-jobs/
+    # errors: InvalidParameterValueException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
+    def list_restore_jobs_by_protected_resource(self, ListRestoreJobsByProtectedResourceInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, str] query = {}
+        if input.ByStatus.is_some():
+            query["status"] = input.ByStatus.unwrap_or("")
+        if input.ByRecoveryPointCreationDateAfter.is_some():
+            auto qt0 = datetime.strftime(input.ByRecoveryPointCreationDateAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["recoveryPointCreationDateAfter"] = qt0
+        if input.ByRecoveryPointCreationDateBefore.is_some():
+            auto qt1 = datetime.strftime(input.ByRecoveryPointCreationDateBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["recoveryPointCreationDateBefore"] = qt1
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/{resourceArn}/restore-jobs/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListRestoreTestingPlans  GET /restore-testing/plans
@@ -4381,7 +4633,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListRestoreTestingSelections  GET /restore-testing/plans/{RestoreTestingPlanName}/selections
@@ -4395,7 +4647,7 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListScanJobSummaries  GET /audit/scan-job-summaries
@@ -4419,7 +4671,41 @@ struct BackupClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/scan-job-summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/scan-job-summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
+
+    # ListScanJobs  GET /scan/jobs
+    # errors: InvalidParameterValueException, ServiceUnavailableException
+    def list_scan_jobs(self, ListScanJobsInput input) -> str:
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        dict[str, str] query = {}
+        if input.ByAccountId.is_some():
+            query["ByAccountId"] = input.ByAccountId.unwrap_or("")
+        if input.ByBackupVaultName.is_some():
+            query["ByBackupVaultName"] = input.ByBackupVaultName.unwrap_or("")
+        if input.ByCompleteAfter.is_some():
+            auto qt0 = datetime.strftime(input.ByCompleteAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["ByCompleteAfter"] = qt0
+        if input.ByCompleteBefore.is_some():
+            auto qt1 = datetime.strftime(input.ByCompleteBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["ByCompleteBefore"] = qt1
+        if input.ByMalwareScanner.is_some():
+            query["ByMalwareScanner"] = input.ByMalwareScanner.unwrap_or("")
+        if input.ByRecoveryPointArn.is_some():
+            query["ByRecoveryPointArn"] = input.ByRecoveryPointArn.unwrap_or("")
+        if input.ByResourceArn.is_some():
+            query["ByResourceArn"] = input.ByResourceArn.unwrap_or("")
+        if input.ByResourceType.is_some():
+            query["ByResourceType"] = input.ByResourceType.unwrap_or("")
+        if input.ByScanResultStatus.is_some():
+            query["ByScanResultStatus"] = input.ByScanResultStatus.unwrap_or("")
+        if input.ByState.is_some():
+            query["ByState"] = input.ByState.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/scan/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListTags  GET /tags/{resourceArn}/
@@ -4433,7 +4719,7 @@ struct BackupClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # ListTieringConfigurations  GET /tiering-configurations/
@@ -4445,7 +4731,7 @@ struct BackupClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/tiering-configurations/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tiering-configurations/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # PutBackupVaultAccessPolicy  PUT /backup-vaults/{backupVaultName}/access-policy
@@ -4454,7 +4740,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutBackupVaultAccessPolicyDocument(Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4465,7 +4751,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/vault-lock", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/vault-lock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutBackupVaultLockConfigurationDocument(MinRetentionDays=input.MinRetentionDays, MaxRetentionDays=input.MaxRetentionDays, ChangeableForDays=input.ChangeableForDays)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4476,7 +4762,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-vaults/{backupVaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SNSTopicArn\":" + backup_json_str(input.SNSTopicArn))
         list[str] e0 = []
@@ -4492,7 +4778,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["restoreJobId"] = input.RestoreJobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-jobs/{restoreJobId}/validations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-jobs/{restoreJobId}/validations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRestoreValidationResultDocument(ValidationStatus=input.ValidationStatus, ValidationStatusMessage=input.ValidationStatusMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4507,14 +4793,14 @@ struct BackupClient:
         dict[str, str] query = {}
         if input.RequesterComment.is_some():
             query["requesterComment"] = input.RequesterComment.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/{restoreAccessBackupVaultArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/logically-air-gapped-backup-vaults/{backupVaultName}/restore-access-backup-vaults/{restoreAccessBackupVaultArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # StartBackupJob  PUT /backup-jobs
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_backup_job(self, StartBackupJobInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/backup-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/backup-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"BackupVaultName\":" + backup_json_str(input.BackupVaultName))
         if input.LogicallyAirGappedBackupVaultArn.is_some():
@@ -4556,7 +4842,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_copy_job(self, StartCopyJobInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/copy-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/copy-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartCopyJobDocument(RecoveryPointArn=input.RecoveryPointArn, SourceBackupVaultName=input.SourceBackupVaultName, DestinationBackupVaultArn=input.DestinationBackupVaultArn, IamRoleArn=input.IamRoleArn, IdempotencyToken=input.IdempotencyToken, Lifecycle=input.Lifecycle)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4567,7 +4853,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["reportPlanName"] = input.ReportPlanName
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/report-jobs/{reportPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/report-jobs/{reportPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartReportJobDocument(IdempotencyToken=input.IdempotencyToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4576,7 +4862,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_restore_job(self, StartRestoreJobInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RecoveryPointArn\":" + backup_json_str(input.RecoveryPointArn))
         list[str] m0 = []
@@ -4602,7 +4888,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, InvalidRequestException, LimitExceededException, MissingParameterValueException, ResourceNotFoundException, ServiceUnavailableException
     def start_scan_job(self, StartScanJobInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/scan/job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/scan/job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartScanJobDocument(BackupVaultName=input.BackupVaultName, ContinuousScanEndTime=input.ContinuousScanEndTime, IamRoleArn=input.IamRoleArn, IdempotencyToken=input.IdempotencyToken, MalwareScanner=input.MalwareScanner, RecoveryPointArn=input.RecoveryPointArn, ScanBaseRecoveryPointArn=input.ScanBaseRecoveryPointArn, ScanMode=input.ScanMode, ScannerRoleArn=input.ScannerRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4613,7 +4899,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupJobId"] = input.BackupJobId
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-jobs/{backupJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-jobs/{backupJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -4622,7 +4908,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -4637,7 +4923,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/untag/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untag/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TagKeyList:
@@ -4652,7 +4938,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["backupPlanId"] = input.BackupPlanId
-        auto b = binding.HttpBinding(method="POST", path_template="/backup/plans/{backupPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup/plans/{backupPlanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"BackupPlan\":" + backup_plan_input_to_json(input.BackupPlan))
         auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
@@ -4664,7 +4950,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkName"] = input.FrameworkName
-        auto b = binding.HttpBinding(method="PUT", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/frameworks/{frameworkName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FrameworkDescription.is_some():
             auto u0 = input.FrameworkDescription.unwrap()
@@ -4685,7 +4971,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, InvalidRequestException, MissingParameterValueException, ServiceUnavailableException
     def update_global_settings(self, UpdateGlobalSettingsInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/global-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/global-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GlobalSettings.is_some():
             auto u0 = input.GlobalSettings.unwrap()
@@ -4703,7 +4989,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecoveryPointIndexSettingsDocument(IamRoleArn=input.IamRoleArn, Index=input.Index)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4715,7 +5001,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["backupVaultName"] = input.BackupVaultName
         labels["recoveryPointArn"] = input.RecoveryPointArn
-        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecoveryPointLifecycleDocument(Lifecycle=input.Lifecycle)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, backup_service(), self.region, host)
@@ -4724,7 +5010,7 @@ struct BackupClient:
     # errors: InvalidParameterValueException, MissingParameterValueException, ServiceUnavailableException
     def update_region_settings(self, UpdateRegionSettingsInput input) -> str:
         auto host = endpoints.regional_host(backup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ResourceTypeOptInPreference.is_some():
             auto u0 = input.ResourceTypeOptInPreference.unwrap()
@@ -4747,7 +5033,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["reportPlanName"] = input.ReportPlanName
-        auto b = binding.HttpBinding(method="PUT", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/report-plans/{reportPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ReportPlanDescription.is_some():
             auto u0 = input.ReportPlanDescription.unwrap()
@@ -4770,7 +5056,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RestoreTestingPlan\":" + restore_testing_plan_for_update_to_json(input.RestoreTestingPlan))
         auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
@@ -4783,7 +5069,7 @@ struct BackupClient:
         dict[str, str] labels = {}
         labels["RestoreTestingPlanName"] = input.RestoreTestingPlanName
         labels["RestoreTestingSelectionName"] = input.RestoreTestingSelectionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RestoreTestingSelection\":" + restore_testing_selection_for_update_to_json(input.RestoreTestingSelection))
         auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
@@ -4795,7 +5081,7 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         dict[str, str] labels = {}
         labels["tieringConfigurationName"] = input.TieringConfigurationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tiering-configurations/{tieringConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TieringConfiguration\":" + tiering_configuration_input_for_update_to_json(input.TieringConfiguration))
         auto bp = restjson.rest_json_document(b, backup_json_obj(parts))
@@ -4840,6 +5126,19 @@ struct BackupClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListBackupJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: BackupJobs).
+    def paginate_list_backup_jobs(self, ListBackupJobsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_backup_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListBackupPlanTemplates — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: BackupPlanTemplatesList).
     def paginate_list_backup_plan_templates(self, ListBackupPlanTemplatesInput input):
@@ -4866,12 +5165,64 @@ struct BackupClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListBackupPlans — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: BackupPlansList).
+    def paginate_list_backup_plans(self, ListBackupPlansInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_backup_plans(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListBackupSelections — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: BackupSelectionsList).
     def paginate_list_backup_selections(self, ListBackupSelectionsInput input):
         auto host = endpoints.regional_host(backup_service(), self.region)
         while True:
             auto raw = self.list_backup_selections(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListBackupVaults — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: BackupVaultList).
+    def paginate_list_backup_vaults(self, ListBackupVaultsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_backup_vaults(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListCopyJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CopyJobs).
+    def paginate_list_copy_jobs(self, ListCopyJobsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_copy_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListIndexedRecoveryPoints — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: IndexedRecoveryPoints).
+    def paginate_list_indexed_recovery_points(self, ListIndexedRecoveryPointsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_indexed_recovery_points(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -4918,6 +5269,19 @@ struct BackupClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListRecoveryPointsByBackupVault — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RecoveryPoints).
+    def paginate_list_recovery_points_by_backup_vault(self, ListRecoveryPointsByBackupVaultInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_recovery_points_by_backup_vault(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListRecoveryPointsByLegalHold — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: RecoveryPoints).
     def paginate_list_recovery_points_by_legal_hold(self, ListRecoveryPointsByLegalHoldInput input):
@@ -4931,12 +5295,51 @@ struct BackupClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListRecoveryPointsByResource — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RecoveryPoints).
+    def paginate_list_recovery_points_by_resource(self, ListRecoveryPointsByResourceInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_recovery_points_by_resource(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListRestoreAccessBackupVaults — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: RestoreAccessBackupVaults).
     def paginate_list_restore_access_backup_vaults(self, ListRestoreAccessBackupVaultsInput input):
         auto host = endpoints.regional_host(backup_service(), self.region)
         while True:
             auto raw = self.list_restore_access_backup_vaults(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRestoreJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RestoreJobs).
+    def paginate_list_restore_jobs(self, ListRestoreJobsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_restore_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListRestoreJobsByProtectedResource — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: RestoreJobs).
+    def paginate_list_restore_jobs_by_protected_resource(self, ListRestoreJobsByProtectedResourceInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_restore_jobs_by_protected_resource(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -4976,6 +5379,19 @@ struct BackupClient:
         auto host = endpoints.regional_host(backup_service(), self.region)
         while True:
             auto raw = self.list_scan_job_summaries(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListScanJobs — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ScanJobs).
+    def paginate_list_scan_jobs(self, ListScanJobsInput input):
+        auto host = endpoints.regional_host(backup_service(), self.region)
+        while True:
+            auto raw = self.list_scan_jobs(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

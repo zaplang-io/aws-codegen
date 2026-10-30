@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 95 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 96 operations — 96 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   227 structs (127 @derive(Json)), 24 enums, 12 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1779,11 +1779,6 @@ def voice_chime_error_from_code(str code) -> Chime_SDK_VoiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetVoiceToneAnalysisTask (httpQuery `IsCaller` has unsupported type bool)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1969,6 +1964,12 @@ def termination_to_json(Termination v) -> str:
         parts.append("\"Disabled\":" + json.dumps(JsonValue.Bool(u6)))
     return voice_chime_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def voice_chime_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Chime_SDK_Voice client: credentials + region, threaded into every operation.
 struct Chime_SDK_VoiceClient:
     core.Credentials creds
@@ -1980,7 +1981,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.E164PhoneNumbers:
@@ -1998,7 +1999,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=associate-phone-numbers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.E164PhoneNumbers:
@@ -2014,7 +2015,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def batch_delete_phone_number(self, BatchDeletePhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.PhoneNumberIds:
@@ -2027,7 +2028,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def batch_update_phone_number(self, BatchUpdatePhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UpdatePhoneNumberRequestItems:
@@ -2040,7 +2041,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_phone_number_order(self, CreatePhoneNumberOrderRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProductType\":" + input.ProductType.to_json())
         list[str] e0 = []
@@ -2059,7 +2060,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ParticipantPhoneNumbers:
@@ -2091,7 +2092,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_sip_media_application(self, CreateSipMediaApplicationRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AwsRegion\":" + voice_chime_json_str(input.AwsRegion))
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
@@ -2114,7 +2115,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FromPhoneNumber\":" + voice_chime_json_str(input.FromPhoneNumber))
         parts.append("\"ToPhoneNumber\":" + voice_chime_json_str(input.ToPhoneNumber))
@@ -2137,7 +2138,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_sip_rule(self, CreateSipRuleRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sip-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         parts.append("\"TriggerType\":" + input.TriggerType.to_json())
@@ -2156,7 +2157,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_voice_connector(self, CreateVoiceConnectorRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         if input.AwsRegion.is_some():
@@ -2182,7 +2183,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_voice_connector_group(self, CreateVoiceConnectorGroupRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         if input.VoiceConnectorItems.is_some():
@@ -2201,7 +2202,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, GoneException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_voice_profile(self, CreateVoiceProfileRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateVoiceProfileDocument(SpeakerSearchTaskId=input.SpeakerSearchTaskId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -2210,7 +2211,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_voice_profile_domain(self, CreateVoiceProfileDomainRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-profile-domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-profile-domains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         if input.Description.is_some():
@@ -2235,7 +2236,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteProxySession  DELETE /voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}
@@ -2245,7 +2246,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
         labels["proxySessionId"] = input.ProxySessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteSipMediaApplication  DELETE /sip-media-applications/{sipMediaApplicationId}
@@ -2254,7 +2255,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteSipRule  DELETE /sip-rules/{sipRuleId}
@@ -2263,7 +2264,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipRuleId"] = input.SipRuleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnector  DELETE /voice-connectors/{voiceConnectorId}
@@ -2272,7 +2273,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorEmergencyCallingConfiguration  DELETE /voice-connectors/{voiceConnectorId}/emergency-calling-configuration
@@ -2281,7 +2282,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorExternalSystemsConfiguration  DELETE /voice-connectors/{voiceConnectorId}/external-systems-configuration
@@ -2290,7 +2291,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorGroup  DELETE /voice-connector-groups/{voiceConnectorGroupId}
@@ -2299,7 +2300,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorOrigination  DELETE /voice-connectors/{voiceConnectorId}/origination
@@ -2308,7 +2309,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorProxy  DELETE /voice-connectors/{voiceConnectorId}/programmable-numbers/proxy
@@ -2317,7 +2318,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorStreamingConfiguration  DELETE /voice-connectors/{voiceConnectorId}/streaming-configuration
@@ -2326,7 +2327,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorTermination  DELETE /voice-connectors/{voiceConnectorId}/termination
@@ -2335,7 +2336,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceConnectorTerminationCredentials  POST /voice-connectors/{voiceConnectorId}/termination/credentials?operation=delete
@@ -2344,7 +2345,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Usernames:
@@ -2359,7 +2360,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileId"] = input.VoiceProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DeleteVoiceProfileDomain  DELETE /voice-profile-domains/{VoiceProfileDomainId}
@@ -2368,7 +2369,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileDomainId"] = input.VoiceProfileDomainId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # DisassociatePhoneNumbersFromVoiceConnector  POST /voice-connectors/{voiceConnectorId}?operation=disassociate-phone-numbers
@@ -2377,7 +2378,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.E164PhoneNumbers:
@@ -2392,7 +2393,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connector-groups/{voiceConnectorGroupId}?operation=disassociate-phone-numbers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.E164PhoneNumbers:
@@ -2405,7 +2406,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def get_global_settings(self) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetPhoneNumber  GET /phone-numbers/{phoneNumberId}
@@ -2414,7 +2415,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetPhoneNumberOrder  GET /phone-number-orders/{phoneNumberOrderId}
@@ -2423,14 +2424,14 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberOrderId"] = input.PhoneNumberOrderId
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders/{phoneNumberOrderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders/{phoneNumberOrderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetPhoneNumberSettings  GET /settings/phone-number
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def get_phone_number_settings(self) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetProxySession  GET /voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}
@@ -2440,7 +2441,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
         labels["proxySessionId"] = input.ProxySessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetSipMediaApplication  GET /sip-media-applications/{sipMediaApplicationId}
@@ -2449,7 +2450,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetSipMediaApplicationAlexaSkillConfiguration  GET /sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration
@@ -2458,7 +2459,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetSipMediaApplicationLoggingConfiguration  GET /sip-media-applications/{sipMediaApplicationId}/logging-configuration
@@ -2467,7 +2468,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications/{sipMediaApplicationId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetSipRule  GET /sip-rules/{sipRuleId}
@@ -2476,7 +2477,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipRuleId"] = input.SipRuleId
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetSpeakerSearchTask  GET /voice-connectors/{VoiceConnectorId}/speaker-search-tasks/{SpeakerSearchTaskId}
@@ -2486,7 +2487,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["VoiceConnectorId"] = input.VoiceConnectorId
         labels["SpeakerSearchTaskId"] = input.SpeakerSearchTaskId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks/{SpeakerSearchTaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks/{SpeakerSearchTaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnector  GET /voice-connectors/{voiceConnectorId}
@@ -2495,7 +2496,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorEmergencyCallingConfiguration  GET /voice-connectors/{voiceConnectorId}/emergency-calling-configuration
@@ -2504,7 +2505,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorExternalSystemsConfiguration  GET /voice-connectors/{voiceConnectorId}/external-systems-configuration
@@ -2513,7 +2514,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorGroup  GET /voice-connector-groups/{voiceConnectorGroupId}
@@ -2522,7 +2523,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorLoggingConfiguration  GET /voice-connectors/{voiceConnectorId}/logging-configuration
@@ -2531,7 +2532,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorOrigination  GET /voice-connectors/{voiceConnectorId}/origination
@@ -2540,7 +2541,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorProxy  GET /voice-connectors/{voiceConnectorId}/programmable-numbers/proxy
@@ -2549,7 +2550,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorStreamingConfiguration  GET /voice-connectors/{voiceConnectorId}/streaming-configuration
@@ -2558,7 +2559,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorTermination  GET /voice-connectors/{voiceConnectorId}/termination
@@ -2567,7 +2568,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceConnectorTerminationHealth  GET /voice-connectors/{voiceConnectorId}/termination/health
@@ -2576,7 +2577,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination/health", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination/health", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceProfile  GET /voice-profiles/{VoiceProfileId}
@@ -2585,7 +2586,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileId"] = input.VoiceProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # GetVoiceProfileDomain  GET /voice-profile-domains/{VoiceProfileDomainId}
@@ -2594,14 +2595,26 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileDomainId"] = input.VoiceProfileDomainId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
+
+    # GetVoiceToneAnalysisTask  GET /voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}
+    # errors: AccessDeniedException, BadRequestException, ConflictException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def get_voice_tone_analysis_task(self, GetVoiceToneAnalysisTaskRequest input) -> str:
+        auto host = endpoints.regional_host(voice_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["VoiceConnectorId"] = input.VoiceConnectorId
+        labels["VoiceToneAnalysisTaskId"] = input.VoiceToneAnalysisTaskId
+        dict[str, str] query = {}
+        query["isCaller"] = voice_chime_bind_bool(input.IsCaller)
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListAvailableVoiceConnectorRegions  GET /voice-connector-regions
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def list_available_voice_connector_regions(self) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-regions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-regions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListPhoneNumberOrders  GET /phone-number-orders
@@ -2613,7 +2626,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListPhoneNumbers  GET /phone-numbers
@@ -2633,7 +2646,7 @@ struct Chime_SDK_VoiceClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListProxySessions  GET /voice-connectors/{voiceConnectorId}/proxy-sessions
@@ -2649,7 +2662,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListSipMediaApplications  GET /sip-media-applications
@@ -2661,7 +2674,7 @@ struct Chime_SDK_VoiceClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-media-applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListSipRules  GET /sip-rules
@@ -2675,7 +2688,7 @@ struct Chime_SDK_VoiceClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sip-rules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sip-rules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListSupportedPhoneNumberCountries  GET /phone-number-countries
@@ -2684,7 +2697,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] query = {}
         query["product-type"] = input.ProductType
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-countries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-countries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -2693,7 +2706,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ResourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListVoiceConnectorGroups  GET /voice-connector-groups
@@ -2705,7 +2718,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connector-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListVoiceConnectorTerminationCredentials  GET /voice-connectors/{voiceConnectorId}/termination/credentials
@@ -2714,7 +2727,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListVoiceConnectors  GET /voice-connectors
@@ -2726,7 +2739,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListVoiceProfileDomains  GET /voice-profile-domains
@@ -2738,7 +2751,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-profile-domains", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-profile-domains", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # ListVoiceProfiles  GET /voice-profiles
@@ -2751,7 +2764,7 @@ struct Chime_SDK_VoiceClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/voice-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/voice-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # PutSipMediaApplicationAlexaSkillConfiguration  PUT /sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration
@@ -2760,7 +2773,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}/alexa-skill-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SipMediaApplicationAlexaSkillConfiguration.is_some():
             auto u0 = input.SipMediaApplicationAlexaSkillConfiguration.unwrap()
@@ -2774,7 +2787,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSipMediaApplicationLoggingConfigurationDocument(SipMediaApplicationLoggingConfiguration=input.SipMediaApplicationLoggingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -2785,7 +2798,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/emergency-calling-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"EmergencyCallingConfiguration\":" + emergency_calling_configuration_to_json(input.EmergencyCallingConfiguration))
         auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
@@ -2797,7 +2810,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/external-systems-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SessionBorderControllerTypes.is_some():
             auto u0 = input.SessionBorderControllerTypes.unwrap()
@@ -2820,7 +2833,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutVoiceConnectorLoggingConfigurationDocument(LoggingConfiguration=input.LoggingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -2831,7 +2844,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/origination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Origination\":" + origination_to_json(input.Origination))
         auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
@@ -2843,7 +2856,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/programmable-numbers/proxy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DefaultSessionExpiryMinutes\":" + str(input.DefaultSessionExpiryMinutes))
         list[str] e0 = []
@@ -2865,7 +2878,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/streaming-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StreamingConfiguration\":" + streaming_configuration_to_json(input.StreamingConfiguration))
         auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
@@ -2877,7 +2890,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}/termination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Termination\":" + termination_to_json(input.Termination))
         auto bp = restjson.rest_json_document(b, voice_chime_json_obj(parts))
@@ -2889,7 +2902,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=put", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/termination/credentials?operation=put", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Credentials.is_some():
             auto u0 = input.Credentials.unwrap()
@@ -2906,7 +2919,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}?operation=restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}?operation=restore", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # SearchAvailablePhoneNumbers  GET /search?type=phone-numbers
@@ -2930,7 +2943,7 @@ struct Chime_SDK_VoiceClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/search?type=phone-numbers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search?type=phone-numbers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # StartSpeakerSearchTask  POST /voice-connectors/{VoiceConnectorId}/speaker-search-tasks
@@ -2939,7 +2952,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSpeakerSearchTaskDocument(TransactionId=input.TransactionId, VoiceProfileDomainId=input.VoiceProfileDomainId, ClientRequestToken=input.ClientRequestToken, CallLeg=input.CallLeg)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -2950,7 +2963,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartVoiceToneAnalysisTaskDocument(TransactionId=input.TransactionId, LanguageCode=input.LanguageCode, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -2962,7 +2975,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["VoiceConnectorId"] = input.VoiceConnectorId
         labels["SpeakerSearchTaskId"] = input.SpeakerSearchTaskId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks/{SpeakerSearchTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/speaker-search-tasks/{SpeakerSearchTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # StopVoiceToneAnalysisTask  POST /voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}?operation=stop
@@ -2972,14 +2985,14 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["VoiceConnectorId"] = input.VoiceConnectorId
         labels["VoiceToneAnalysisTaskId"] = input.VoiceToneAnalysisTaskId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{VoiceConnectorId}/voice-tone-analysis-tasks/{VoiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, voice_chime_service(), self.region, host)
 
     # TagResource  POST /tags?operation=tag-resource
     # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, UnauthorizedClientException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + voice_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -2993,7 +3006,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, UnauthorizedClientException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + voice_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -3007,7 +3020,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_global_settings(self, UpdateGlobalSettingsRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGlobalSettingsDocument(VoiceConnector=input.VoiceConnector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3018,7 +3031,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberDocument(ProductType=input.ProductType, CallingName=input.CallingName, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3027,7 +3040,7 @@ struct Chime_SDK_VoiceClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_phone_number_settings(self, UpdatePhoneNumberSettingsRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberSettingsDocument(CallingName=input.CallingName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3039,7 +3052,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
         labels["proxySessionId"] = input.ProxySessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/voice-connectors/{voiceConnectorId}/proxy-sessions/{proxySessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Capabilities:
@@ -3057,7 +3070,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-media-applications/{sipMediaApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3078,7 +3091,7 @@ struct Chime_SDK_VoiceClient:
         dict[str, str] labels = {}
         labels["sipMediaApplicationId"] = input.SipMediaApplicationId
         labels["transactionId"] = input.TransactionId
-        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls/{transactionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sip-media-applications/{sipMediaApplicationId}/calls/{transactionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Arguments.keys()):
@@ -3093,7 +3106,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["sipRuleId"] = input.SipRuleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sip-rules/{sipRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         if input.Disabled.is_some():
@@ -3114,7 +3127,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorId"] = input.VoiceConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connectors/{voiceConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVoiceConnectorDocument(Name=input.Name, RequireEncryption=input.RequireEncryption)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3125,7 +3138,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["voiceConnectorGroupId"] = input.VoiceConnectorGroupId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-connector-groups/{voiceConnectorGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + voice_chime_json_str(input.Name))
         list[str] e0 = []
@@ -3144,7 +3157,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileId"] = input.VoiceProfileId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-profiles/{VoiceProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVoiceProfileDocument(SpeakerSearchTaskId=input.SpeakerSearchTaskId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3155,7 +3168,7 @@ struct Chime_SDK_VoiceClient:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["VoiceProfileDomainId"] = input.VoiceProfileDomainId
-        auto b = binding.HttpBinding(method="PUT", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/voice-profile-domains/{VoiceProfileDomainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVoiceProfileDomainDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)
@@ -3164,7 +3177,7 @@ struct Chime_SDK_VoiceClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def validate_e911_address(self, ValidateE911AddressRequest input) -> str:
         auto host = endpoints.regional_host(voice_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/emergency-calling/address", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/emergency-calling/address", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidateE911AddressDocument(AwsAccountId=input.AwsAccountId, StreetNumber=input.StreetNumber, StreetInfo=input.StreetInfo, City=input.City, State=input.State, Country=input.Country, PostalCode=input.PostalCode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, voice_chime_service(), self.region, host)

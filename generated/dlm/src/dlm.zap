@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 8 operations — 6 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 8 operations — 7 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   45 structs (22 @derive(Json)), 11 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -504,8 +504,7 @@ def dlm_error_from_code(str code) -> DLMError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetLifecyclePolicies (httpQuery `PolicyIds` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
+#   GetLifecyclePolicies (httpQuery `ResourceTypes` has unsupported type list[ResourceTypeValues])
 
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
@@ -828,7 +827,7 @@ struct DLMClient:
     # errors: InternalServerException, InvalidRequestException, LimitExceededException
     def create_lifecycle_policy(self, CreateLifecyclePolicyRequest input) -> str:
         auto host = endpoints.regional_host(dlm_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ExecutionRoleArn\":" + dlm_json_str(input.ExecutionRoleArn))
         parts.append("\"Description\":" + dlm_json_str(input.Description))
@@ -875,7 +874,7 @@ struct DLMClient:
         auto host = endpoints.regional_host(dlm_service(), self.region)
         dict[str, str] labels = {}
         labels["policyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dlm_service(), self.region, host)
 
     # GetLifecyclePolicy  GET /policies/{policyId}
@@ -884,7 +883,7 @@ struct DLMClient:
         auto host = endpoints.regional_host(dlm_service(), self.region)
         dict[str, str] labels = {}
         labels["policyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dlm_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -893,7 +892,7 @@ struct DLMClient:
         auto host = endpoints.regional_host(dlm_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dlm_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -902,7 +901,7 @@ struct DLMClient:
         auto host = endpoints.regional_host(dlm_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -911,13 +910,24 @@ struct DLMClient:
         auto bp = restjson.rest_json_document(b, dlm_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, dlm_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, InvalidRequestException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(dlm_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, dlm_service(), self.region, host)
+
     # UpdateLifecyclePolicy  PATCH /policies/{policyId}
     # errors: InternalServerException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
     def update_lifecycle_policy(self, UpdateLifecyclePolicyRequest input) -> str:
         auto host = endpoints.regional_host(dlm_service(), self.region)
         dict[str, str] labels = {}
         labels["policyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ExecutionRoleArn.is_some():
             auto u0 = input.ExecutionRoleArn.unwrap()

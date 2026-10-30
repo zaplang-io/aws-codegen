@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 94 operations — 91 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 94 operations — 92 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   416 structs (209 @derive(Json)), 58 enums, 12 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3940,7 +3940,6 @@ def wisdom_error_from_code(str code) -> QConnectError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateSession (document member `aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData]` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateSession (document member `aiAgentConfiguration: dict[AIAgentType, AIAgentConfigurationData]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -5110,7 +5109,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/activate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ActivateMessageTemplateDocument(versionNumber=input.versionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5121,7 +5120,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5149,7 +5148,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiAgentId"] = input.aiAgentId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAIAgentVersionDocument(modifiedTime=input.modifiedTime, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5160,7 +5159,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5203,7 +5202,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiGuardrailId"] = input.aiGuardrailId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAIGuardrailVersionDocument(modifiedTime=input.modifiedTime, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5214,7 +5213,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5248,7 +5247,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiPromptId"] = input.aiPromptId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAIPromptVersionDocument(modifiedTime=input.modifiedTime, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5257,7 +5256,7 @@ struct QConnectClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, UnauthorizedException, ValidationException
     def create_assistant(self, CreateAssistantRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5285,7 +5284,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"associationType\":" + input.associationType.to_json())
         parts.append("\"association\":" + input.association.to_json())
@@ -5307,7 +5306,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + wisdom_json_str(input.name))
         if input.title.is_some():
@@ -5342,7 +5341,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["contentId"] = input.contentId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5362,7 +5361,7 @@ struct QConnectClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, UnauthorizedException, ValidationException
     def create_knowledge_base(self, CreateKnowledgeBaseRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5399,7 +5398,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -5442,7 +5441,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMessageTemplateAttachmentDocument(contentDisposition=input.contentDisposition, name=input.name, body=input.body, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5454,7 +5453,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMessageTemplateVersionDocument(messageTemplateContentSha256=input.messageTemplateContentSha256)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5465,7 +5464,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + wisdom_json_str(input.name))
         parts.append("\"content\":" + input.content.to_json())
@@ -5512,7 +5511,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/deactivate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/deactivate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeactivateMessageTemplateDocument(versionNumber=input.versionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -5524,7 +5523,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiAgentId"] = input.aiAgentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAIAgentVersion  DELETE /assistants/{assistantId}/aiagents/{aiAgentId}/versions/{versionNumber}
@@ -5535,7 +5534,7 @@ struct QConnectClient:
         labels["assistantId"] = input.assistantId
         labels["aiAgentId"] = input.aiAgentId
         labels["versionNumber"] = str(input.versionNumber)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAIGuardrail  DELETE /assistants/{assistantId}/aiguardrails/{aiGuardrailId}
@@ -5545,7 +5544,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiGuardrailId"] = input.aiGuardrailId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAIGuardrailVersion  DELETE /assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions/{versionNumber}
@@ -5556,7 +5555,7 @@ struct QConnectClient:
         labels["assistantId"] = input.assistantId
         labels["aiGuardrailId"] = input.aiGuardrailId
         labels["versionNumber"] = str(input.versionNumber)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAIPrompt  DELETE /assistants/{assistantId}/aiprompts/{aiPromptId}
@@ -5566,7 +5565,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiPromptId"] = input.aiPromptId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAIPromptVersion  DELETE /assistants/{assistantId}/aiprompts/{aiPromptId}/versions/{versionNumber}
@@ -5577,7 +5576,7 @@ struct QConnectClient:
         labels["assistantId"] = input.assistantId
         labels["aiPromptId"] = input.aiPromptId
         labels["versionNumber"] = str(input.versionNumber)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions/{versionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAssistant  DELETE /assistants/{assistantId}
@@ -5586,7 +5585,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAssistantAssociation  DELETE /assistants/{assistantId}/associations/{assistantAssociationId}
@@ -5596,7 +5595,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantAssociationId"] = input.assistantAssociationId
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteContent  DELETE /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
@@ -5606,7 +5605,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["contentId"] = input.contentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteContentAssociation  DELETE /knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}
@@ -5617,7 +5616,7 @@ struct QConnectClient:
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["contentId"] = input.contentId
         labels["contentAssociationId"] = input.contentAssociationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteImportJob  DELETE /knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}
@@ -5627,7 +5626,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["importJobId"] = input.importJobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteKnowledgeBase  DELETE /knowledgeBases/{knowledgeBaseId}
@@ -5636,7 +5635,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteMessageTemplate  DELETE /knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}
@@ -5646,7 +5645,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteMessageTemplateAttachment  DELETE /knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments/{attachmentId}
@@ -5657,7 +5656,7 @@ struct QConnectClient:
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
         labels["attachmentId"] = input.attachmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteQuickResponse  DELETE /knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}
@@ -5667,7 +5666,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["quickResponseId"] = input.quickResponseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAIAgent  GET /assistants/{assistantId}/aiagents/{aiAgentId}
@@ -5677,7 +5676,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiAgentId"] = input.aiAgentId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAIGuardrail  GET /assistants/{assistantId}/aiguardrails/{aiGuardrailId}
@@ -5687,7 +5686,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiGuardrailId"] = input.aiGuardrailId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAIPrompt  GET /assistants/{assistantId}/aiprompts/{aiPromptId}
@@ -5697,7 +5696,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiPromptId"] = input.aiPromptId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAssistant  GET /assistants/{assistantId}
@@ -5706,7 +5705,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAssistantAssociation  GET /assistants/{assistantId}/associations/{assistantAssociationId}
@@ -5716,7 +5715,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantAssociationId"] = input.assistantAssociationId
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetContent  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
@@ -5726,7 +5725,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetContentAssociation  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}
@@ -5737,7 +5736,7 @@ struct QConnectClient:
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["contentId"] = input.contentId
         labels["contentAssociationId"] = input.contentAssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetContentSummary  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary
@@ -5747,7 +5746,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetImportJob  GET /knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}
@@ -5757,7 +5756,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["importJobId"] = input.importJobId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetKnowledgeBase  GET /knowledgeBases/{knowledgeBaseId}
@@ -5766,7 +5765,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetMessageTemplate  GET /knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}
@@ -5776,7 +5775,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["messageTemplateId"] = input.messageTemplateId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetNextMessage  GET /assistants/{assistantId}/sessions/{sessionId}/messages/next
@@ -5788,7 +5787,7 @@ struct QConnectClient:
         labels["sessionId"] = input.sessionId
         dict[str, str] query = {}
         query["nextMessageToken"] = input.nextMessageToken
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/messages/next", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/messages/next", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetQuickResponse  GET /knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}
@@ -5798,7 +5797,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["quickResponseId"] = input.quickResponseId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetRecommendations  GET /assistants/{assistantId}/sessions/{sessionId}/recommendations
@@ -5817,7 +5816,7 @@ struct QConnectClient:
             query["nextChunkToken"] = input.nextChunkToken.unwrap_or("")
         if input.recommendationType.is_some():
             query["recommendationType"] = input.recommendationType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetSession  GET /assistants/{assistantId}/sessions/{sessionId}
@@ -5827,7 +5826,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIAgentVersions  GET /assistants/{assistantId}/aiagents/{aiAgentId}/versions
@@ -5844,7 +5843,7 @@ struct QConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.origin.is_some():
             query["origin"] = input.origin.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIAgents  GET /assistants/{assistantId}/aiagents
@@ -5860,7 +5859,7 @@ struct QConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.origin.is_some():
             query["origin"] = input.origin.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiagents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIGuardrailVersions  GET /assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions
@@ -5875,7 +5874,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIGuardrails  GET /assistants/{assistantId}/aiguardrails
@@ -5889,7 +5888,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiguardrails", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIPromptVersions  GET /assistants/{assistantId}/aiprompts/{aiPromptId}/versions
@@ -5906,7 +5905,7 @@ struct QConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.origin.is_some():
             query["origin"] = input.origin.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAIPrompts  GET /assistants/{assistantId}/aiprompts
@@ -5922,7 +5921,7 @@ struct QConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.origin.is_some():
             query["origin"] = input.origin.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/aiprompts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAssistantAssociations  GET /assistants/{assistantId}/associations
@@ -5936,7 +5935,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAssistants  GET /assistants
@@ -5948,7 +5947,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListContentAssociations  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations
@@ -5963,7 +5962,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListContents  GET /knowledgeBases/{knowledgeBaseId}/contents
@@ -5977,7 +5976,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListImportJobs  GET /knowledgeBases/{knowledgeBaseId}/importJobs
@@ -5991,7 +5990,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListKnowledgeBases  GET /knowledgeBases
@@ -6003,7 +6002,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListMessageTemplateVersions  GET /knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions
@@ -6018,7 +6017,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListMessageTemplates  GET /knowledgeBases/{knowledgeBaseId}/messageTemplates
@@ -6032,7 +6031,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListMessages  GET /assistants/{assistantId}/sessions/{sessionId}/messages
@@ -6049,7 +6048,7 @@ struct QConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.filter.is_some():
             query["filter"] = input.filter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/messages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/messages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListModels  GET /assistants/{assistantId}/models
@@ -6067,7 +6066,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/models", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/models", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListQuickResponses  GET /knowledgeBases/{knowledgeBaseId}/quickResponses
@@ -6081,7 +6080,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListSpans  GET /assistants/{assistantId}/sessions/{sessionId}/spans
@@ -6096,7 +6095,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/spans", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/spans", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -6105,7 +6104,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # NotifyRecommendationsReceived  POST /assistants/{assistantId}/sessions/{sessionId}/recommendations/notify
@@ -6115,7 +6114,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations/notify", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations/notify", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.recommendationIds:
@@ -6130,7 +6129,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assistants/{assistantId}/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assistants/{assistantId}/feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFeedbackDocument(targetId=input.targetId, targetType=input.targetType, contentFeedback=input.contentFeedback)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -6141,7 +6140,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/query", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.queryText.is_some():
             auto u0 = input.queryText.unwrap()
@@ -6180,7 +6179,7 @@ struct QConnectClient:
         query["aiAgentType"] = input.aiAgentType
         if input.orchestratorUseCase.is_some():
             query["orchestratorUseCase"] = input.orchestratorUseCase.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagentConfiguration", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/aiagentConfiguration", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # RemoveKnowledgeBaseTemplateUri  DELETE /knowledgeBases/{knowledgeBaseId}/templateUri
@@ -6189,7 +6188,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # RenderMessageTemplate  POST /knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/render
@@ -6199,7 +6198,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/render", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/render", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"attributes\":" + message_template_attributes_to_json(input.attributes))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -6211,7 +6210,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/retrieve", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/retrieve", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"retrievalConfiguration\":" + retrieval_configuration_to_json(input.retrievalConfiguration))
         parts.append("\"retrievalQuery\":" + wisdom_json_str(input.retrievalQuery))
@@ -6229,7 +6228,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -6246,7 +6245,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/messageTemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/messageTemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + message_template_search_expression_to_json(input.searchExpression))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -6263,7 +6262,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/quickResponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/quickResponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + quick_response_search_expression_to_json(input.searchExpression))
         if input.attributes.is_some():
@@ -6286,7 +6285,7 @@ struct QConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/searchSessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/searchSessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -6299,7 +6298,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/message", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/message", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + input.type.to_json())
         parts.append("\"message\":" + message_input_to_json(input.message))
@@ -6336,7 +6335,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/upload", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/upload", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartContentUploadDocument(contentType=input.contentType, presignedUrlTimeToLive=input.presignedUrlTimeToLive)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -6347,7 +6346,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"importJobType\":" + wisdom_json_str(input.importJobType))
         parts.append("\"uploadId\":" + wisdom_json_str(input.uploadId))
@@ -6372,7 +6371,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -6381,6 +6380,17 @@ struct QConnectClient:
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
+
     # UpdateAIAgent  POST /assistants/{assistantId}/aiagents/{aiAgentId}
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_ai_agent(self, UpdateAIAgentRequest input) -> str:
@@ -6388,7 +6398,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiAgentId"] = input.aiAgentId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagents/{aiAgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -6410,7 +6420,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiGuardrailId"] = input.aiGuardrailId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiguardrails/{aiGuardrailId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -6446,7 +6456,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["aiPromptId"] = input.aiPromptId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiprompts/{aiPromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAIPromptDocument(clientToken=input.clientToken, visibilityStatus=input.visibilityStatus, templateConfiguration=input.templateConfiguration, description=input.description, modelId=input.modelId, inferenceConfiguration=input.inferenceConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -6457,7 +6467,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagentConfiguration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/aiagentConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssistantAIAgentDocument(aiAgentType=input.aiAgentType, configuration=input.configuration, orchestratorUseCase=input.orchestratorUseCase)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -6469,7 +6479,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["contentId"] = input.contentId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.revisionId.is_some():
             auto u0 = input.revisionId.unwrap()
@@ -6501,7 +6511,7 @@ struct QConnectClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateKnowledgeBaseTemplateUriDocument(templateUri=input.templateUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -6513,7 +6523,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.content.is_some():
             auto u0 = input.content.unwrap()
@@ -6537,7 +6547,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["messageTemplateId"] = input.messageTemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -6558,7 +6568,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["quickResponseId"] = input.quickResponseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -6609,7 +6619,7 @@ struct QConnectClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/assistants/{assistantId}/sessions/{sessionId}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/assistants/{assistantId}/sessions/{sessionId}/data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.namespace.is_some():
             auto u0 = input.namespace.unwrap()

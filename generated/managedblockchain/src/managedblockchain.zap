@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 25 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 27 operations — 27 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   101 structs (74 @derive(Json)), 12 enums, 10 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -872,12 +872,6 @@ def managedblockchain_error_from_code(str code) -> ManagedBlockchainError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListMembers (httpQuery `IsOwned` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -967,6 +961,12 @@ def proposal_actions_to_json(ProposalActions v) -> str:
         parts.append("\"Removals\":" + managedblockchain_json_arr(e3))
     return managedblockchain_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def managedblockchain_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound ManagedBlockchain client: credentials + region, threaded into every operation.
 struct ManagedBlockchainClient:
     core.Credentials creds
@@ -976,7 +976,7 @@ struct ManagedBlockchainClient:
     # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ThrottlingException, TooManyTagsException
     def create_accessor(self, CreateAccessorInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accessors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accessors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
         parts.append("\"AccessorType\":" + managedblockchain_json_str(input.AccessorType))
@@ -998,7 +998,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/members", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/members", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
         parts.append("\"InvitationId\":" + managedblockchain_json_str(input.InvitationId))
@@ -1010,7 +1010,7 @@ struct ManagedBlockchainClient:
     # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceAlreadyExistsException, ResourceLimitExceededException, ThrottlingException, TooManyTagsException
     def create_network(self, CreateNetworkInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
         parts.append("\"Name\":" + managedblockchain_json_str(input.Name))
@@ -1039,7 +1039,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/nodes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/nodes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
         if input.MemberId.is_some():
@@ -1061,7 +1061,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/proposals", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/proposals", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + managedblockchain_json_str(input.ClientRequestToken))
         parts.append("\"MemberId\":" + managedblockchain_json_str(input.MemberId))
@@ -1084,7 +1084,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["AccessorId"] = input.AccessorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accessors/{AccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accessors/{AccessorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # DeleteMember  DELETE /networks/{networkId}/members/{memberId}
@@ -1094,7 +1094,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["memberId"] = input.MemberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # DeleteNode  DELETE /networks/{networkId}/nodes/{nodeId}
@@ -1107,7 +1107,7 @@ struct ManagedBlockchainClient:
         dict[str, str] query = {}
         if input.MemberId.is_some():
             query["memberId"] = input.MemberId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # GetAccessor  GET /accessors/{AccessorId}
@@ -1116,7 +1116,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["AccessorId"] = input.AccessorId
-        auto b = binding.HttpBinding(method="GET", path_template="/accessors/{AccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accessors/{AccessorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # GetMember  GET /networks/{networkId}/members/{memberId}
@@ -1126,7 +1126,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["memberId"] = input.MemberId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # GetNetwork  GET /networks/{networkId}
@@ -1135,7 +1135,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # GetNode  GET /networks/{networkId}/nodes/{nodeId}
@@ -1148,7 +1148,7 @@ struct ManagedBlockchainClient:
         dict[str, str] query = {}
         if input.MemberId.is_some():
             query["memberId"] = input.MemberId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # GetProposal  GET /networks/{networkId}/proposals/{proposalId}
@@ -1158,7 +1158,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["proposalId"] = input.ProposalId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals/{proposalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals/{proposalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListAccessors  GET /accessors
@@ -1172,7 +1172,7 @@ struct ManagedBlockchainClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.NetworkType.is_some():
             query["networkType"] = input.NetworkType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accessors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accessors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListInvitations  GET /invitations
@@ -1184,7 +1184,28 @@ struct ManagedBlockchainClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
+
+    # ListMembers  GET /networks/{networkId}/members
+    # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ThrottlingException
+    def list_members(self, ListMembersInput input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.NetworkId
+        dict[str, str] query = {}
+        if input.Name.is_some():
+            query["name"] = input.Name.unwrap_or("")
+        if input.Status.is_some():
+            query["status"] = input.Status.unwrap_or("")
+        if input.IsOwned.is_some():
+            auto qt0 = managedblockchain_bind_bool(input.IsOwned.unwrap_or(False))
+            query["isOwned"] = qt0
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListNetworks  GET /networks
@@ -1202,7 +1223,7 @@ struct ManagedBlockchainClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListNodes  GET /networks/{networkId}/nodes
@@ -1220,7 +1241,7 @@ struct ManagedBlockchainClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/nodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/nodes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListProposalVotes  GET /networks/{networkId}/proposals/{proposalId}/votes
@@ -1235,7 +1256,7 @@ struct ManagedBlockchainClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals/{proposalId}/votes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals/{proposalId}/votes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListProposals  GET /networks/{networkId}/proposals
@@ -1249,7 +1270,7 @@ struct ManagedBlockchainClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/proposals", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1258,7 +1279,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # RejectInvitation  DELETE /invitations/{invitationId}
@@ -1267,7 +1288,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["invitationId"] = input.InvitationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/invitations/{invitationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/invitations/{invitationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1276,7 +1297,7 @@ struct ManagedBlockchainClient:
         auto host = endpoints.regional_host(managedblockchain_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1285,6 +1306,17 @@ struct ManagedBlockchainClient:
         auto bp = restjson.rest_json_document(b, managedblockchain_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ResourceNotReadyException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(managedblockchain_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, managedblockchain_service(), self.region, host)
+
     # UpdateMember  PATCH /networks/{networkId}/members/{memberId}
     # errors: AccessDeniedException, InternalServiceErrorException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_member(self, UpdateMemberInput input) -> str:
@@ -1292,7 +1324,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["memberId"] = input.MemberId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/members/{memberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMemberDocument(LogPublishingConfiguration=input.LogPublishingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
@@ -1304,7 +1336,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["nodeId"] = input.NodeId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNodeDocument(MemberId=input.MemberId, LogPublishingConfiguration=input.LogPublishingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)
@@ -1316,7 +1348,7 @@ struct ManagedBlockchainClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
         labels["proposalId"] = input.ProposalId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/proposals/{proposalId}/votes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/proposals/{proposalId}/votes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VoteOnProposalDocument(VoterMemberId=input.VoterMemberId, Vote=input.Vote)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_service(), self.region, host)

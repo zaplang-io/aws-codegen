@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 16 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   68 structs (31 @derive(Json)), 9 enums, 6 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -676,11 +676,6 @@ def mediapackage_vod_error_from_code(str code) -> MediaPackage_VodError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -866,7 +861,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/packaging_groups/{id}/configure_logs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packaging_groups/{id}/configure_logs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConfigureLogsDocument(EgressAccessLogs=input.EgressAccessLogs)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
@@ -875,7 +870,7 @@ struct MediaPackage_VodClient:
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def create_asset(self, CreateAssetRequest input) -> str:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"id\":" + mediapackage_vod_json_str(input.Id))
         parts.append("\"packagingGroupId\":" + mediapackage_vod_json_str(input.PackagingGroupId))
@@ -897,7 +892,7 @@ struct MediaPackage_VodClient:
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def create_packaging_configuration(self, CreatePackagingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/packaging_configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/packaging_configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CmafPackage.is_some():
             auto u0 = input.CmafPackage.unwrap()
@@ -926,7 +921,7 @@ struct MediaPackage_VodClient:
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def create_packaging_group(self, CreatePackagingGroupRequest input) -> str:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/packaging_groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/packaging_groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Authorization.is_some():
             auto u0 = input.Authorization.unwrap()
@@ -950,7 +945,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assets/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assets/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # DeletePackagingConfiguration  DELETE /packaging_configurations/{id}
@@ -959,7 +954,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/packaging_configurations/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/packaging_configurations/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # DeletePackagingGroup  DELETE /packaging_groups/{id}
@@ -968,7 +963,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # DescribeAsset  GET /assets/{id}
@@ -977,7 +972,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # DescribePackagingConfiguration  GET /packaging_configurations/{id}
@@ -986,7 +981,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/packaging_configurations/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packaging_configurations/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # DescribePackagingGroup  GET /packaging_groups/{id}
@@ -995,7 +990,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # ListAssets  GET /assets
@@ -1009,7 +1004,7 @@ struct MediaPackage_VodClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.PackagingGroupId.is_some():
             query["packagingGroupId"] = input.PackagingGroupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # ListPackagingConfigurations  GET /packaging_configurations
@@ -1023,7 +1018,7 @@ struct MediaPackage_VodClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.PackagingGroupId.is_some():
             query["packagingGroupId"] = input.PackagingGroupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/packaging_configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packaging_configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # ListPackagingGroups  GET /packaging_groups
@@ -1035,7 +1030,7 @@ struct MediaPackage_VodClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/packaging_groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packaging_groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resource-arn}
@@ -1043,7 +1038,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
 
     # TagResource  POST /tags/{resource-arn}
@@ -1051,7 +1046,7 @@ struct MediaPackage_VodClient:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1060,13 +1055,23 @@ struct MediaPackage_VodClient:
         auto bp = restjson.rest_json_document(b, mediapackage_vod_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resource-arn}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediapackage_vod_service(), self.region, host)
+
     # UpdatePackagingGroup  PUT /packaging_groups/{id}
     # errors: ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnprocessableEntityException
     def update_packaging_group(self, UpdatePackagingGroupRequest input) -> str:
         auto host = endpoints.regional_host(mediapackage_vod_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packaging_groups/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackagingGroupDocument(Authorization=input.Authorization)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackage_vod_service(), self.region, host)

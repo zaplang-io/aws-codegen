@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 124 operations — 111 with a generated method,
-#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 124 operations — 120 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   199 structs (103 @derive(Json)), 24 enums, 7 error variants.
-#   16 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   18 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -1905,24 +1905,10 @@ def apigateway_error_from_code(str code) -> API_GatewayError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetApiKey (httpQuery `includeValue` has unsupported type bool)
-#   GetApiKeys (httpQuery `includeValues` has unsupported type bool)
-#   GetDeployment (httpQuery `embed` has unsupported type list[str])
 #   GetExport (httpQuery `parameters` has unsupported type dict[str, str])
-#   GetModel (httpQuery `flatten` has unsupported type bool)
-#   GetResource (httpQuery `embed` has unsupported type list[str])
-#   GetResources (httpQuery `embed` has unsupported type list[str])
 #   GetSdk (httpQuery `parameters` has unsupported type dict[str, str])
-#   ImportApiKeys (httpQuery `failOnWarnings` has unsupported type bool)
-#   ImportDocumentationParts (httpQuery `failOnWarnings` has unsupported type bool)
-#   ImportRestApi (httpQuery `failOnWarnings` has unsupported type bool)
-#   PutRestApi (httpQuery `failOnWarnings` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   GetApiKeys (operation not generated)
-#   GetResources (operation not generated)
+#   ImportRestApi (httpQuery `parameters` has unsupported type dict[str, str])
+#   PutRestApi (httpQuery `parameters` has unsupported type dict[str, str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2077,6 +2063,12 @@ def endpoint_configuration_to_json(EndpointConfiguration v) -> str:
         parts.append("\"vpcEndpointIds\":" + apigateway_json_arr(e4))
     return apigateway_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def apigateway_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound API_Gateway client: credentials + region, threaded into every operation.
 struct API_GatewayClient:
     core.Credentials creds
@@ -2086,7 +2078,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def create_api_key(self, CreateApiKeyRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/apikeys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apikeys", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2127,7 +2119,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + apigateway_json_str(input.name))
         parts.append("\"type\":" + input.type.to_json())
@@ -2167,7 +2159,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/domainnames/{domain_name}/basepathmappings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domainnames/{domain_name}/basepathmappings", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBasePathMappingDocument(basePath=input.basePath, restApiId=input.restApiId, stage=input.stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2178,7 +2170,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/deployments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.stageName.is_some():
             auto u0 = input.stageName.unwrap()
@@ -2216,7 +2208,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/documentation/parts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/documentation/parts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDocumentationPartDocument(location=input.location, properties=input.properties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2227,7 +2219,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/documentation/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/documentation/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDocumentationVersionDocument(documentationVersion=input.documentationVersion, stageName=input.stageName, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2236,7 +2228,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
     def create_domain_name(self, CreateDomainNameRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domainnames", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"domainName\":" + apigateway_json_str(input.domainName))
         if input.certificateName.is_some():
@@ -2294,7 +2286,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
     def create_domain_name_access_association(self, CreateDomainNameAccessAssociationRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/domainnameaccessassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domainnameaccessassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"domainNameArn\":" + apigateway_json_str(input.domainNameArn))
         parts.append("\"accessAssociationSourceType\":" + apigateway_json_str(input.accessAssociationSourceType))
@@ -2314,7 +2306,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/models", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/models", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateModelDocument(name=input.name, description=input.description, schema=input.schema, contentType=input.contentType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2325,7 +2317,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/requestvalidators", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/requestvalidators", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRequestValidatorDocument(name=input.name, validateRequestBody=input.validateRequestBody, validateRequestParameters=input.validateRequestParameters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2337,7 +2329,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["parent_id"] = input.parentId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/resources/{parent_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/resources/{parent_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateResourceDocument(pathPart=input.pathPart)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2346,7 +2338,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
     def create_rest_api(self, CreateRestApiRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + apigateway_json_str(input.name))
         if input.description.is_some():
@@ -2400,7 +2392,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/stages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/stages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stageName\":" + apigateway_json_str(input.stageName))
         parts.append("\"deploymentId\":" + apigateway_json_str(input.deploymentId))
@@ -2441,7 +2433,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def create_usage_plan(self, CreateUsagePlanRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/usageplans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/usageplans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + apigateway_json_str(input.name))
         if input.description.is_some():
@@ -2474,7 +2466,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
-        auto b = binding.HttpBinding(method="POST", path_template="/usageplans/{usageplanId}/keys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/usageplans/{usageplanId}/keys", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUsagePlanKeyDocument(keyId=input.keyId, keyType=input.keyType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -2483,7 +2475,7 @@ struct API_GatewayClient:
     # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
     def create_vpc_link(self, CreateVpcLinkRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/vpclinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vpclinks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + apigateway_json_str(input.name))
         if input.description.is_some():
@@ -2508,7 +2500,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["api_Key"] = input.apiKey
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteAuthorizer  DELETE /restapis/{restapi_id}/authorizers/{authorizer_id}
@@ -2518,7 +2510,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["authorizer_id"] = input.authorizerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteBasePathMapping  DELETE /domainnames/{domain_name}/basepathmappings/{base_path}
@@ -2531,7 +2523,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteClientCertificate  DELETE /clientcertificates/{clientcertificate_id}
@@ -2540,7 +2532,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["clientcertificate_id"] = input.clientCertificateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDeployment  DELETE /restapis/{restapi_id}/deployments/{deployment_id}
@@ -2550,7 +2542,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["deployment_id"] = input.deploymentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDocumentationPart  DELETE /restapis/{restapi_id}/documentation/parts/{part_id}
@@ -2560,7 +2552,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["part_id"] = input.documentationPartId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDocumentationVersion  DELETE /restapis/{restapi_id}/documentation/versions/{doc_version}
@@ -2570,7 +2562,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["doc_version"] = input.documentationVersion
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDomainName  DELETE /domainnames/{domain_name}
@@ -2582,7 +2574,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDomainNameAccessAssociation  DELETE /domainnameaccessassociations/{domain_name_access_association_arn}
@@ -2590,8 +2582,9 @@ struct API_GatewayClient:
     def delete_domain_name_access_association(self, DeleteDomainNameAccessAssociationRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
-        labels["domain_name_access_association_arn"] = input.domainNameAccessAssociationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnameaccessassociations/{domain_name_access_association_arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.domainNameAccessAssociationArn
+        labels["domain_name_access_association_arn"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domainnameaccessassociations/{domain_name_access_association_arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteGatewayResponse  DELETE /restapis/{restapi_id}/gatewayresponses/{response_type}
@@ -2601,7 +2594,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["response_type"] = input.responseType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteIntegration  DELETE /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration
@@ -2612,7 +2605,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteIntegrationResponse  DELETE /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}
@@ -2624,7 +2617,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteMethod  DELETE /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}
@@ -2635,7 +2628,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteMethodResponse  DELETE /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}
@@ -2647,7 +2640,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteModel  DELETE /restapis/{restapi_id}/models/{model_name}
@@ -2657,7 +2650,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["model_name"] = input.modelName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRequestValidator  DELETE /restapis/{restapi_id}/requestvalidators/{requestvalidator_id}
@@ -2667,7 +2660,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["requestvalidator_id"] = input.requestValidatorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteResource  DELETE /restapis/{restapi_id}/resources/{resource_id}
@@ -2677,7 +2670,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRestApi  DELETE /restapis/{restapi_id}
@@ -2686,7 +2679,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteStage  DELETE /restapis/{restapi_id}/stages/{stage_name}
@@ -2696,7 +2689,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["stage_name"] = input.stageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteUsagePlan  DELETE /usageplans/{usageplanId}
@@ -2705,7 +2698,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteUsagePlanKey  DELETE /usageplans/{usageplanId}/keys/{keyId}
@@ -2715,7 +2708,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
         labels["keyId"] = input.keyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/usageplans/{usageplanId}/keys/{keyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/usageplans/{usageplanId}/keys/{keyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteVpcLink  DELETE /vpclinks/{vpclink_id}
@@ -2724,7 +2717,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpclink_id"] = input.vpcLinkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # FlushStageAuthorizersCache  DELETE /restapis/{restapi_id}/stages/{stage_name}/cache/authorizers
@@ -2734,7 +2727,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["stage_name"] = input.stageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}/cache/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}/cache/authorizers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # FlushStageCache  DELETE /restapis/{restapi_id}/stages/{stage_name}/cache/data
@@ -2744,14 +2737,14 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["stage_name"] = input.stageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}/cache/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/restapis/{restapi_id}/stages/{stage_name}/cache/data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GenerateClientCertificate  POST /clientcertificates
     # errors: BadRequestException, ConflictException, LimitExceededException, TooManyRequestsException, UnauthorizedException
     def generate_client_certificate(self, GenerateClientCertificateRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/clientcertificates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clientcertificates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -2769,7 +2762,39 @@ struct API_GatewayClient:
     # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def get_account(self) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/account", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetApiKey  GET /apikeys/{api_Key}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def get_api_key(self, GetApiKeyRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["api_Key"] = input.apiKey
+        dict[str, str] query = {}
+        if input.includeValue.is_some():
+            auto qt0 = apigateway_bind_bool(input.includeValue.unwrap_or(False))
+            query["includeValue"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetApiKeys  GET /apikeys
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def get_api_keys(self, GetApiKeysRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] query = {}
+        if input.position.is_some():
+            query["position"] = input.position.unwrap_or("")
+        if input.limit.is_some():
+            query["limit"] = str(input.limit.unwrap_or(0))
+        if input.nameQuery.is_some():
+            query["name"] = input.nameQuery.unwrap_or("")
+        if input.customerId.is_some():
+            query["customerId"] = input.customerId.unwrap_or("")
+        if input.includeValues.is_some():
+            auto qt0 = apigateway_bind_bool(input.includeValues.unwrap_or(False))
+            query["includeValues"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/apikeys", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetAuthorizer  GET /restapis/{restapi_id}/authorizers/{authorizer_id}
@@ -2779,7 +2804,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["authorizer_id"] = input.authorizerId
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetAuthorizers  GET /restapis/{restapi_id}/authorizers
@@ -2793,7 +2818,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/authorizers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/authorizers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetBasePathMapping  GET /domainnames/{domain_name}/basepathmappings/{base_path}
@@ -2806,7 +2831,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetBasePathMappings  GET /domainnames/{domain_name}/basepathmappings
@@ -2822,7 +2847,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}/basepathmappings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}/basepathmappings", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetClientCertificate  GET /clientcertificates/{clientcertificate_id}
@@ -2831,7 +2856,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["clientcertificate_id"] = input.clientCertificateId
-        auto b = binding.HttpBinding(method="GET", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetClientCertificates  GET /clientcertificates
@@ -2843,7 +2868,20 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/clientcertificates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clientcertificates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetDeployment  GET /restapis/{restapi_id}/deployments/{deployment_id}
+    # errors: BadRequestException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def get_deployment(self, GetDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["deployment_id"] = input.deploymentId
+        dict[str, list[str]] multi_query = {}
+        if input.embed.is_some():
+            multi_query["embed"] = input.embed.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDeployments  GET /restapis/{restapi_id}/deployments
@@ -2857,7 +2895,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/deployments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/deployments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDocumentationPart  GET /restapis/{restapi_id}/documentation/parts/{part_id}
@@ -2867,7 +2905,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["part_id"] = input.documentationPartId
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDocumentationParts  GET /restapis/{restapi_id}/documentation/parts
@@ -2889,7 +2927,7 @@ struct API_GatewayClient:
             query["limit"] = str(input.limit.unwrap_or(0))
         if input.locationStatus.is_some():
             query["locationStatus"] = input.locationStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/parts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/parts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDocumentationVersion  GET /restapis/{restapi_id}/documentation/versions/{doc_version}
@@ -2899,7 +2937,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["doc_version"] = input.documentationVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDocumentationVersions  GET /restapis/{restapi_id}/documentation/versions
@@ -2913,7 +2951,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/documentation/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDomainName  GET /domainnames/{domain_name}
@@ -2925,7 +2963,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDomainNameAccessAssociations  GET /domainnameaccessassociations
@@ -2939,7 +2977,7 @@ struct API_GatewayClient:
             query["limit"] = str(input.limit.unwrap_or(0))
         if input.resourceOwner.is_some():
             query["resourceOwner"] = input.resourceOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainnameaccessassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainnameaccessassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDomainNames  GET /domainnames
@@ -2953,7 +2991,7 @@ struct API_GatewayClient:
             query["limit"] = str(input.limit.unwrap_or(0))
         if input.resourceOwner.is_some():
             query["resourceOwner"] = input.resourceOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainnames", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainnames", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetGatewayResponse  GET /restapis/{restapi_id}/gatewayresponses/{response_type}
@@ -2963,7 +3001,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["response_type"] = input.responseType
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetGatewayResponses  GET /restapis/{restapi_id}/gatewayresponses
@@ -2977,7 +3015,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/gatewayresponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/gatewayresponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegration  GET /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration
@@ -2988,7 +3026,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegrationResponse  GET /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}
@@ -3000,7 +3038,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetMethod  GET /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}
@@ -3011,7 +3049,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetMethodResponse  GET /restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}
@@ -3023,7 +3061,20 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetModel  GET /restapis/{restapi_id}/models/{model_name}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def get_model(self, GetModelRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["model_name"] = input.modelName
+        dict[str, str] query = {}
+        if input.flatten.is_some():
+            query["flatten"] = apigateway_bind_bool(input.flatten.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetModelTemplate  GET /restapis/{restapi_id}/models/{model_name}/default_template
@@ -3033,7 +3084,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["model_name"] = input.modelName
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/models/{model_name}/default_template", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/models/{model_name}/default_template", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetModels  GET /restapis/{restapi_id}/models
@@ -3047,7 +3098,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/models", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/models", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRequestValidator  GET /restapis/{restapi_id}/requestvalidators/{requestvalidator_id}
@@ -3057,7 +3108,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["requestvalidator_id"] = input.requestValidatorId
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRequestValidators  GET /restapis/{restapi_id}/requestvalidators
@@ -3071,7 +3122,37 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/requestvalidators", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/requestvalidators", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetResource  GET /restapis/{restapi_id}/resources/{resource_id}
+    # errors: NotFoundException, TooManyRequestsException, UnauthorizedException
+    def get_resource(self, GetResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        labels["resource_id"] = input.resourceId
+        dict[str, list[str]] multi_query = {}
+        if input.embed.is_some():
+            multi_query["embed"] = input.embed.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # GetResources  GET /restapis/{restapi_id}/resources
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def get_resources(self, GetResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        dict[str, str] query = {}
+        if input.position.is_some():
+            query["position"] = input.position.unwrap_or("")
+        if input.limit.is_some():
+            query["limit"] = str(input.limit.unwrap_or(0))
+        dict[str, list[str]] multi_query = {}
+        if input.embed.is_some():
+            multi_query["embed"] = input.embed.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/resources", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRestApi  GET /restapis/{restapi_id}
@@ -3080,7 +3161,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRestApis  GET /restapis
@@ -3092,7 +3173,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetSdkType  GET /sdktypes/{sdktype_id}
@@ -3101,7 +3182,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["sdktype_id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/sdktypes/{sdktype_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdktypes/{sdktype_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetSdkTypes  GET /sdktypes
@@ -3113,7 +3194,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/sdktypes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdktypes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetStage  GET /restapis/{restapi_id}/stages/{stage_name}
@@ -3123,7 +3204,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["stage_name"] = input.stageName
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetStages  GET /restapis/{restapi_id}/stages
@@ -3135,7 +3216,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.deploymentId.is_some():
             query["deploymentId"] = input.deploymentId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/stages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/restapis/{restapi_id}/stages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetTags  GET /tags/{resource_arn}
@@ -3149,7 +3230,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetUsage  GET /usageplans/{usageplanId}/usage
@@ -3167,7 +3248,7 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/usage", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/usage", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetUsagePlan  GET /usageplans/{usageplanId}
@@ -3176,7 +3257,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
-        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetUsagePlanKey  GET /usageplans/{usageplanId}/keys/{keyId}
@@ -3186,7 +3267,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
         labels["keyId"] = input.keyId
-        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/keys/{keyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/keys/{keyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetUsagePlanKeys  GET /usageplans/{usageplanId}/keys
@@ -3202,7 +3283,7 @@ struct API_GatewayClient:
             query["limit"] = str(input.limit.unwrap_or(0))
         if input.nameQuery.is_some():
             query["name"] = input.nameQuery.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/keys", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usageplans/{usageplanId}/keys", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetUsagePlans  GET /usageplans
@@ -3216,7 +3297,7 @@ struct API_GatewayClient:
             query["keyId"] = input.keyId.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/usageplans", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usageplans", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetVpcLink  GET /vpclinks/{vpclink_id}
@@ -3225,7 +3306,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpclink_id"] = input.vpcLinkId
-        auto b = binding.HttpBinding(method="GET", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetVpcLinks  GET /vpclinks
@@ -3237,8 +3318,37 @@ struct API_GatewayClient:
             query["position"] = input.position.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = str(input.limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/vpclinks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/vpclinks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # ImportApiKeys  POST /apikeys?mode=import
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def import_api_keys(self, ImportApiKeysRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] query = {}
+        query["format"] = input.format
+        if input.failOnWarnings.is_some():
+            auto qt0 = apigateway_bind_bool(input.failOnWarnings.unwrap_or(False))
+            query["failonwarnings"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/apikeys?mode=import", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, str(input.body), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # ImportDocumentationParts  PUT /restapis/{restapi_id}/documentation/parts
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def import_documentation_parts(self, ImportDocumentationPartsRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["restapi_id"] = input.restApiId
+        dict[str, str] query = {}
+        if input.mode.is_some():
+            query["mode"] = input.mode.unwrap_or("")
+        if input.failOnWarnings.is_some():
+            auto qt0 = apigateway_bind_bool(input.failOnWarnings.unwrap_or(False))
+            query["failonwarnings"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/documentation/parts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, str(input.body), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # PutGatewayResponse  PUT /restapis/{restapi_id}/gatewayresponses/{response_type}
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
@@ -3247,7 +3357,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["response_type"] = input.responseType
-        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.statusCode.is_some():
             auto u0 = input.statusCode.unwrap()
@@ -3275,7 +3385,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + input.type.to_json())
         if input.integrationHttpMethod.is_some():
@@ -3344,7 +3454,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.selectionPattern.is_some():
             auto u0 = input.selectionPattern.unwrap()
@@ -3375,7 +3485,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"authorizationType\":" + apigateway_json_str(input.authorizationType))
         if input.authorizerId.is_some():
@@ -3420,7 +3530,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.responseParameters.is_some():
             auto u0 = input.responseParameters.unwrap()
@@ -3444,7 +3554,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         query["domainNameAccessAssociationArn"] = input.domainNameAccessAssociationArn
         query["domainNameArn"] = input.domainNameArn
-        auto b = binding.HttpBinding(method="POST", path_template="/rejectdomainnameaccessassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rejectdomainnameaccessassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # TagResource  PUT /tags/{resource_arn}
@@ -3453,7 +3563,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["resource_arn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -3469,7 +3579,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["authorizer_id"] = input.authorizerId
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.headers.is_some():
             auto u0 = input.headers.unwrap()
@@ -3515,7 +3625,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.pathWithQueryString.is_some():
             auto u0 = input.pathWithQueryString.unwrap()
@@ -3550,11 +3660,22 @@ struct API_GatewayClient:
         auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resource_arn}
+    # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource_arn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resource_arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
     # UpdateAccount  PATCH /account
     # errors: BadRequestException, ConflictException, LimitExceededException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def update_account(self, UpdateAccountRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/account", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3571,7 +3692,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["api_Key"] = input.apiKey
-        auto b = binding.HttpBinding(method="PATCH", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/apikeys/{api_Key}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3589,7 +3710,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["authorizer_id"] = input.authorizerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/authorizers/{authorizer_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3610,7 +3731,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}/basepathmappings/{base_path}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3627,7 +3748,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["clientcertificate_id"] = input.clientCertificateId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/clientcertificates/{clientcertificate_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3645,7 +3766,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["deployment_id"] = input.deploymentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/deployments/{deployment_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3663,7 +3784,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["part_id"] = input.documentationPartId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/parts/{part_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3681,7 +3802,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["doc_version"] = input.documentationVersion
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/documentation/versions/{doc_version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3701,7 +3822,7 @@ struct API_GatewayClient:
         dict[str, str] query = {}
         if input.domainNameId.is_some():
             query["domainNameId"] = input.domainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domainnames/{domain_name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3719,7 +3840,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["response_type"] = input.responseType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/gatewayresponses/{response_type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3738,7 +3859,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3758,7 +3879,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/integration/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3777,7 +3898,7 @@ struct API_GatewayClient:
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3797,7 +3918,7 @@ struct API_GatewayClient:
         labels["resource_id"] = input.resourceId
         labels["http_method"] = input.httpMethod
         labels["status_code"] = input.statusCode
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}/methods/{http_method}/responses/{status_code}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3815,7 +3936,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["model_name"] = input.modelName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/models/{model_name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3833,7 +3954,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["requestvalidator_id"] = input.requestValidatorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/requestvalidators/{requestvalidator_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3851,7 +3972,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["resource_id"] = input.resourceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/resources/{resource_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3868,7 +3989,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3886,7 +4007,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["restapi_id"] = input.restApiId
         labels["stage_name"] = input.stageName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/restapis/{restapi_id}/stages/{stage_name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3904,7 +4025,7 @@ struct API_GatewayClient:
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
         labels["keyId"] = input.keyId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}/keys/{keyId}/usage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}/keys/{keyId}/usage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3921,7 +4042,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["usageplanId"] = input.usagePlanId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/usageplans/{usageplanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3938,7 +4059,7 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpclink_id"] = input.vpcLinkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/vpclinks/{vpclink_id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.patchOperations.is_some():
             auto u0 = input.patchOperations.unwrap()
@@ -3948,6 +4069,19 @@ struct API_GatewayClient:
             parts.append("\"patchOperations\":" + apigateway_json_arr(e1))
         auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
+    # Paginator for GetApiKeys — yields each Response page, threading the
+    # position -> position continuation token until it is absent (result key: items).
+    def paginate_get_api_keys(self, GetApiKeysRequest input):
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        while True:
+            auto raw = self.get_api_keys(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "position")
+            if not np.has_more:
+                break
+            input.position = Optional.Some(np.token)
 
     # Paginator for GetAuthorizers — yields each Response page, threading the
     # position -> position continuation token until it is absent (result key: items).
@@ -4072,6 +4206,19 @@ struct API_GatewayClient:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         while True:
             auto raw = self.get_request_validators(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "position")
+            if not np.has_more:
+                break
+            input.position = Optional.Some(np.token)
+
+    # Paginator for GetResources — yields each Response page, threading the
+    # position -> position continuation token until it is absent (result key: items).
+    def paginate_get_resources(self, GetResourcesRequest input):
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        while True:
+            auto raw = self.get_resources(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "position")

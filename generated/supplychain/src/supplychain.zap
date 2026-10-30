@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 28 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 30 operations — 29 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   100 structs (69 @derive(Json)), 14 enums, 7 error variants.
 #   5 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -841,8 +841,7 @@ def scn_error_from_code(str code) -> SupplyChainError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListInstances (httpQuery `instanceNameFilter` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+#   ListInstances (httpQuery `instanceStateFilter` has unsupported type list[InstanceState])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1024,7 +1023,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBillOfMaterialsImportJobDocument(s3uri=input.s3uri, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
@@ -1036,7 +1035,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sources:
@@ -1061,7 +1060,7 @@ struct SupplyChainClient:
         labels["instanceId"] = input.instanceId
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.schema.is_some():
             auto u0 = input.schema.unwrap()
@@ -1088,7 +1087,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1106,7 +1105,7 @@ struct SupplyChainClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_instance(self, CreateInstanceRequest input) -> str:
         auto host = endpoints.regional_host(scn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/api/instance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/instance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.instanceName.is_some():
             auto u0 = input.instanceName.unwrap()
@@ -1139,7 +1138,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # DeleteDataLakeDataset  DELETE /api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}
@@ -1150,7 +1149,7 @@ struct SupplyChainClient:
         labels["instanceId"] = input.instanceId
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # DeleteDataLakeNamespace  DELETE /api/datalake/instance/{instanceId}/namespaces/{name}
@@ -1160,7 +1159,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # DeleteInstance  DELETE /api/instance/{instanceId}
@@ -1169,7 +1168,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetBillOfMaterialsImportJob  GET /api/configuration/instances/{instanceId}/bill-of-materials-import-jobs/{jobId}
@@ -1179,7 +1178,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/configuration/instances/{instanceId}/bill-of-materials-import-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetDataIntegrationEvent  GET /api-data/data-integration/instance/{instanceId}/data-integration-events/{eventId}
@@ -1189,7 +1188,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["eventId"] = input.eventId
-        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events/{eventId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events/{eventId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetDataIntegrationFlow  GET /api/data-integration/instance/{instanceId}/data-integration-flows/{name}
@@ -1199,7 +1198,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetDataIntegrationFlowExecution  GET /api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions/{executionId}
@@ -1210,7 +1209,7 @@ struct SupplyChainClient:
         labels["instanceId"] = input.instanceId
         labels["flowName"] = input.flowName
         labels["executionId"] = input.executionId
-        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions/{executionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions/{executionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetDataLakeDataset  GET /api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}
@@ -1221,7 +1220,7 @@ struct SupplyChainClient:
         labels["instanceId"] = input.instanceId
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetDataLakeNamespace  GET /api/datalake/instance/{instanceId}/namespaces/{name}
@@ -1231,7 +1230,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # GetInstance  GET /api/instance/{instanceId}
@@ -1240,7 +1239,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListDataIntegrationEvents  GET /api-data/data-integration/instance/{instanceId}/data-integration-events
@@ -1256,7 +1255,7 @@ struct SupplyChainClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListDataIntegrationFlowExecutions  GET /api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions
@@ -1271,7 +1270,7 @@ struct SupplyChainClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-flows/{flowName}/executions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListDataIntegrationFlows  GET /api/data-integration/instance/{instanceId}/data-integration-flows
@@ -1285,7 +1284,7 @@ struct SupplyChainClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListDataLakeDatasets  GET /api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets
@@ -1300,7 +1299,7 @@ struct SupplyChainClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListDataLakeNamespaces  GET /api/datalake/instance/{instanceId}/namespaces
@@ -1314,7 +1313,7 @@ struct SupplyChainClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/datalake/instance/{instanceId}/namespaces", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # ListTagsForResource  GET /api/tags/{resourceArn}
@@ -1323,7 +1322,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
 
     # SendDataIntegrationEvent  POST /api-data/data-integration/instance/{instanceId}/data-integration-events
@@ -1332,7 +1331,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api-data/data-integration/instance/{instanceId}/data-integration-events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendDataIntegrationEventDocument(eventType=input.eventType, data=input.data, eventGroupId=input.eventGroupId, eventTimestamp=input.eventTimestamp, clientToken=input.clientToken, datasetTarget=input.datasetTarget)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
@@ -1343,7 +1342,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1352,6 +1351,17 @@ struct SupplyChainClient:
         auto bp = restjson.rest_json_document(b, scn_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
 
+    # UntagResource  DELETE /api/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(scn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, scn_service(), self.region, host)
+
     # UpdateDataIntegrationFlow  PATCH /api/data-integration/instance/{instanceId}/data-integration-flows/{name}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_data_integration_flow(self, UpdateDataIntegrationFlowRequest input) -> str:
@@ -1359,7 +1369,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/data-integration/instance/{instanceId}/data-integration-flows/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sources.is_some():
             auto u0 = input.sources.unwrap()
@@ -1384,7 +1394,7 @@ struct SupplyChainClient:
         labels["instanceId"] = input.instanceId
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/datalake/instance/{instanceId}/namespaces/{namespace}/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataLakeDatasetDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
@@ -1396,7 +1406,7 @@ struct SupplyChainClient:
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/datalake/instance/{instanceId}/namespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataLakeNamespaceDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)
@@ -1407,7 +1417,7 @@ struct SupplyChainClient:
         auto host = endpoints.regional_host(scn_service(), self.region)
         dict[str, str] labels = {}
         labels["instanceId"] = input.instanceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/instance/{instanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateInstanceDocument(instanceName=input.instanceName, instanceDescription=input.instanceDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, scn_service(), self.region, host)

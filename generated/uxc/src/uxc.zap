@@ -158,7 +158,7 @@ struct uxcClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_account_customizations(self) -> str:
         auto host = endpoints.regional_host(uxc_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/account-customizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/account-customizations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, uxc_service(), self.region, host)
 
     # ListServices  GET /v1/services
@@ -170,14 +170,14 @@ struct uxcClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/services", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/services", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, uxc_service(), self.region, host)
 
     # UpdateAccountCustomizations  PATCH /v1/account-customizations
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_account_customizations(self, UpdateAccountCustomizationsInput input) -> str:
         auto host = endpoints.regional_host(uxc_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/account-customizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/account-customizations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountColor.is_some():
             auto u0 = input.accountColor.unwrap()

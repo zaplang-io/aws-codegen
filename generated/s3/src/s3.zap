@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 116 operations — 88 with a generated method,
-#   28 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 116 operations — 102 with a generated method,
+#   14 skipped (a body member is not yet serializable by the XML emitter).
 #   377 structs (plain carriers), 63 enums, 20 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -30,6 +30,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restxml
+import datetime
 
 # The S3 rest-xml protocol: SigV4 service "s3" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -3232,34 +3233,20 @@ def s3_error_from_code(str code) -> S3Error:
 # (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),
 # or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
 # list/map of lists/maps, or a recursive shape graph):
-#   AbortMultipartUpload (httpHeader `IfMatchInitiatedTime` has unsupported type DateTime)
 #   CompleteMultipartUpload (httpPayload structure `MultipartUpload` is optional (v0 needs a required body))
-#   CopyObject (httpHeader `CopySourceIfModifiedSince` has unsupported type DateTime)
 #   CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional (v0 needs a required body))
-#   CreateMultipartUpload (httpHeader `BucketKeyEnabled` has unsupported type bool)
-#   CreateSession (httpHeader `BucketKeyEnabled` has unsupported type bool)
-#   DeleteObject (httpHeader `BypassGovernanceRetention` has unsupported type bool)
-#   DeleteObjects (httpHeader `BypassGovernanceRetention` has unsupported type bool)
-#   GetObject (httpHeader `IfModifiedSince` has unsupported type DateTime)
 #   GetObjectAttributes (httpHeader `ObjectAttributes` has unsupported type list[ObjectAttributes])
-#   HeadObject (httpHeader `IfModifiedSince` has unsupported type DateTime)
 #   ListObjectVersions (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
 #   ListObjects (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
-#   ListObjectsV2 (httpQuery `FetchOwner` has unsupported type bool)
+#   ListObjectsV2 (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
 #   PutBucketAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
 #   PutBucketLifecycle (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
 #   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
-#   PutBucketNotificationConfiguration (httpHeader `SkipDestinationValidation` has unsupported type bool)
-#   PutBucketPolicy (httpHeader `ConfirmRemoveSelfBucketAccess` has unsupported type bool)
-#   PutObject (httpHeader `BucketKeyEnabled` has unsupported type bool)
 #   PutObjectAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
 #   PutObjectLegalHold (httpPayload structure `LegalHold` is optional (v0 needs a required body))
 #   PutObjectLockConfiguration (httpPayload structure `ObjectLockConfiguration` is optional (v0 needs a required body))
 #   PutObjectRetention (httpPayload structure `Retention` is optional (v0 needs a required body))
-#   RenameObject (httpHeader `DestinationIfModifiedSince` has unsupported type DateTime)
 #   RestoreObject (httpPayload structure `RestoreRequest` is optional (v0 needs a required body))
-#   UploadPartCopy (httpHeader `CopySourceIfModifiedSince` has unsupported type DateTime)
-#   WriteGetObjectResponse (httpHeader `DeleteMarker` has unsupported type bool)
 
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
@@ -3278,10 +3265,160 @@ def s3_xml_bool(bool b) -> str:
         return "true"
     return "false"
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def s3_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound S3 client: credentials + region, threaded into every operation.
 struct S3Client:
     core.Credentials creds
     str region
+
+    # AbortMultipartUpload  DELETE /{Bucket}/{Key+}
+    # errors: NoSuchUpload
+    def abort_multipart_upload(self, AbortMultipartUploadRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        query["uploadId"] = input.UploadId
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        if input.IfMatchInitiatedTime.is_some():
+            auto qt1 = datetime.strftime(input.IfMatchInitiatedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-if-match-initiated-time"] = qt1
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # CopyObject  PUT /{Bucket}/{Key+}
+    # errors: ObjectNotInActiveTierError
+    def copy_object(self, CopyObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.CacheControl.is_some():
+            headers["Cache-Control"] = input.CacheControl.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ContentDisposition.is_some():
+            headers["Content-Disposition"] = input.ContentDisposition.unwrap_or("")
+        if input.ContentEncoding.is_some():
+            headers["Content-Encoding"] = input.ContentEncoding.unwrap_or("")
+        if input.ContentLanguage.is_some():
+            headers["Content-Language"] = input.ContentLanguage.unwrap_or("")
+        if input.ContentType.is_some():
+            headers["Content-Type"] = input.ContentType.unwrap_or("")
+        headers["x-amz-copy-source"] = input.CopySource
+        if input.CopySourceIfMatch.is_some():
+            auto qt0 = input.CopySourceIfMatch.unwrap_or("")
+            headers["x-amz-copy-source-if-match"] = qt0
+        if input.CopySourceIfModifiedSince.is_some():
+            auto qt1 = datetime.strftime(input.CopySourceIfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-copy-source-if-modified-since"] = qt1
+        if input.CopySourceIfNoneMatch.is_some():
+            auto qt2 = input.CopySourceIfNoneMatch.unwrap_or("")
+            headers["x-amz-copy-source-if-none-match"] = qt2
+        if input.CopySourceIfUnmodifiedSince.is_some():
+            auto qt3 = datetime.strftime(input.CopySourceIfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-copy-source-if-unmodified-since"] = qt3
+        if input.Expires.is_some():
+            headers["Expires"] = input.Expires.unwrap_or("")
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfNoneMatch.is_some():
+            headers["If-None-Match"] = input.IfNoneMatch.unwrap_or("")
+        if input.MetadataDirective.is_some():
+            headers["x-amz-metadata-directive"] = input.MetadataDirective.unwrap_or("")
+        if input.TaggingDirective.is_some():
+            headers["x-amz-tagging-directive"] = input.TaggingDirective.unwrap_or("")
+        if input.AnnotationDirective.is_some():
+            auto qt4 = input.AnnotationDirective.unwrap_or("")
+            headers["x-amz-object-annotation-directive"] = qt4
+        if input.ServerSideEncryption.is_some():
+            auto qt5 = input.ServerSideEncryption.unwrap_or("")
+            headers["x-amz-server-side-encryption"] = qt5
+        if input.StorageClass.is_some():
+            headers["x-amz-storage-class"] = input.StorageClass.unwrap_or("")
+        if input.WebsiteRedirectLocation.is_some():
+            auto qt6 = input.WebsiteRedirectLocation.unwrap_or("")
+            headers["x-amz-website-redirect-location"] = qt6
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt7 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt7
+        if input.SSECustomerKey.is_some():
+            auto qt8 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt8
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt9 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt9
+        if input.SSEKMSKeyId.is_some():
+            auto qt10 = input.SSEKMSKeyId.unwrap_or("")
+            headers["x-amz-server-side-encryption-aws-kms-key-id"] = qt10
+        if input.SSEKMSEncryptionContext.is_some():
+            auto qt11 = input.SSEKMSEncryptionContext.unwrap_or("")
+            headers["x-amz-server-side-encryption-context"] = qt11
+        if input.BucketKeyEnabled.is_some():
+            auto qt12 = s3_bind_bool(input.BucketKeyEnabled.unwrap_or(False))
+            headers["x-amz-server-side-encryption-bucket-key-enabled"] = qt12
+        if input.CopySourceSSECustomerAlgorithm.is_some():
+            auto qt13 = input.CopySourceSSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-algorithm"] = qt13
+        if input.CopySourceSSECustomerKey.is_some():
+            auto qt14 = input.CopySourceSSECustomerKey.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-key"] = qt14
+        if input.CopySourceSSECustomerKeyMD5.is_some():
+            auto qt15 = input.CopySourceSSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-key-MD5"] = qt15
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.Tagging.is_some():
+            headers["x-amz-tagging"] = input.Tagging.unwrap_or("")
+        if input.ObjectLockMode.is_some():
+            headers["x-amz-object-lock-mode"] = input.ObjectLockMode.unwrap_or("")
+        if input.ObjectLockRetainUntilDate.is_some():
+            auto qt16 = datetime.strftime(input.ObjectLockRetainUntilDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            headers["x-amz-object-lock-retain-until-date"] = qt16
+        if input.ObjectLockLegalHoldStatus.is_some():
+            auto qt17 = input.ObjectLockLegalHoldStatus.unwrap_or("")
+            headers["x-amz-object-lock-legal-hold"] = qt17
+        if input.ObjectLockEventHold.is_some():
+            auto qt18 = input.ObjectLockEventHold.unwrap_or("")
+            headers["x-amz-object-lock-event-hold"] = qt18
+        if input.ObjectLockEventHoldDurationDays.is_some():
+            auto qt19 = str(input.ObjectLockEventHoldDurationDays.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-days"] = qt19
+        if input.ObjectLockEventHoldDurationYears.is_some():
+            auto qt20 = str(input.ObjectLockEventHoldDurationYears.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-years"] = qt20
+        if input.ExpectedBucketOwner.is_some():
+            auto qt21 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt21
+        if input.ExpectedSourceBucketOwner.is_some():
+            auto qt22 = input.ExpectedSourceBucketOwner.unwrap_or("")
+            headers["x-amz-source-expected-bucket-owner"] = qt22
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="x-amz-meta-", prefix_headers=input.Metadata.unwrap_or({}), payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # CreateBucketMetadataConfiguration  POST /{Bucket}?metadataConfiguration
     def create_bucket_metadata_configuration(self, CreateBucketMetadataConfigurationRequest input) -> str:
@@ -3292,10 +3429,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("MetadataConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "JournalTableConfiguration")
         auto n1 = restxml.rest_xml_struct(n0, "RecordExpiration")
@@ -3349,10 +3488,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("MetadataTableConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "S3TablesDestination")
         auto t1 = input.MetadataTableConfiguration.S3TablesDestination.TableBucketArn
@@ -3363,6 +3504,117 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # CreateMultipartUpload  POST /{Bucket}/{Key+}?uploads
+    def create_multipart_upload(self, CreateMultipartUploadRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.CacheControl.is_some():
+            headers["Cache-Control"] = input.CacheControl.unwrap_or("")
+        if input.ContentDisposition.is_some():
+            headers["Content-Disposition"] = input.ContentDisposition.unwrap_or("")
+        if input.ContentEncoding.is_some():
+            headers["Content-Encoding"] = input.ContentEncoding.unwrap_or("")
+        if input.ContentLanguage.is_some():
+            headers["Content-Language"] = input.ContentLanguage.unwrap_or("")
+        if input.ContentType.is_some():
+            headers["Content-Type"] = input.ContentType.unwrap_or("")
+        if input.Expires.is_some():
+            headers["Expires"] = input.Expires.unwrap_or("")
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.ServerSideEncryption.is_some():
+            auto qt0 = input.ServerSideEncryption.unwrap_or("")
+            headers["x-amz-server-side-encryption"] = qt0
+        if input.StorageClass.is_some():
+            headers["x-amz-storage-class"] = input.StorageClass.unwrap_or("")
+        if input.WebsiteRedirectLocation.is_some():
+            auto qt1 = input.WebsiteRedirectLocation.unwrap_or("")
+            headers["x-amz-website-redirect-location"] = qt1
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt2 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt2
+        if input.SSECustomerKey.is_some():
+            auto qt3 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt3
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt4 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt4
+        if input.SSEKMSKeyId.is_some():
+            auto qt5 = input.SSEKMSKeyId.unwrap_or("")
+            headers["x-amz-server-side-encryption-aws-kms-key-id"] = qt5
+        if input.SSEKMSEncryptionContext.is_some():
+            auto qt6 = input.SSEKMSEncryptionContext.unwrap_or("")
+            headers["x-amz-server-side-encryption-context"] = qt6
+        if input.BucketKeyEnabled.is_some():
+            auto qt7 = s3_bind_bool(input.BucketKeyEnabled.unwrap_or(False))
+            headers["x-amz-server-side-encryption-bucket-key-enabled"] = qt7
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.Tagging.is_some():
+            headers["x-amz-tagging"] = input.Tagging.unwrap_or("")
+        if input.ObjectLockMode.is_some():
+            headers["x-amz-object-lock-mode"] = input.ObjectLockMode.unwrap_or("")
+        if input.ObjectLockRetainUntilDate.is_some():
+            auto qt8 = datetime.strftime(input.ObjectLockRetainUntilDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            headers["x-amz-object-lock-retain-until-date"] = qt8
+        if input.ObjectLockLegalHoldStatus.is_some():
+            auto qt9 = input.ObjectLockLegalHoldStatus.unwrap_or("")
+            headers["x-amz-object-lock-legal-hold"] = qt9
+        if input.ObjectLockEventHold.is_some():
+            auto qt10 = input.ObjectLockEventHold.unwrap_or("")
+            headers["x-amz-object-lock-event-hold"] = qt10
+        if input.ObjectLockEventHoldDurationDays.is_some():
+            auto qt11 = str(input.ObjectLockEventHoldDurationDays.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-days"] = qt11
+        if input.ObjectLockEventHoldDurationYears.is_some():
+            auto qt12 = str(input.ObjectLockEventHoldDurationYears.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-years"] = qt12
+        if input.ExpectedBucketOwner.is_some():
+            auto qt13 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt13
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ChecksumType.is_some():
+            headers["x-amz-checksum-type"] = input.ChecksumType.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}?uploads", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="x-amz-meta-", prefix_headers=input.Metadata.unwrap_or({}), payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # CreateSession  GET /{Bucket}?session
+    # errors: NoSuchBucket
+    def create_session(self, CreateSessionRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.SessionMode.is_some():
+            headers["x-amz-create-session-mode"] = input.SessionMode.unwrap_or("")
+        if input.ServerSideEncryption.is_some():
+            auto qt0 = input.ServerSideEncryption.unwrap_or("")
+            headers["x-amz-server-side-encryption"] = qt0
+        if input.SSEKMSKeyId.is_some():
+            auto qt1 = input.SSEKMSKeyId.unwrap_or("")
+            headers["x-amz-server-side-encryption-aws-kms-key-id"] = qt1
+        if input.SSEKMSEncryptionContext.is_some():
+            auto qt2 = input.SSEKMSEncryptionContext.unwrap_or("")
+            headers["x-amz-server-side-encryption-context"] = qt2
+        if input.BucketKeyEnabled.is_some():
+            auto qt3 = s3_bind_bool(input.BucketKeyEnabled.unwrap_or(False))
+            headers["x-amz-server-side-encryption-bucket-key-enabled"] = qt3
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
     # DeleteBucket  DELETE /{Bucket}
     def delete_bucket(self, DeleteBucketRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -3370,8 +3622,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketAnalyticsConfiguration  DELETE /{Bucket}?analytics
@@ -3383,8 +3636,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketCors  DELETE /{Bucket}?cors
@@ -3394,8 +3648,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketEncryption  DELETE /{Bucket}?encryption
@@ -3405,8 +3660,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketIntelligentTieringConfiguration  DELETE /{Bucket}?intelligent-tiering
@@ -3418,8 +3674,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketInventoryConfiguration  DELETE /{Bucket}?inventory
@@ -3431,8 +3688,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketLifecycle  DELETE /{Bucket}?lifecycle
@@ -3442,8 +3700,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketMetadataConfiguration  DELETE /{Bucket}?metadataConfiguration
@@ -3453,8 +3712,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketMetadataTableConfiguration  DELETE /{Bucket}?metadataTable
@@ -3464,8 +3724,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketMetricsConfiguration  DELETE /{Bucket}?metrics
@@ -3477,8 +3738,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketOwnershipControls  DELETE /{Bucket}?ownershipControls
@@ -3488,8 +3750,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketPolicy  DELETE /{Bucket}?policy
@@ -3499,8 +3762,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketReplication  DELETE /{Bucket}?replication
@@ -3510,8 +3774,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketTagging  DELETE /{Bucket}?tagging
@@ -3521,8 +3786,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteBucketWebsite  DELETE /{Bucket}?website
@@ -3532,8 +3798,40 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # DeleteObject  DELETE /{Bucket}/{Key+}
+    def delete_object(self, DeleteObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.MFA.is_some():
+            headers["x-amz-mfa"] = input.MFA.unwrap_or("")
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.BypassGovernanceRetention.is_some():
+            auto qt0 = s3_bind_bool(input.BypassGovernanceRetention.unwrap_or(False))
+            headers["x-amz-bypass-governance-retention"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfMatchLastModifiedTime.is_some():
+            auto qt2 = datetime.strftime(input.IfMatchLastModifiedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-if-match-last-modified-time"] = qt2
+        if input.IfMatchSize.is_some():
+            headers["x-amz-if-match-size"] = str(input.IfMatchSize.unwrap_or(0))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteObjectAnnotation  DELETE /{Bucket}/{Key+}?annotation
@@ -3552,10 +3850,11 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.ObjectIfMatch.is_some():
             headers["x-amz-object-if-match"] = input.ObjectIfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # DeleteObjectTagging  DELETE /{Bucket}/{Key+}?tagging
@@ -3570,9 +3869,50 @@ struct S3Client:
             query["versionId"] = input.VersionId.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # DeleteObjects  POST /{Bucket}?delete
+    def delete_objects(self, DeleteObjectsRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.MFA.is_some():
+            headers["x-amz-mfa"] = input.MFA.unwrap_or("")
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.BypassGovernanceRetention.is_some():
+            auto qt0 = s3_bind_bool(input.BypassGovernanceRetention.unwrap_or(False))
+            headers["x-amz-bypass-governance-retention"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        if input.ChecksumAlgorithm.is_some():
+            auto qt2 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt2
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}?delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("Delete", "http://s3.amazonaws.com/doc/2006-03-01/")
+        for t0 in input.Delete.Objects:
+            auto n1 = restxml.rest_xml_struct(root, "Object")
+            restxml.rest_xml_scalar(n1, "Key", t0.Key)
+            if t0.VersionId.is_some():
+                restxml.rest_xml_scalar(n1, "VersionId", t0.VersionId.unwrap())
+            if t0.ETag.is_some():
+                restxml.rest_xml_scalar(n1, "ETag", t0.ETag.unwrap())
+            if t0.LastModifiedTime.is_some():
+                auto t2 = restxml.xml_timestamp_iso8601(t0.LastModifiedTime.unwrap())
+                restxml.rest_xml_scalar(n1, "LastModifiedTime", t2)
+            if t0.Size.is_some():
+                restxml.rest_xml_scalar(n1, "Size", str(t0.Size.unwrap()))
+        if input.Delete.Quiet.is_some():
+            auto t3 = s3_xml_bool(input.Delete.Quiet.unwrap())
+            restxml.rest_xml_scalar(root, "Quiet", t3)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
     # DeletePublicAccessBlock  DELETE /{Bucket}?publicAccessBlock
     def delete_public_access_block(self, DeletePublicAccessBlockRequest input) -> str:
@@ -3581,8 +3921,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketAbac  GET /{Bucket}?abac
@@ -3592,8 +3933,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?abac", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?abac", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketAccelerateConfiguration  GET /{Bucket}?accelerate
@@ -3603,10 +3945,11 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?accelerate", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?accelerate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketAcl  GET /{Bucket}?acl
@@ -3616,8 +3959,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?acl", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?acl", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketAnalyticsConfiguration  GET /{Bucket}?analytics
@@ -3629,8 +3973,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketCors  GET /{Bucket}?cors
@@ -3640,8 +3985,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketEncryption  GET /{Bucket}?encryption
@@ -3651,8 +3997,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketIntelligentTieringConfiguration  GET /{Bucket}?intelligent-tiering
@@ -3664,8 +4011,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketInventoryConfiguration  GET /{Bucket}?inventory
@@ -3677,8 +4025,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketLifecycle  GET /{Bucket}?lifecycle
@@ -3688,8 +4037,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketLifecycleConfiguration  GET /{Bucket}?lifecycle
@@ -3699,8 +4049,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketLocation  GET /{Bucket}?location
@@ -3710,8 +4061,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?location", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?location", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketLogging  GET /{Bucket}?logging
@@ -3721,8 +4073,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?logging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?logging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketMetadataConfiguration  GET /{Bucket}?metadataConfiguration
@@ -3732,8 +4085,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metadataConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketMetadataTableConfiguration  GET /{Bucket}?metadataTable
@@ -3743,8 +4097,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metadataTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketMetricsConfiguration  GET /{Bucket}?metrics
@@ -3756,8 +4111,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketNotification  GET /{Bucket}?notification
@@ -3767,8 +4123,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketNotificationConfiguration  GET /{Bucket}?notification
@@ -3778,8 +4135,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketOwnershipControls  GET /{Bucket}?ownershipControls
@@ -3789,8 +4147,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketPolicy  GET /{Bucket}?policy
@@ -3800,8 +4159,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketPolicyStatus  GET /{Bucket}?policyStatus
@@ -3811,8 +4171,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?policyStatus", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?policyStatus", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketReplication  GET /{Bucket}?replication
@@ -3822,8 +4183,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketRequestPayment  GET /{Bucket}?requestPayment
@@ -3833,8 +4195,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?requestPayment", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?requestPayment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketTagging  GET /{Bucket}?tagging
@@ -3844,8 +4207,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketVersioning  GET /{Bucket}?versioning
@@ -3855,8 +4219,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?versioning", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?versioning", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetBucketWebsite  GET /{Bucket}?website
@@ -3866,8 +4231,70 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # GetObject  GET /{Bucket}/{Key+}
+    # errors: InvalidObjectState, NoSuchKey
+    def get_object(self, GetObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.ResponseCacheControl.is_some():
+            query["response-cache-control"] = input.ResponseCacheControl.unwrap_or("")
+        if input.ResponseContentDisposition.is_some():
+            auto qt0 = input.ResponseContentDisposition.unwrap_or("")
+            query["response-content-disposition"] = qt0
+        if input.ResponseContentEncoding.is_some():
+            auto qt1 = input.ResponseContentEncoding.unwrap_or("")
+            query["response-content-encoding"] = qt1
+        if input.ResponseContentLanguage.is_some():
+            auto qt2 = input.ResponseContentLanguage.unwrap_or("")
+            query["response-content-language"] = qt2
+        if input.ResponseContentType.is_some():
+            query["response-content-type"] = input.ResponseContentType.unwrap_or("")
+        if input.ResponseExpires.is_some():
+            auto qt3 = datetime.strftime(input.ResponseExpires.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            query["response-expires"] = qt3
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        if input.PartNumber.is_some():
+            query["partNumber"] = str(input.PartNumber.unwrap_or(0))
+        dict[str, str] headers = {}
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfModifiedSince.is_some():
+            auto qt4 = datetime.strftime(input.IfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Modified-Since"] = qt4
+        if input.IfNoneMatch.is_some():
+            headers["If-None-Match"] = input.IfNoneMatch.unwrap_or("")
+        if input.IfUnmodifiedSince.is_some():
+            auto qt5 = datetime.strftime(input.IfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Unmodified-Since"] = qt5
+        if input.Range.is_some():
+            headers["Range"] = input.Range.unwrap_or("")
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt6 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt6
+        if input.SSECustomerKey.is_some():
+            auto qt7 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt7
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt8 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt8
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt9 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt9
+        if input.ChecksumMode.is_some():
+            headers["x-amz-checksum-mode"] = input.ChecksumMode.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectAcl  GET /{Bucket}/{Key+}?acl
@@ -3885,8 +4312,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?acl", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?acl", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectAnnotation  GET /{Bucket}/{Key+}?annotation
@@ -3905,10 +4333,11 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.ChecksumMode.is_some():
             headers["x-amz-checksum-mode"] = input.ChecksumMode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectLegalHold  GET /{Bucket}/{Key+}?legal-hold
@@ -3925,8 +4354,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?legal-hold", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?legal-hold", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectLockConfiguration  GET /{Bucket}?object-lock
@@ -3936,8 +4366,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?object-lock", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?object-lock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectRetention  GET /{Bucket}/{Key+}?retention
@@ -3954,8 +4385,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?retention", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?retention", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectTagging  GET /{Bucket}/{Key+}?tagging
@@ -3970,10 +4402,11 @@ struct S3Client:
             query["versionId"] = input.VersionId.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetObjectTorrent  GET /{Bucket}/{Key+}?torrent
@@ -3987,8 +4420,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?torrent", labels=labels, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?torrent", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # GetPublicAccessBlock  GET /{Bucket}?publicAccessBlock
@@ -3998,8 +4432,9 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # HeadBucket  HEAD /{Bucket}
@@ -4010,8 +4445,70 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="HEAD", path_template="/{Bucket}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="HEAD", path_template="/{Bucket}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # HeadObject  HEAD /{Bucket}/{Key+}
+    # errors: NoSuchKey
+    def head_object(self, HeadObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.ResponseCacheControl.is_some():
+            query["response-cache-control"] = input.ResponseCacheControl.unwrap_or("")
+        if input.ResponseContentDisposition.is_some():
+            auto qt0 = input.ResponseContentDisposition.unwrap_or("")
+            query["response-content-disposition"] = qt0
+        if input.ResponseContentEncoding.is_some():
+            auto qt1 = input.ResponseContentEncoding.unwrap_or("")
+            query["response-content-encoding"] = qt1
+        if input.ResponseContentLanguage.is_some():
+            auto qt2 = input.ResponseContentLanguage.unwrap_or("")
+            query["response-content-language"] = qt2
+        if input.ResponseContentType.is_some():
+            query["response-content-type"] = input.ResponseContentType.unwrap_or("")
+        if input.ResponseExpires.is_some():
+            auto qt3 = datetime.strftime(input.ResponseExpires.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            query["response-expires"] = qt3
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        if input.PartNumber.is_some():
+            query["partNumber"] = str(input.PartNumber.unwrap_or(0))
+        dict[str, str] headers = {}
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfModifiedSince.is_some():
+            auto qt4 = datetime.strftime(input.IfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Modified-Since"] = qt4
+        if input.IfNoneMatch.is_some():
+            headers["If-None-Match"] = input.IfNoneMatch.unwrap_or("")
+        if input.IfUnmodifiedSince.is_some():
+            auto qt5 = datetime.strftime(input.IfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Unmodified-Since"] = qt5
+        if input.Range.is_some():
+            headers["Range"] = input.Range.unwrap_or("")
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt6 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt6
+        if input.SSECustomerKey.is_some():
+            auto qt7 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt7
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt8 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt8
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt9 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt9
+        if input.ChecksumMode.is_some():
+            headers["x-amz-checksum-mode"] = input.ChecksumMode.unwrap_or("")
+        auto b = binding.HttpBinding(method="HEAD", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListBucketAnalyticsConfigurations  GET /{Bucket}?analytics
@@ -4024,8 +4521,9 @@ struct S3Client:
             query["continuation-token"] = input.ContinuationToken.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListBucketIntelligentTieringConfigurations  GET /{Bucket}?intelligent-tiering
@@ -4038,8 +4536,9 @@ struct S3Client:
             query["continuation-token"] = input.ContinuationToken.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListBucketInventoryConfigurations  GET /{Bucket}?inventory
@@ -4052,8 +4551,9 @@ struct S3Client:
             query["continuation-token"] = input.ContinuationToken.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListBucketMetricsConfigurations  GET /{Bucket}?metrics
@@ -4066,8 +4566,9 @@ struct S3Client:
             query["continuation-token"] = input.ContinuationToken.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListBuckets  GET /
@@ -4082,7 +4583,7 @@ struct S3Client:
             query["prefix"] = input.Prefix.unwrap_or("")
         if input.BucketRegion.is_some():
             query["bucket-region"] = input.BucketRegion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListDirectoryBuckets  GET /
@@ -4093,7 +4594,7 @@ struct S3Client:
             query["continuation-token"] = input.ContinuationToken.unwrap_or("")
         if input.MaxDirectoryBuckets.is_some():
             query["max-directory-buckets"] = str(input.MaxDirectoryBuckets.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListMultipartUploads  GET /{Bucket}?uploads
@@ -4116,10 +4617,11 @@ struct S3Client:
             query["upload-id-marker"] = input.UploadIdMarker.unwrap_or("")
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?uploads", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}?uploads", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListObjectAnnotations  GET /{Bucket}/{Key+}?annotation
@@ -4134,7 +4636,8 @@ struct S3Client:
         if input.VersionId.is_some():
             query["versionId"] = input.VersionId.unwrap_or("")
         if input.MaxAnnotationResults.is_some():
-            query["max-annotation-results"] = str(input.MaxAnnotationResults.unwrap_or(0))
+            auto qt0 = str(input.MaxAnnotationResults.unwrap_or(0))
+            query["max-annotation-results"] = qt0
         if input.AnnotationPrefix.is_some():
             query["annotation-prefix"] = input.AnnotationPrefix.unwrap_or("")
         if input.ContinuationToken.is_some():
@@ -4143,8 +4646,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # ListParts  GET /{Bucket}/{Key+}
@@ -4164,14 +4668,18 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.SSECustomerAlgorithm.is_some():
-            headers["x-amz-server-side-encryption-customer-algorithm"] = input.SSECustomerAlgorithm.unwrap_or("")
+            auto qt1 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt1
         if input.SSECustomerKey.is_some():
-            headers["x-amz-server-side-encryption-customer-key"] = input.SSECustomerKey.unwrap_or("")
+            auto qt2 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt2
         if input.SSECustomerKeyMD5.is_some():
-            headers["x-amz-server-side-encryption-customer-key-MD5"] = input.SSECustomerKeyMD5.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt3 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt3
+        auto b = binding.HttpBinding(method="GET", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # PutBucketAbac  PUT /{Bucket}?abac
@@ -4183,10 +4691,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?abac", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?abac", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AbacStatus", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.AbacStatus.Status.is_some():
             restxml.rest_xml_scalar(root, "Status", input.AbacStatus.Status.unwrap())
@@ -4201,10 +4711,12 @@ struct S3Client:
         labels["Bucket"] = input.Bucket
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?accelerate", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?accelerate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AccelerateConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.AccelerateConfiguration.Status.is_some():
             auto t0 = input.AccelerateConfiguration.Status.unwrap()
@@ -4222,8 +4734,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AnalyticsConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Id", input.AnalyticsConfiguration.Id)
         if input.AnalyticsConfiguration.Filter.is_some():
@@ -4278,10 +4791,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CORSConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         for t0 in input.CORSConfiguration.CORSRules:
             auto n1 = restxml.rest_xml_struct(root, "CORSRule")
@@ -4309,10 +4824,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ServerSideEncryptionConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         for t0 in input.ServerSideEncryptionConfiguration.Rules:
             auto n1 = restxml.rest_xml_struct(root, "Rule")
@@ -4343,8 +4860,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("IntelligentTieringConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Id", input.IntelligentTieringConfiguration.Id)
         if input.IntelligentTieringConfiguration.Filter.is_some():
@@ -4388,8 +4906,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("InventoryConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "Destination")
         auto n1 = restxml.rest_xml_struct(n0, "S3BucketDestination")
@@ -4439,10 +4958,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?logging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?logging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("BucketLoggingStatus", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.BucketLoggingStatus.LoggingEnabled.is_some():
             auto n0 = restxml.rest_xml_struct(root, "LoggingEnabled")
@@ -4497,8 +5018,9 @@ struct S3Client:
         query["id"] = input.Id
         dict[str, str] headers = {}
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("MetricsConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Id", input.MetricsConfiguration.Id)
         if input.MetricsConfiguration.Filter.is_some():
@@ -4542,10 +5064,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("NotificationConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.NotificationConfiguration.TopicConfiguration.is_some():
             auto n0 = restxml.rest_xml_struct(root, "TopicConfiguration")
@@ -4593,6 +5117,92 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutBucketNotificationConfiguration  PUT /{Bucket}?notification
+    def put_bucket_notification_configuration(self, PutBucketNotificationConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ExpectedBucketOwner.is_some():
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        if input.SkipDestinationValidation.is_some():
+            auto qt1 = s3_bind_bool(input.SkipDestinationValidation.unwrap_or(False))
+            headers["x-amz-skip-destination-validation"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("NotificationConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        if input.NotificationConfiguration.TopicConfigurations.is_some():
+            auto t0 = input.NotificationConfiguration.TopicConfigurations.unwrap()
+            for t1 in t0:
+                auto n2 = restxml.rest_xml_struct(root, "TopicConfiguration")
+                if t1.Id.is_some():
+                    restxml.rest_xml_scalar(n2, "Id", t1.Id.unwrap())
+                restxml.rest_xml_scalar(n2, "Topic", t1.TopicArn)
+                restxml.rest_xml_flat_list(n2, "Event", t1.Events)
+                if t1.Filter.is_some():
+                    auto n3 = restxml.rest_xml_struct(n2, "Filter")
+                    if t1.Filter.unwrap().Key.is_some():
+                        auto n4 = restxml.rest_xml_struct(n3, "S3Key")
+                        if t1.Filter.unwrap().Key.unwrap().FilterRules.is_some():
+                            auto t5 = t1.Filter.unwrap().Key.unwrap().FilterRules.unwrap()
+                            for t6 in t5:
+                                auto n7 = restxml.rest_xml_struct(n4, "FilterRule")
+                                if t6.Name.is_some():
+                                    auto t8 = t6.Name.unwrap()
+                                    restxml.rest_xml_scalar(n7, "Name", t8)
+                                if t6.Value.is_some():
+                                    auto t9 = t6.Value.unwrap()
+                                    restxml.rest_xml_scalar(n7, "Value", t9)
+        if input.NotificationConfiguration.QueueConfigurations.is_some():
+            auto t10 = input.NotificationConfiguration.QueueConfigurations.unwrap()
+            for t11 in t10:
+                auto n12 = restxml.rest_xml_struct(root, "QueueConfiguration")
+                if t11.Id.is_some():
+                    restxml.rest_xml_scalar(n12, "Id", t11.Id.unwrap())
+                restxml.rest_xml_scalar(n12, "Queue", t11.QueueArn)
+                restxml.rest_xml_flat_list(n12, "Event", t11.Events)
+                if t11.Filter.is_some():
+                    auto n13 = restxml.rest_xml_struct(n12, "Filter")
+                    if t11.Filter.unwrap().Key.is_some():
+                        auto n14 = restxml.rest_xml_struct(n13, "S3Key")
+                        if t11.Filter.unwrap().Key.unwrap().FilterRules.is_some():
+                            auto t15 = t11.Filter.unwrap().Key.unwrap().FilterRules.unwrap()
+                            for t16 in t15:
+                                auto n17 = restxml.rest_xml_struct(n14, "FilterRule")
+                                if t16.Name.is_some():
+                                    auto t18 = t16.Name.unwrap()
+                                    restxml.rest_xml_scalar(n17, "Name", t18)
+                                if t16.Value.is_some():
+                                    auto t19 = t16.Value.unwrap()
+                                    restxml.rest_xml_scalar(n17, "Value", t19)
+        if input.NotificationConfiguration.LambdaFunctionConfigurations.is_some():
+            auto t20 = input.NotificationConfiguration.LambdaFunctionConfigurations.unwrap()
+            for t21 in t20:
+                auto n22 = restxml.rest_xml_struct(root, "CloudFunctionConfiguration")
+                if t21.Id.is_some():
+                    restxml.rest_xml_scalar(n22, "Id", t21.Id.unwrap())
+                restxml.rest_xml_scalar(n22, "CloudFunction", t21.LambdaFunctionArn)
+                restxml.rest_xml_flat_list(n22, "Event", t21.Events)
+                if t21.Filter.is_some():
+                    auto n23 = restxml.rest_xml_struct(n22, "Filter")
+                    if t21.Filter.unwrap().Key.is_some():
+                        auto n24 = restxml.rest_xml_struct(n23, "S3Key")
+                        if t21.Filter.unwrap().Key.unwrap().FilterRules.is_some():
+                            auto t25 = t21.Filter.unwrap().Key.unwrap().FilterRules.unwrap()
+                            for t26 in t25:
+                                auto n27 = restxml.rest_xml_struct(n24, "FilterRule")
+                                if t26.Name.is_some():
+                                    auto t28 = t26.Name.unwrap()
+                                    restxml.rest_xml_scalar(n27, "Name", t28)
+                                if t26.Value.is_some():
+                                    auto t29 = t26.Value.unwrap()
+                                    restxml.rest_xml_scalar(n27, "Value", t29)
+        if input.NotificationConfiguration.EventBridgeConfiguration.is_some():
+            auto n30 = restxml.rest_xml_struct(root, "EventBridgeConfiguration")
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
     # PutBucketOwnershipControls  PUT /{Bucket}?ownershipControls
     def put_bucket_ownership_controls(self, PutBucketOwnershipControlsRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -4602,16 +5212,39 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("OwnershipControls", "http://s3.amazonaws.com/doc/2006-03-01/")
         for t0 in input.OwnershipControls.Rules:
             auto n1 = restxml.rest_xml_struct(root, "Rule")
             restxml.rest_xml_scalar(n1, "ObjectOwnership", t0.ObjectOwnership)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketPolicy  PUT /{Bucket}?policy
+    def put_bucket_policy(self, PutBucketPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ConfirmRemoveSelfBucketAccess.is_some():
+            auto qt1 = s3_bind_bool(input.ConfirmRemoveSelfBucketAccess.unwrap_or(False))
+            headers["x-amz-confirm-remove-self-bucket-access"] = qt1
+        if input.ExpectedBucketOwner.is_some():
+            auto qt2 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt2
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restxml.rest_xml_raw_payload(b, input.Policy, "text/plain")
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
     # PutBucketReplication  PUT /{Bucket}?replication
@@ -4623,12 +5256,14 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.Token.is_some():
             headers["x-amz-bucket-object-lock-token"] = input.Token.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ReplicationConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Role", input.ReplicationConfiguration.Role)
         for t0 in input.ReplicationConfiguration.Rules:
@@ -4727,10 +5362,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?requestPayment", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?requestPayment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("RequestPaymentConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Payer", input.RequestPaymentConfiguration.Payer)
         auto body = restxml.rest_xml_serialize(root)
@@ -4746,10 +5383,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("Tagging", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "TagSet")
         for t1 in input.Tagging.TagSet:
@@ -4769,12 +5408,14 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.MFA.is_some():
             headers["x-amz-mfa"] = input.MFA.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?versioning", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?versioning", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("VersioningConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.VersioningConfiguration.MFADelete.is_some():
             auto t0 = input.VersioningConfiguration.MFADelete.unwrap()
@@ -4795,10 +5436,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("WebsiteConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.WebsiteConfiguration.ErrorDocument.is_some():
             auto n0 = restxml.rest_xml_struct(root, "ErrorDocument")
@@ -4848,6 +5491,125 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutObject  PUT /{Bucket}/{Key+}
+    # errors: EncryptionTypeMismatch, InvalidRequest, InvalidWriteOffset, TooManyParts
+    def put_object(self, PutObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.CacheControl.is_some():
+            headers["Cache-Control"] = input.CacheControl.unwrap_or("")
+        if input.ContentDisposition.is_some():
+            headers["Content-Disposition"] = input.ContentDisposition.unwrap_or("")
+        if input.ContentEncoding.is_some():
+            headers["Content-Encoding"] = input.ContentEncoding.unwrap_or("")
+        if input.ContentLanguage.is_some():
+            headers["Content-Language"] = input.ContentLanguage.unwrap_or("")
+        if input.ContentLength.is_some():
+            headers["Content-Length"] = str(input.ContentLength.unwrap_or(0))
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ContentType.is_some():
+            headers["Content-Type"] = input.ContentType.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ChecksumCRC32.is_some():
+            headers["x-amz-checksum-crc32"] = input.ChecksumCRC32.unwrap_or("")
+        if input.ChecksumCRC32C.is_some():
+            headers["x-amz-checksum-crc32c"] = input.ChecksumCRC32C.unwrap_or("")
+        if input.ChecksumCRC64NVME.is_some():
+            headers["x-amz-checksum-crc64nvme"] = input.ChecksumCRC64NVME.unwrap_or("")
+        if input.ChecksumSHA1.is_some():
+            headers["x-amz-checksum-sha1"] = input.ChecksumSHA1.unwrap_or("")
+        if input.ChecksumSHA256.is_some():
+            headers["x-amz-checksum-sha256"] = input.ChecksumSHA256.unwrap_or("")
+        if input.ChecksumSHA512.is_some():
+            headers["x-amz-checksum-sha512"] = input.ChecksumSHA512.unwrap_or("")
+        if input.ChecksumMD5.is_some():
+            headers["x-amz-checksum-md5"] = input.ChecksumMD5.unwrap_or("")
+        if input.ChecksumXXHASH64.is_some():
+            headers["x-amz-checksum-xxhash64"] = input.ChecksumXXHASH64.unwrap_or("")
+        if input.ChecksumXXHASH3.is_some():
+            headers["x-amz-checksum-xxhash3"] = input.ChecksumXXHASH3.unwrap_or("")
+        if input.ChecksumXXHASH128.is_some():
+            headers["x-amz-checksum-xxhash128"] = input.ChecksumXXHASH128.unwrap_or("")
+        if input.Expires.is_some():
+            headers["Expires"] = input.Expires.unwrap_or("")
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfNoneMatch.is_some():
+            headers["If-None-Match"] = input.IfNoneMatch.unwrap_or("")
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.WriteOffsetBytes.is_some():
+            auto qt1 = str(input.WriteOffsetBytes.unwrap_or(0))
+            headers["x-amz-write-offset-bytes"] = qt1
+        if input.ServerSideEncryption.is_some():
+            auto qt2 = input.ServerSideEncryption.unwrap_or("")
+            headers["x-amz-server-side-encryption"] = qt2
+        if input.StorageClass.is_some():
+            headers["x-amz-storage-class"] = input.StorageClass.unwrap_or("")
+        if input.WebsiteRedirectLocation.is_some():
+            auto qt3 = input.WebsiteRedirectLocation.unwrap_or("")
+            headers["x-amz-website-redirect-location"] = qt3
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt4 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt4
+        if input.SSECustomerKey.is_some():
+            auto qt5 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt5
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt6 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt6
+        if input.SSEKMSKeyId.is_some():
+            auto qt7 = input.SSEKMSKeyId.unwrap_or("")
+            headers["x-amz-server-side-encryption-aws-kms-key-id"] = qt7
+        if input.SSEKMSEncryptionContext.is_some():
+            auto qt8 = input.SSEKMSEncryptionContext.unwrap_or("")
+            headers["x-amz-server-side-encryption-context"] = qt8
+        if input.BucketKeyEnabled.is_some():
+            auto qt9 = s3_bind_bool(input.BucketKeyEnabled.unwrap_or(False))
+            headers["x-amz-server-side-encryption-bucket-key-enabled"] = qt9
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.Tagging.is_some():
+            headers["x-amz-tagging"] = input.Tagging.unwrap_or("")
+        if input.ObjectLockMode.is_some():
+            headers["x-amz-object-lock-mode"] = input.ObjectLockMode.unwrap_or("")
+        if input.ObjectLockRetainUntilDate.is_some():
+            auto qt10 = datetime.strftime(input.ObjectLockRetainUntilDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            headers["x-amz-object-lock-retain-until-date"] = qt10
+        if input.ObjectLockLegalHoldStatus.is_some():
+            auto qt11 = input.ObjectLockLegalHoldStatus.unwrap_or("")
+            headers["x-amz-object-lock-legal-hold"] = qt11
+        if input.ObjectLockEventHold.is_some():
+            auto qt12 = input.ObjectLockEventHold.unwrap_or("")
+            headers["x-amz-object-lock-event-hold"] = qt12
+        if input.ObjectLockEventHoldDurationDays.is_some():
+            auto qt13 = str(input.ObjectLockEventHoldDurationDays.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-days"] = qt13
+        if input.ObjectLockEventHoldDurationYears.is_some():
+            auto qt14 = str(input.ObjectLockEventHoldDurationYears.unwrap_or(0))
+            headers["x-amz-object-lock-event-hold-duration-years"] = qt14
+        if input.ExpectedBucketOwner.is_some():
+            auto qt15 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt15
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="x-amz-meta-", prefix_headers=input.Metadata.unwrap_or({}), payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), "application/octet-stream")
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
     # PutObjectAnnotation  PUT /{Bucket}/{Key+}?annotation
     # errors: AnnotationLimitExceeded, AnnotationNameTooLong, InvalidAnnotationName, InvalidRequest, NoSuchBucket, NoSuchKey, UnsupportedMediaType
     def put_object_annotation(self, PutObjectAnnotationRequest input) -> str:
@@ -4864,7 +5626,8 @@ struct S3Client:
         if input.ObjectIfMatch.is_some():
             headers["x-amz-object-if-match"] = input.ObjectIfMatch.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ChecksumCRC32.is_some():
             headers["x-amz-checksum-crc32"] = input.ChecksumCRC32.unwrap_or("")
         if input.ChecksumCRC32C.is_some():
@@ -4890,8 +5653,9 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restxml.rest_xml_raw_payload(b, str(input.AnnotationPayload), "application/octet-stream")
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
@@ -4909,12 +5673,14 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("Tagging", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "TagSet")
         for t1 in input.Tagging.TagSet:
@@ -4934,10 +5700,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PublicAccessBlockConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.PublicAccessBlockConfiguration.BlockPublicAcls.is_some():
             auto t0 = s3_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicAcls.unwrap())
@@ -4955,6 +5723,42 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # RenameObject  PUT /{Bucket}/{Key+}?renameObject
+    # errors: IdempotencyParameterMismatch
+    def rename_object(self, RenameObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] headers = {}
+        headers["x-amz-rename-source"] = input.RenameSource
+        if input.DestinationIfMatch.is_some():
+            headers["If-Match"] = input.DestinationIfMatch.unwrap_or("")
+        if input.DestinationIfNoneMatch.is_some():
+            headers["If-None-Match"] = input.DestinationIfNoneMatch.unwrap_or("")
+        if input.DestinationIfModifiedSince.is_some():
+            auto qt0 = datetime.strftime(input.DestinationIfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Modified-Since"] = qt0
+        if input.DestinationIfUnmodifiedSince.is_some():
+            auto qt1 = datetime.strftime(input.DestinationIfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["If-Unmodified-Since"] = qt1
+        if input.SourceIfMatch.is_some():
+            headers["x-amz-rename-source-if-match"] = input.SourceIfMatch.unwrap_or("")
+        if input.SourceIfNoneMatch.is_some():
+            auto qt2 = input.SourceIfNoneMatch.unwrap_or("")
+            headers["x-amz-rename-source-if-none-match"] = qt2
+        if input.SourceIfModifiedSince.is_some():
+            auto qt3 = datetime.strftime(input.SourceIfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-rename-source-if-modified-since"] = qt3
+        if input.SourceIfUnmodifiedSince.is_some():
+            auto qt4 = datetime.strftime(input.SourceIfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-rename-source-if-unmodified-since"] = qt4
+        if input.ClientToken.is_some():
+            headers["x-amz-client-token"] = input.ClientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?renameObject", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
     # SelectObjectContent  POST /{Bucket}/{Key+}?select&select-type=2
     def select_object_content(self, SelectObjectContentRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -4964,14 +5768,18 @@ struct S3Client:
         greedy_labels["Key"] = input.Key
         dict[str, str] headers = {}
         if input.SSECustomerAlgorithm.is_some():
-            headers["x-amz-server-side-encryption-customer-algorithm"] = input.SSECustomerAlgorithm.unwrap_or("")
+            auto qt0 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt0
         if input.SSECustomerKey.is_some():
-            headers["x-amz-server-side-encryption-customer-key"] = input.SSECustomerKey.unwrap_or("")
+            auto qt1 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt1
         if input.SSECustomerKeyMD5.is_some():
-            headers["x-amz-server-side-encryption-customer-key-MD5"] = input.SSECustomerKeyMD5.unwrap_or("")
+            auto qt2 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt2
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}?select&select-type=2", labels=labels, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt3 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt3
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}?select&select-type=2", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("SelectObjectContentRequest", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Expression", input.Expression)
         restxml.rest_xml_scalar(root, "ExpressionType", input.ExpressionType)
@@ -5058,10 +5866,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataAnnotationTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataAnnotationTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AnnotationTableConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto t0 = input.AnnotationTableConfiguration.ConfigurationState
         restxml.rest_xml_scalar(root, "ConfigurationState", t0)
@@ -5088,10 +5898,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataInventoryTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataInventoryTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("InventoryTableConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto t0 = input.InventoryTableConfiguration.ConfigurationState
         restxml.rest_xml_scalar(root, "ConfigurationState", t0)
@@ -5115,10 +5927,12 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataJournalTable", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metadataJournalTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("JournalTableConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         auto n0 = restxml.rest_xml_struct(root, "RecordExpiration")
         auto t1 = input.JournalTableConfiguration.RecordExpiration.Expiration
@@ -5145,12 +5959,14 @@ struct S3Client:
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?encryption", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?encryption", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ObjectEncryption", "http://s3.amazonaws.com/doc/2006-03-01/")
         if input.ObjectEncryption.SSEKMS.is_some():
             auto n0 = restxml.rest_xml_struct(root, "SSE-KMS")
@@ -5179,7 +5995,8 @@ struct S3Client:
         if input.ContentMD5.is_some():
             headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
         if input.ChecksumAlgorithm.is_some():
-            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
         if input.ChecksumCRC32.is_some():
             headers["x-amz-checksum-crc32"] = input.ChecksumCRC32.unwrap_or("")
         if input.ChecksumCRC32C.is_some():
@@ -5201,16 +6018,199 @@ struct S3Client:
         if input.ChecksumXXHASH128.is_some():
             headers["x-amz-checksum-xxhash128"] = input.ChecksumXXHASH128.unwrap_or("")
         if input.SSECustomerAlgorithm.is_some():
-            headers["x-amz-server-side-encryption-customer-algorithm"] = input.SSECustomerAlgorithm.unwrap_or("")
+            auto qt1 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt1
         if input.SSECustomerKey.is_some():
-            headers["x-amz-server-side-encryption-customer-key"] = input.SSECustomerKey.unwrap_or("")
+            auto qt2 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt2
         if input.SSECustomerKeyMD5.is_some():
-            headers["x-amz-server-side-encryption-customer-key-MD5"] = input.SSECustomerKeyMD5.unwrap_or("")
+            auto qt3 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt3
         if input.RequestPayer.is_some():
             headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
         if input.ExpectedBucketOwner.is_some():
-            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt4 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt4
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), "application/octet-stream")
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # UploadPartCopy  PUT /{Bucket}/{Key+}
+    def upload_part_copy(self, UploadPartCopyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        query["partNumber"] = str(input.PartNumber)
+        query["uploadId"] = input.UploadId
+        dict[str, str] headers = {}
+        headers["x-amz-copy-source"] = input.CopySource
+        if input.CopySourceIfMatch.is_some():
+            auto qt0 = input.CopySourceIfMatch.unwrap_or("")
+            headers["x-amz-copy-source-if-match"] = qt0
+        if input.CopySourceIfModifiedSince.is_some():
+            auto qt1 = datetime.strftime(input.CopySourceIfModifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-copy-source-if-modified-since"] = qt1
+        if input.CopySourceIfNoneMatch.is_some():
+            auto qt2 = input.CopySourceIfNoneMatch.unwrap_or("")
+            headers["x-amz-copy-source-if-none-match"] = qt2
+        if input.CopySourceIfUnmodifiedSince.is_some():
+            auto qt3 = datetime.strftime(input.CopySourceIfUnmodifiedSince.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-copy-source-if-unmodified-since"] = qt3
+        if input.CopySourceRange.is_some():
+            headers["x-amz-copy-source-range"] = input.CopySourceRange.unwrap_or("")
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt4 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt4
+        if input.SSECustomerKey.is_some():
+            auto qt5 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt5
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt6 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt6
+        if input.CopySourceSSECustomerAlgorithm.is_some():
+            auto qt7 = input.CopySourceSSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-algorithm"] = qt7
+        if input.CopySourceSSECustomerKey.is_some():
+            auto qt8 = input.CopySourceSSECustomerKey.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-key"] = qt8
+        if input.CopySourceSSECustomerKeyMD5.is_some():
+            auto qt9 = input.CopySourceSSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-copy-source-server-side-encryption-customer-key-MD5"] = qt9
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt10 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt10
+        if input.ExpectedSourceBucketOwner.is_some():
+            auto qt11 = input.ExpectedSourceBucketOwner.unwrap_or("")
+            headers["x-amz-source-expected-bucket-owner"] = qt11
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # WriteGetObjectResponse  POST /WriteGetObjectResponse
+    def write_get_object_response(self, WriteGetObjectResponseRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-request-route"] = input.RequestRoute
+        headers["x-amz-request-token"] = input.RequestToken
+        if input.StatusCode.is_some():
+            headers["x-amz-fwd-status"] = str(input.StatusCode.unwrap_or(0))
+        if input.ErrorCode.is_some():
+            headers["x-amz-fwd-error-code"] = input.ErrorCode.unwrap_or("")
+        if input.ErrorMessage.is_some():
+            headers["x-amz-fwd-error-message"] = input.ErrorMessage.unwrap_or("")
+        if input.AcceptRanges.is_some():
+            headers["x-amz-fwd-header-accept-ranges"] = input.AcceptRanges.unwrap_or("")
+        if input.CacheControl.is_some():
+            headers["x-amz-fwd-header-Cache-Control"] = input.CacheControl.unwrap_or("")
+        if input.ContentDisposition.is_some():
+            auto qt0 = input.ContentDisposition.unwrap_or("")
+            headers["x-amz-fwd-header-Content-Disposition"] = qt0
+        if input.ContentEncoding.is_some():
+            auto qt1 = input.ContentEncoding.unwrap_or("")
+            headers["x-amz-fwd-header-Content-Encoding"] = qt1
+        if input.ContentLanguage.is_some():
+            auto qt2 = input.ContentLanguage.unwrap_or("")
+            headers["x-amz-fwd-header-Content-Language"] = qt2
+        if input.ContentLength.is_some():
+            headers["Content-Length"] = str(input.ContentLength.unwrap_or(0))
+        if input.ContentRange.is_some():
+            headers["x-amz-fwd-header-Content-Range"] = input.ContentRange.unwrap_or("")
+        if input.ContentType.is_some():
+            headers["x-amz-fwd-header-Content-Type"] = input.ContentType.unwrap_or("")
+        if input.ChecksumCRC32.is_some():
+            auto qt3 = input.ChecksumCRC32.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-crc32"] = qt3
+        if input.ChecksumCRC32C.is_some():
+            auto qt4 = input.ChecksumCRC32C.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-crc32c"] = qt4
+        if input.ChecksumCRC64NVME.is_some():
+            auto qt5 = input.ChecksumCRC64NVME.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-crc64nvme"] = qt5
+        if input.ChecksumSHA1.is_some():
+            auto qt6 = input.ChecksumSHA1.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-sha1"] = qt6
+        if input.ChecksumSHA256.is_some():
+            auto qt7 = input.ChecksumSHA256.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-sha256"] = qt7
+        if input.ChecksumSHA512.is_some():
+            auto qt8 = input.ChecksumSHA512.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-sha512"] = qt8
+        if input.ChecksumMD5.is_some():
+            auto qt9 = input.ChecksumMD5.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-md5"] = qt9
+        if input.ChecksumXXHASH64.is_some():
+            auto qt10 = input.ChecksumXXHASH64.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-xxhash64"] = qt10
+        if input.ChecksumXXHASH3.is_some():
+            auto qt11 = input.ChecksumXXHASH3.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-xxhash3"] = qt11
+        if input.ChecksumXXHASH128.is_some():
+            auto qt12 = input.ChecksumXXHASH128.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-checksum-xxhash128"] = qt12
+        if input.DeleteMarker.is_some():
+            auto qt13 = s3_bind_bool(input.DeleteMarker.unwrap_or(False))
+            headers["x-amz-fwd-header-x-amz-delete-marker"] = qt13
+        if input.ETag.is_some():
+            headers["x-amz-fwd-header-ETag"] = input.ETag.unwrap_or("")
+        if input.Expires.is_some():
+            headers["x-amz-fwd-header-Expires"] = input.Expires.unwrap_or("")
+        if input.Expiration.is_some():
+            auto qt14 = input.Expiration.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-expiration"] = qt14
+        if input.LastModified.is_some():
+            auto qt15 = datetime.strftime(input.LastModified.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-fwd-header-Last-Modified"] = qt15
+        if input.MissingMeta.is_some():
+            auto qt16 = str(input.MissingMeta.unwrap_or(0))
+            headers["x-amz-fwd-header-x-amz-missing-meta"] = qt16
+        if input.ObjectLockMode.is_some():
+            auto qt17 = input.ObjectLockMode.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-object-lock-mode"] = qt17
+        if input.ObjectLockLegalHoldStatus.is_some():
+            auto qt18 = input.ObjectLockLegalHoldStatus.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-object-lock-legal-hold"] = qt18
+        if input.ObjectLockRetainUntilDate.is_some():
+            auto qt19 = datetime.strftime(input.ObjectLockRetainUntilDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            headers["x-amz-fwd-header-x-amz-object-lock-retain-until-date"] = qt19
+        if input.PartsCount.is_some():
+            auto qt20 = str(input.PartsCount.unwrap_or(0))
+            headers["x-amz-fwd-header-x-amz-mp-parts-count"] = qt20
+        if input.ReplicationStatus.is_some():
+            auto qt21 = input.ReplicationStatus.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-replication-status"] = qt21
+        if input.RequestCharged.is_some():
+            auto qt22 = input.RequestCharged.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-request-charged"] = qt22
+        if input.Restore.is_some():
+            headers["x-amz-fwd-header-x-amz-restore"] = input.Restore.unwrap_or("")
+        if input.ServerSideEncryption.is_some():
+            auto qt23 = input.ServerSideEncryption.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-server-side-encryption"] = qt23
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt24 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-server-side-encryption-customer-algorithm"] = qt24
+        if input.SSEKMSKeyId.is_some():
+            auto qt25 = input.SSEKMSKeyId.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-server-side-encryption-aws-kms-key-id"] = qt25
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt26 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-server-side-encryption-customer-key-MD5"] = qt26
+        if input.StorageClass.is_some():
+            auto qt27 = input.StorageClass.unwrap_or("")
+            headers["x-amz-fwd-header-x-amz-storage-class"] = qt27
+        if input.TagCount.is_some():
+            auto qt28 = str(input.TagCount.unwrap_or(0))
+            headers["x-amz-fwd-header-x-amz-tagging-count"] = qt28
+        if input.VersionId.is_some():
+            headers["x-amz-fwd-header-x-amz-version-id"] = input.VersionId.unwrap_or("")
+        if input.BucketKeyEnabled.is_some():
+            auto qt29 = s3_bind_bool(input.BucketKeyEnabled.unwrap_or(False))
+            headers["x-amz-fwd-header-x-amz-server-side-encryption-bucket-key-enabled"] = qt29
+        auto b = binding.HttpBinding(method="POST", path_template="/WriteGetObjectResponse", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="x-amz-meta-", prefix_headers=input.Metadata.unwrap_or({}), payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), "application/octet-stream")
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 

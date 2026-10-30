@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 46 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 48 operations — 47 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   170 structs (85 @derive(Json)), 33 enums, 1 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1849,7 +1849,6 @@ def api_mediatailor_error_from_code(str code) -> MediaTailorError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   PutPlaybackConfiguration (document member `FunctionMapping: dict[EventName, str]` is not serializable)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2259,7 +2258,7 @@ struct MediaTailorClient:
     # ConfigureLogsForChannel  PUT /configureLogs/channel
     def configure_logs_for_channel(self, ConfigureLogsForChannelRequest input) -> str:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/configureLogs/channel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configureLogs/channel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelName\":" + api_mediatailor_json_str(input.ChannelName))
         list[str] e0 = []
@@ -2272,7 +2271,7 @@ struct MediaTailorClient:
     # ConfigureLogsForPlaybackConfiguration  PUT /configureLogs/playbackConfiguration
     def configure_logs_for_playback_configuration(self, ConfigureLogsForPlaybackConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/configureLogs/playbackConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configureLogs/playbackConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PercentEnabled\":" + str(input.PercentEnabled))
         parts.append("\"PlaybackConfigurationName\":" + api_mediatailor_json_str(input.PlaybackConfigurationName))
@@ -2296,7 +2295,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="POST", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FillerSlate.is_some():
             auto u0 = input.FillerSlate.unwrap()
@@ -2333,7 +2332,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["LiveSourceName"] = input.LiveSourceName
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.HttpPackageConfigurations:
@@ -2354,7 +2353,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["Name"] = input.Name
         labels["PlaybackConfigurationName"] = input.PlaybackConfigurationName
-        auto b = binding.HttpBinding(method="POST", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Consumption.is_some():
             auto u0 = input.Consumption.unwrap()
@@ -2386,7 +2385,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
         labels["ProgramName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="POST", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AdBreaks.is_some():
             auto u0 = input.AdBreaks.unwrap()
@@ -2422,7 +2421,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccessConfiguration.is_some():
             auto u0 = input.AccessConfiguration.unwrap()
@@ -2452,7 +2451,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
         labels["VodSourceName"] = input.VodSourceName
-        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.HttpPackageConfigurations:
@@ -2472,7 +2471,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteChannelPolicy  DELETE /channel/{ChannelName}/policy
@@ -2480,7 +2479,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteFunction  DELETE /function/{FunctionId}
@@ -2488,7 +2487,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionId"] = input.FunctionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteLiveSource  DELETE /sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}
@@ -2497,7 +2496,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["LiveSourceName"] = input.LiveSourceName
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeletePlaybackConfiguration  DELETE /playbackConfiguration/{Name}
@@ -2505,7 +2504,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/playbackConfiguration/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/playbackConfiguration/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeletePrefetchSchedule  DELETE /prefetchSchedule/{PlaybackConfigurationName}/{Name}
@@ -2514,7 +2513,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["Name"] = input.Name
         labels["PlaybackConfigurationName"] = input.PlaybackConfigurationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteProgram  DELETE /channel/{ChannelName}/program/{ProgramName}
@@ -2523,7 +2522,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
         labels["ProgramName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteSourceLocation  DELETE /sourceLocation/{SourceLocationName}
@@ -2531,7 +2530,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DeleteVodSource  DELETE /sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}
@@ -2540,7 +2539,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
         labels["VodSourceName"] = input.VodSourceName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DescribeChannel  GET /channel/{ChannelName}
@@ -2548,7 +2547,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DescribeLiveSource  GET /sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}
@@ -2557,7 +2556,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["LiveSourceName"] = input.LiveSourceName
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DescribeProgram  GET /channel/{ChannelName}/program/{ProgramName}
@@ -2566,7 +2565,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
         labels["ProgramName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DescribeSourceLocation  GET /sourceLocation/{SourceLocationName}
@@ -2574,7 +2573,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # DescribeVodSource  GET /sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}
@@ -2583,7 +2582,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
         labels["VodSourceName"] = input.VodSourceName
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # GetChannelPolicy  GET /channel/{ChannelName}/policy
@@ -2591,7 +2590,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # GetChannelSchedule  GET /channel/{ChannelName}/schedule
@@ -2608,7 +2607,7 @@ struct MediaTailorClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Audience.is_some():
             query["audience"] = input.Audience.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/schedule", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel/{ChannelName}/schedule", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # GetFunction  GET /function/{FunctionId}
@@ -2616,7 +2615,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionId"] = input.FunctionId
-        auto b = binding.HttpBinding(method="GET", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # GetPlaybackConfiguration  GET /playbackConfiguration/{Name}
@@ -2624,7 +2623,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/playbackConfiguration/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/playbackConfiguration/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # GetPrefetchSchedule  GET /prefetchSchedule/{PlaybackConfigurationName}/{Name}
@@ -2633,7 +2632,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["Name"] = input.Name
         labels["PlaybackConfigurationName"] = input.PlaybackConfigurationName
-        auto b = binding.HttpBinding(method="GET", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prefetchSchedule/{PlaybackConfigurationName}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListAlerts  GET /alerts
@@ -2645,7 +2644,7 @@ struct MediaTailorClient:
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
         query["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/alerts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/alerts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListChannels  GET /channels
@@ -2656,7 +2655,7 @@ struct MediaTailorClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListFunctions  GET /functions
@@ -2667,7 +2666,7 @@ struct MediaTailorClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/functions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/functions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListLiveSources  GET /sourceLocation/{SourceLocationName}/liveSources
@@ -2680,7 +2679,7 @@ struct MediaTailorClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/liveSources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/liveSources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListPlaybackConfigurations  GET /playbackConfigurations
@@ -2691,7 +2690,7 @@ struct MediaTailorClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/playbackConfigurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/playbackConfigurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListPrefetchSchedules  POST /prefetchSchedule/{PlaybackConfigurationName}
@@ -2699,7 +2698,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["PlaybackConfigurationName"] = input.PlaybackConfigurationName
-        auto b = binding.HttpBinding(method="POST", path_template="/prefetchSchedule/{PlaybackConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prefetchSchedule/{PlaybackConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPrefetchSchedulesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, ScheduleType=input.ScheduleType, StreamId=input.StreamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_mediatailor_service(), self.region, host)
@@ -2712,7 +2711,7 @@ struct MediaTailorClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -2721,7 +2720,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # ListVodSources  GET /sourceLocation/{SourceLocationName}/vodSources
@@ -2734,7 +2733,7 @@ struct MediaTailorClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/vodSources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sourceLocation/{SourceLocationName}/vodSources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # PutChannelPolicy  PUT /channel/{ChannelName}/policy
@@ -2742,7 +2741,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutChannelPolicyDocument(Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_mediatailor_service(), self.region, host)
@@ -2752,7 +2751,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionId"] = input.FunctionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/function/{FunctionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FunctionType\":" + input.FunctionType.to_json())
         if input.Description.is_some():
@@ -2790,7 +2789,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # StopChannel  PUT /channel/{ChannelName}/stop
@@ -2798,7 +2797,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -2807,7 +2806,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -2816,12 +2815,23 @@ struct MediaTailorClient:
         auto bp = restjson.rest_json_document(b, api_mediatailor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_mediatailor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: BadRequestException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, api_mediatailor_service(), self.region, host)
+
     # UpdateChannel  PUT /channel/{ChannelName}
     def update_channel(self, UpdateChannelRequest input) -> str:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FillerSlate.is_some():
             auto u0 = input.FillerSlate.unwrap()
@@ -2848,7 +2858,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["LiveSourceName"] = input.LiveSourceName
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}/liveSource/{LiveSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.HttpPackageConfigurations:
@@ -2863,7 +2873,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["ChannelName"] = input.ChannelName
         labels["ProgramName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel/{ChannelName}/program/{ProgramName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AdBreaks.is_some():
             auto u0 = input.AdBreaks.unwrap()
@@ -2886,7 +2896,7 @@ struct MediaTailorClient:
         auto host = endpoints.regional_host(api_mediatailor_service(), self.region)
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccessConfiguration.is_some():
             auto u0 = input.AccessConfiguration.unwrap()
@@ -2910,7 +2920,7 @@ struct MediaTailorClient:
         dict[str, str] labels = {}
         labels["SourceLocationName"] = input.SourceLocationName
         labels["VodSourceName"] = input.VodSourceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sourceLocation/{SourceLocationName}/vodSource/{VodSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.HttpPackageConfigurations:

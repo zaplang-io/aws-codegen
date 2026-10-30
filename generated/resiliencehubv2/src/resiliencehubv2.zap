@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 73 operations — 65 with a generated method,
-#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 73 operations — 69 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   285 structs (171 @derive(Json)), 50 enums, 7 error variants.
-#   17 paginators generated (7 paginated ops skipped) from paginators-1.json.
+#   20 paginators generated (4 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The resiliencehubv2 rest-json protocol: SigV4 service "resiliencehub" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -2649,24 +2650,17 @@ def resiliencehub_error_from_code(str code) -> resiliencehubv2Error:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListDependencies (httpQuery `queryRangeStartTime` has unsupported type DateTime)
 #   ListFailureModeAssessments (httpQuery `assessmentStatuses` has unsupported type list[AssessmentStatus])
 #   ListPolicyEvents (httpQuery `eventTypes` has unsupported type list[PolicyEventType])
-#   ListResources (httpQuery `resourceTypes` has unsupported type list[str])
 #   ListServiceEvents (httpQuery `eventTypes` has unsupported type list[ServiceEventType])
 #   ListSystemEvents (httpQuery `eventTypes` has unsupported type list[SystemEventType])
-#   ListTestRunEvents (httpQuery `startedAt` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   ListDependencies (operation not generated)
 #   ListFailureModeAssessments (operation not generated)
 #   ListPolicyEvents (operation not generated)
-#   ListResources (operation not generated)
 #   ListServiceEvents (operation not generated)
 #   ListSystemEvents (operation not generated)
-#   ListTestRunEvents (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -2973,6 +2967,12 @@ def service_report_configuration_to_json(ServiceReportConfiguration v) -> str:
     parts.append("\"reportOutputs\":" + resiliencehub_json_arr(e0))
     return resiliencehub_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def resiliencehub_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound resiliencehubv2 client: credentials + region, threaded into every operation.
 struct resiliencehubv2Client:
     core.Credentials creds
@@ -2982,7 +2982,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_assertion(self, CreateAssertionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-assertion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-assertion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAssertionDocument(serviceArn=input.serviceArn, text=input.text, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2991,7 +2991,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_input_source(self, CreateInputSourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-input-source", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-input-source", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
         parts.append("\"resourceConfiguration\":" + resource_configuration_to_json(input.resourceConfiguration))
@@ -3005,7 +3005,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_policy(self, CreatePolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + resiliencehub_json_str(input.name))
         if input.description.is_some():
@@ -3045,7 +3045,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_report(self, CreateReportRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-report", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-report", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateReportDocument(serviceArn=input.serviceArn, reportType=input.reportType, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3054,7 +3054,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_service(self, CreateServiceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + resiliencehub_json_str(input.name))
         if input.description.is_some():
@@ -3102,7 +3102,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_service_function(self, CreateServiceFunctionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service-function", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service-function", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateServiceFunctionDocument(name=input.name, serviceArn=input.serviceArn, description=input.description, criticality=input.criticality, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3111,7 +3111,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_service_function_resources(self, CreateServiceFunctionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service-function-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-service-function-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
         parts.append("\"serviceFunctionId\":" + resiliencehub_json_str(input.serviceFunctionId))
@@ -3126,7 +3126,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_system(self, CreateSystemRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-system", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-system", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + resiliencehub_json_str(input.name))
         if input.description.is_some():
@@ -3154,7 +3154,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_test(self, CreateTestRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-test", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
         parts.append("\"testTemplateArn\":" + resiliencehub_json_str(input.testTemplateArn))
@@ -3186,7 +3186,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_user_journey(self, CreateUserJourneyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-user-journey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/create-user-journey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUserJourneyDocument(systemArn=input.systemArn, name=input.name, description=input.description, policyArn=input.policyArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3195,7 +3195,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_assertion(self, DeleteAssertionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-assertion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-assertion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAssertionDocument(serviceArn=input.serviceArn, assertionId=input.assertionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3204,7 +3204,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_input_source(self, DeleteInputSourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-input-source", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-input-source", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteInputSourceDocument(serviceArn=input.serviceArn, inputSourceId=input.inputSourceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3213,7 +3213,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_policy(self, DeletePolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePolicyDocument(policyArn=input.policyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3222,7 +3222,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_service(self, DeleteServiceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-service", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-service", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteServiceDocument(serviceArn=input.serviceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3231,7 +3231,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_service_function(self, DeleteServiceFunctionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-function", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-function", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteServiceFunctionDocument(serviceArn=input.serviceArn, serviceFunctionId=input.serviceFunctionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3240,7 +3240,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_service_function_resources(self, DeleteServiceFunctionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-service-function-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-service-function-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
         parts.append("\"serviceFunctionId\":" + resiliencehub_json_str(input.serviceFunctionId))
@@ -3255,7 +3255,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_system(self, DeleteSystemRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-system", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-system", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSystemDocument(systemArn=input.systemArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3264,7 +3264,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_test(self, DeleteTestRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-test", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTestDocument(testId=input.testId, serviceArn=input.serviceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3273,7 +3273,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_test_sources(self, DeleteTestSourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-test-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-test-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"testId\":" + resiliencehub_json_str(input.testId))
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
@@ -3288,7 +3288,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_user_journey(self, DeleteUserJourneyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-user-journey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/delete-user-journey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteUserJourneyDocument(systemArn=input.systemArn, userJourneyId=input.userJourneyId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3299,7 +3299,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] query = {}
         query["serviceArn"] = input.serviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-dependency-insights", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-dependency-insights", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetFailureModeFinding  GET /v2/get-failure-mode-finding
@@ -3309,7 +3309,7 @@ struct resiliencehubv2Client:
         dict[str, str] query = {}
         query["findingId"] = input.findingId
         query["serviceArn"] = input.serviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-failure-mode-finding", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-failure-mode-finding", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetPolicy  GET /v2/get-policy
@@ -3318,7 +3318,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] query = {}
         query["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetService  GET /v2/get-service
@@ -3327,7 +3327,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] query = {}
         query["serviceArn"] = input.serviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-service", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-service", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetSystem  GET /v2/get-system
@@ -3336,7 +3336,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] query = {}
         query["systemArn"] = input.systemArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-system", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-system", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetTest  GET /v2/get-test
@@ -3346,7 +3346,7 @@ struct resiliencehubv2Client:
         dict[str, str] query = {}
         query["testId"] = input.testId
         query["serviceArn"] = input.serviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetTestRun  GET /v2/get-test-run
@@ -3356,7 +3356,7 @@ struct resiliencehubv2Client:
         dict[str, str] query = {}
         query["testRunId"] = input.testRunId
         query["serviceArn"] = input.serviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test-run", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test-run", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetTestTemplate  GET /v2/get-test-template
@@ -3365,7 +3365,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] query = {}
         query["testTemplateArn"] = input.testTemplateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test-template", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-test-template", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # GetUserJourney  GET /v2/get-user-journey
@@ -3375,14 +3375,14 @@ struct resiliencehubv2Client:
         dict[str, str] query = {}
         query["systemArn"] = input.systemArn
         query["userJourneyId"] = input.userJourneyId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-user-journey", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/get-user-journey", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ImportApp  POST /v2/import-app
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def import_app(self, ImportAppRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/import-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/import-app", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"v1AppArn\":" + resiliencehub_json_str(input.v1AppArn))
         if input.policyArn.is_some():
@@ -3416,7 +3416,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def import_policy(self, ImportPolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/import-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/import-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"v1PolicyArn\":" + resiliencehub_json_str(input.v1PolicyArn))
         if input.kmsKeyId.is_some():
@@ -3455,7 +3455,29 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-assertions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-assertions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
+
+    # ListDependencies  GET /v2/list-dependencies
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def list_dependencies(self, ListDependenciesRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] query = {}
+        if input.serviceArn.is_some():
+            query["serviceArn"] = input.serviceArn.unwrap_or("")
+        if input.queryRangeStartTime.is_some():
+            auto qt0 = datetime.strftime(input.queryRangeStartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["queryRangeStartTime"] = qt0
+        if input.queryRangeEndTime.is_some():
+            auto qt1 = datetime.strftime(input.queryRangeEndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["queryRangeEndTime"] = qt1
+        if input.queryRangeGranularity.is_some():
+            query["queryRangeGranularity"] = input.queryRangeGranularity.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-dependencies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListFailureModeFindings  GET /v2/list-failure-mode-findings
@@ -3474,7 +3496,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-failure-mode-findings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-failure-mode-findings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListInputSources  GET /v2/list-input-sources
@@ -3489,7 +3511,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-input-sources", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-input-sources", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListPolicies  GET /v2/list-policies
@@ -3503,7 +3525,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListReports  GET /v2/list-reports
@@ -3521,7 +3543,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-reports", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-reports", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListResolvedTestRunTargetResources  GET /v2/test-runs/{testRunId}/resolved-target-resources
@@ -3536,7 +3558,29 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/resolved-target-resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/resolved-target-resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
+
+    # ListResources  GET /v2/list-resources
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def list_resources(self, ListResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] query = {}
+        query["serviceArn"] = input.serviceArn
+        if input.serviceFunctionId.is_some():
+            query["serviceFunctionId"] = input.serviceFunctionId.unwrap_or("")
+        if input.awsRegion.is_some():
+            query["awsRegion"] = input.awsRegion.unwrap_or("")
+        if input.billable.is_some():
+            query["billable"] = resiliencehub_bind_bool(input.billable.unwrap_or(False))
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.resourceTypes.is_some():
+            multi_query["resourceTypes"] = input.resourceTypes.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-resources", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListServiceFunctions  GET /v2/list-functions
@@ -3549,7 +3593,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-functions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-functions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListServiceTopologyEdges  GET /v2/list-service-topology-edges
@@ -3562,7 +3606,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-service-topology-edges", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-service-topology-edges", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListServices  GET /v2/list-services
@@ -3586,7 +3630,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-services", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-services", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListSystems  GET /v2/list-systems
@@ -3600,7 +3644,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-systems", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-systems", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTagsForResource  GET /v2/tags/{resourceArn}
@@ -3609,7 +3653,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestRunDependencies  GET /v2/test-runs/{testRunId}/dependencies
@@ -3624,7 +3668,28 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/dependencies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/dependencies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
+
+    # ListTestRunEvents  GET /v2/test-runs/{testRunId}/events
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def list_test_run_events(self, ListTestRunEventsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["testRunId"] = input.testRunId
+        dict[str, str] query = {}
+        query["serviceArn"] = input.serviceArn
+        if input.startedAt.is_some():
+            auto qt0 = datetime.strftime(input.startedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startedAt"] = qt0
+        if input.endedAt.is_some():
+            auto qt1 = datetime.strftime(input.endedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endedAt"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestRunSourceEvents  GET /v2/test-runs/{testRunId}/source-events
@@ -3640,7 +3705,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/source-events", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/source-events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestRunSources  GET /v2/test-runs/{testRunId}/sources
@@ -3657,7 +3722,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/sources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/test-runs/{testRunId}/sources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestRuns  GET /v2/list-test-runs
@@ -3672,7 +3737,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-test-runs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-test-runs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestSources  GET /v2/tests/{testId}/sources
@@ -3689,14 +3754,14 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/tests/{testId}/sources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/tests/{testId}/sources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestTemplates  GET /v2/list-test-templates
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_test_templates(self) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-test-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-test-templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTests  GET /v2/list-tests
@@ -3709,7 +3774,7 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-tests", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-tests", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListUserJourneys  GET /v2/list-user-journeys
@@ -3722,14 +3787,14 @@ struct resiliencehubv2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-user-journeys", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/list-user-journeys", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # PutTestSources  POST /v2/put-test-sources
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def put_test_sources(self, PutTestSourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/put-test-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/put-test-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"testId\":" + resiliencehub_json_str(input.testId))
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
@@ -3744,7 +3809,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_dependency_insights(self, StartDependencyInsightsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-dependency-insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-dependency-insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDependencyInsightsDocument(serviceArn=input.serviceArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3753,7 +3818,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_failure_mode_assessment(self, StartFailureModeAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-failure-mode-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-failure-mode-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartFailureModeAssessmentDocument(serviceArn=input.serviceArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3762,7 +3827,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def start_test_run(self, StartTestRunRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-test-run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/start-test-run", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTestRunDocument(testId=input.testId, serviceArn=input.serviceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3771,7 +3836,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def stop_test_run(self, StopTestRunRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/stop-test-run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/stop-test-run", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopTestRunDocument(testRunId=input.testRunId, serviceArn=input.serviceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3782,7 +3847,7 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -3791,11 +3856,22 @@ struct resiliencehubv2Client:
         auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
+    # UntagResource  DELETE /v2/tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
+
     # UpdateAssertion  POST /v2/update-assertion
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_assertion(self, UpdateAssertionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-assertion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-assertion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssertionDocument(serviceArn=input.serviceArn, assertionId=input.assertionId, text=input.text)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3804,7 +3880,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_dependency(self, UpdateDependencyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-dependency", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-dependency", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDependencyDocument(serviceArn=input.serviceArn, dependencyId=input.dependencyId, criticality=input.criticality, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3813,7 +3889,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_failure_mode_finding(self, UpdateFailureModeFindingRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-failure-mode-finding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-failure-mode-finding", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFailureModeFindingDocument(findingId=input.findingId, status=input.status, serviceArn=input.serviceArn, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3822,7 +3898,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_policy(self, UpdatePolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePolicyDocument(policyArn=input.policyArn, description=input.description, availabilitySlo=input.availabilitySlo, multiAz=input.multiAz, multiRegion=input.multiRegion, dataRecovery=input.dataRecovery, sharingEnabled=input.sharingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3831,7 +3907,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def update_service(self, UpdateServiceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-service", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-service", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
         if input.description.is_some():
@@ -3871,7 +3947,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_service_function(self, UpdateServiceFunctionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-function", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-function", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceFunctionDocument(serviceArn=input.serviceArn, serviceFunctionId=input.serviceFunctionId, name=input.name, description=input.description, criticality=input.criticality)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3880,7 +3956,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_system(self, UpdateSystemRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-system", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-system", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSystemDocument(systemArn=input.systemArn, description=input.description, sharingEnabled=input.sharingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3889,7 +3965,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_test(self, UpdateTestRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-test", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"testId\":" + resiliencehub_json_str(input.testId))
         parts.append("\"serviceArn\":" + resiliencehub_json_str(input.serviceArn))
@@ -3921,7 +3997,7 @@ struct resiliencehubv2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_user_journey(self, UpdateUserJourneyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-user-journey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/update-user-journey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserJourneyDocument(systemArn=input.systemArn, userJourneyId=input.userJourneyId, name=input.name, description=input.description, policyArn=input.policyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -3932,6 +4008,19 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         while True:
             auto raw = self.list_assertions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDependencies — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: dependencySummaries).
+    def paginate_list_dependencies(self, ListDependenciesRequest input):
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        while True:
+            auto raw = self.list_dependencies(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -4004,6 +4093,19 @@ struct resiliencehubv2Client:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListResources — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: serviceResources).
+    def paginate_list_resources(self, ListResourcesRequest input):
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        while True:
+            auto raw = self.list_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListServiceFunctions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: serviceFunctions).
     def paginate_list_service_functions(self, ListServiceFunctionsRequest input):
@@ -4062,6 +4164,19 @@ struct resiliencehubv2Client:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         while True:
             auto raw = self.list_test_run_dependencies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTestRunEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: events).
+    def paginate_list_test_run_events(self, ListTestRunEventsRequest input):
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        while True:
+            auto raw = self.list_test_run_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

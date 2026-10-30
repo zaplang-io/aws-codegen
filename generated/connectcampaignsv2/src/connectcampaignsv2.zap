@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 33 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 37 operations — 34 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (85 @derive(Json)), 16 enums, 9 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1027,7 +1027,6 @@ def connect_campaigns_error_from_code(str code) -> ConnectCampaignsV2Error:
 # document member, or an unsupported httpPayload):
 #   CreateCampaign (document member `communicationTimeConfig: CommunicationTimeConfig` is not serializable)
 #   PutConnectInstanceIntegration (document member `integrationConfig: IntegrationConfig` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateCampaignCommunicationTime (document member `communicationTimeConfig: CommunicationTimeConfig` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1314,7 +1313,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteCampaignChannelSubtypeConfig  DELETE /v2/campaigns/{id}/channel-subtype-config
@@ -1325,7 +1324,7 @@ struct ConnectCampaignsV2Client:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["channelSubtype"] = input.channelSubtype
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/channel-subtype-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/channel-subtype-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteCampaignCommunicationLimits  DELETE /v2/campaigns/{id}/communication-limits
@@ -1336,7 +1335,7 @@ struct ConnectCampaignsV2Client:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["config"] = input.config
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/communication-limits", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/communication-limits", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteCampaignCommunicationTime  DELETE /v2/campaigns/{id}/communication-time
@@ -1347,7 +1346,7 @@ struct ConnectCampaignsV2Client:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["config"] = input.config
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/communication-time", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/communication-time", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteCampaignEntryLimits  DELETE /v2/campaigns/{id}/entry-limits
@@ -1356,7 +1355,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/entry-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/campaigns/{id}/entry-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteConnectInstanceConfig  DELETE /v2/connect-instance/{connectInstanceId}/config
@@ -1368,7 +1367,7 @@ struct ConnectCampaignsV2Client:
         dict[str, str] query = {}
         if input.campaignDeletionPolicy.is_some():
             query["campaignDeletionPolicy"] = input.campaignDeletionPolicy.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/connect-instance/{connectInstanceId}/config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/connect-instance/{connectInstanceId}/config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DeleteConnectInstanceIntegration  POST /v2/connect-instance/{connectInstanceId}/integrations/delete
@@ -1377,7 +1376,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/connect-instance/{connectInstanceId}/integrations/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/connect-instance/{connectInstanceId}/integrations/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConnectInstanceIntegrationDocument(integrationIdentifier=input.integrationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1388,7 +1387,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # DescribeCampaign  GET /v2/campaigns/{id}
@@ -1397,7 +1396,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/campaigns/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/campaigns/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # GetCampaignState  GET /v2/campaigns/{id}/state
@@ -1406,14 +1405,14 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/campaigns/{id}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/campaigns/{id}/state", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # GetCampaignStateBatch  POST /v2/campaigns-state
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_campaign_state_batch(self, GetCampaignStateBatchRequest input) -> str:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns-state", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns-state", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.campaignIds:
@@ -1428,7 +1427,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # GetInstanceCommunicationLimits  GET /v2/connect-instance/{connectInstanceId}/communication-limits
@@ -1437,7 +1436,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/communication-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/communication-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # GetInstanceOnboardingJobStatus  GET /v2/connect-instance/{connectInstanceId}/onboarding
@@ -1446,14 +1445,14 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # ListCampaigns  POST /v2/campaigns-summary
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_campaigns(self, ListCampaignsRequest input) -> str:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns-summary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns-summary", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCampaignsDocument(maxResults=input.maxResults, nextToken=input.nextToken, filters=input.filters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1469,7 +1468,7 @@ struct ConnectCampaignsV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/integrations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/connect-instance/{connectInstanceId}/integrations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # ListTagsForResource  GET /v2/tags/{arn}
@@ -1478,7 +1477,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # PauseCampaign  POST /v2/campaigns/{id}/pause
@@ -1487,7 +1486,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/pause", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/pause", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # PutInstanceCommunicationLimits  PUT /v2/connect-instance/{connectInstanceId}/communication-limits
@@ -1496,7 +1495,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/connect-instance/{connectInstanceId}/communication-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/connect-instance/{connectInstanceId}/communication-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"communicationLimitsConfig\":" + instance_communication_limits_config_to_json(input.communicationLimitsConfig))
         auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
@@ -1508,7 +1507,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/outbound-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/outbound-requests", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.outboundRequests:
@@ -1523,7 +1522,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/profile-outbound-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/campaigns/{id}/profile-outbound-requests", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.profileOutboundRequests:
@@ -1538,7 +1537,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/resume", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/resume", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # StartCampaign  POST /v2/campaigns/{id}/start
@@ -1547,7 +1546,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # StartInstanceOnboardingJob  PUT /v2/connect-instance/{connectInstanceId}/onboarding
@@ -1556,7 +1555,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["connectInstanceId"] = input.connectInstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/connect-instance/{connectInstanceId}/onboarding", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartInstanceOnboardingJobDocument(encryptionConfig=input.encryptionConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1567,7 +1566,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
 
     # TagResource  POST /v2/tags/{arn}
@@ -1576,7 +1575,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1585,13 +1584,24 @@ struct ConnectCampaignsV2Client:
         auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
 
+    # UntagResource  DELETE /v2/tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, connect_campaigns_service(), self.region, host)
+
     # UpdateCampaignChannelSubtypeConfig  POST /v2/campaigns/{id}/channel-subtype-config
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_campaign_channel_subtype_config(self, UpdateCampaignChannelSubtypeConfigRequest input) -> str:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/channel-subtype-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/channel-subtype-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"channelSubtypeConfig\":" + channel_subtype_config_to_json(input.channelSubtypeConfig))
         auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
@@ -1603,7 +1613,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/communication-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/communication-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"communicationLimitsOverride\":" + communication_limits_config_to_json(input.communicationLimitsOverride))
         auto bp = restjson.rest_json_document(b, connect_campaigns_json_obj(parts))
@@ -1615,7 +1625,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/entry-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/entry-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCampaignEntryLimitsDocument(entryLimitsConfig=input.entryLimitsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1626,7 +1636,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/flow", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/flow", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCampaignFlowAssociationDocument(connectCampaignFlowArn=input.connectCampaignFlowArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1637,7 +1647,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCampaignNameDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1648,7 +1658,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/schedule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/schedule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCampaignScheduleDocument(schedule=input.schedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)
@@ -1659,7 +1669,7 @@ struct ConnectCampaignsV2Client:
         auto host = endpoints.regional_host(connect_campaigns_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/source", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/campaigns/{id}/source", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCampaignSourceDocument(source=input.source)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_campaigns_service(), self.region, host)

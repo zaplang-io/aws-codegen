@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 63 operations — 57 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 63 operations — 59 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   189 structs (100 @derive(Json)), 42 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The resiliencehub rest-json protocol: SigV4 service "resiliencehub" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1923,9 +1924,7 @@ def resiliencehub_error_from_code(str code) -> resiliencehubError:
 # document member, or an unsupported httpPayload):
 #   CreateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable)
 #   ListAppAssessments (httpQuery `assessmentStatus` has unsupported type list[AssessmentStatus])
-#   ListApps (httpQuery `fromLastAssessmentTime` has unsupported type DateTime)
-#   ListRecommendationTemplates (httpQuery `reverseOrder` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+#   ListRecommendationTemplates (httpQuery `status` has unsupported type list[RecommendationTemplateStatus])
 #   UpdateResiliencyPolicy (document member `policy: dict[DisruptionType, FailurePolicy]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -2235,6 +2234,12 @@ def permission_model_to_json(PermissionModel v) -> str:
     parts.append("\"type\":" + v.type.to_json())
     return resiliencehub_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def resiliencehub_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound resiliencehub client: credentials + region, threaded into every operation.
 struct resiliencehubClient:
     core.Credentials creds
@@ -2244,7 +2249,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def accept_resource_grouping_recommendations(self, AcceptResourceGroupingRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accept-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accept-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         list[str] e0 = []
@@ -2258,7 +2263,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def add_draft_app_version_resource_mappings(self, AddDraftAppVersionResourceMappingsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/add-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/add-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         list[str] e0 = []
@@ -2272,7 +2277,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_update_recommendation_status(self, BatchUpdateRecommendationStatusRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/batch-update-recommendation-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-update-recommendation-status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         list[str] e0 = []
@@ -2286,7 +2291,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_app(self, CreateAppRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assessmentSchedule.is_some():
             auto u0 = input.assessmentSchedule.unwrap()
@@ -2326,7 +2331,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_app_version_app_component(self, CreateAppVersionAppComponentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-app-component", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.additionalInfo.is_some():
             auto u0 = input.additionalInfo.unwrap()
@@ -2353,7 +2358,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_app_version_resource(self, CreateAppVersionResourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-app-version-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.additionalInfo.is_some():
             auto u0 = input.additionalInfo.unwrap()
@@ -2391,7 +2396,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_recommendation_template(self, CreateRecommendationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-recommendation-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-recommendation-template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"assessmentArn\":" + resiliencehub_json_str(input.assessmentArn))
         if input.bucketName.is_some():
@@ -2429,7 +2434,7 @@ struct resiliencehubClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_app(self, DeleteAppRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-app", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAppDocument(appArn=input.appArn, clientToken=input.clientToken, forceDelete=input.forceDelete)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2438,7 +2443,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_app_assessment(self, DeleteAppAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAppAssessmentDocument(assessmentArn=input.assessmentArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2447,7 +2452,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_app_input_source(self, DeleteAppInputSourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-input-source", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-input-source", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAppInputSourceDocument(appArn=input.appArn, clientToken=input.clientToken, eksSourceClusterNamespace=input.eksSourceClusterNamespace, sourceArn=input.sourceArn, terraformSource=input.terraformSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2456,7 +2461,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_app_version_app_component(self, DeleteAppVersionAppComponentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-version-app-component", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAppVersionAppComponentDocument(appArn=input.appArn, clientToken=input.clientToken, id=input.id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2465,7 +2470,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_app_version_resource(self, DeleteAppVersionResourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-app-version-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAppVersionResourceDocument(appArn=input.appArn, awsAccountId=input.awsAccountId, awsRegion=input.awsRegion, clientToken=input.clientToken, logicalResourceId=input.logicalResourceId, physicalResourceId=input.physicalResourceId, resourceName=input.resourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2474,7 +2479,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_recommendation_template(self, DeleteRecommendationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-recommendation-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-recommendation-template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecommendationTemplateDocument(clientToken=input.clientToken, recommendationTemplateArn=input.recommendationTemplateArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2483,7 +2488,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_resiliency_policy(self, DeleteResiliencyPolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-resiliency-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-resiliency-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResiliencyPolicyDocument(clientToken=input.clientToken, policyArn=input.policyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2492,7 +2497,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app(self, DescribeAppRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppDocument(appArn=input.appArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2501,7 +2506,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_assessment(self, DescribeAppAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppAssessmentDocument(assessmentArn=input.assessmentArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2510,7 +2515,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_version(self, DescribeAppVersionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppVersionDocument(appArn=input.appArn, appVersion=input.appVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2519,7 +2524,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_version_app_component(self, DescribeAppVersionAppComponentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-app-component", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppVersionAppComponentDocument(appArn=input.appArn, appVersion=input.appVersion, id=input.id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2528,7 +2533,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_version_resource(self, DescribeAppVersionResourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppVersionResourceDocument(appArn=input.appArn, appVersion=input.appVersion, awsAccountId=input.awsAccountId, awsRegion=input.awsRegion, logicalResourceId=input.logicalResourceId, physicalResourceId=input.physicalResourceId, resourceName=input.resourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2537,7 +2542,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_version_resources_resolution_status(self, DescribeAppVersionResourcesResolutionStatusRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-resources-resolution-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-resources-resolution-status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppVersionResourcesResolutionStatusDocument(appArn=input.appArn, appVersion=input.appVersion, resolutionId=input.resolutionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2546,7 +2551,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_app_version_template(self, DescribeAppVersionTemplateRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-app-version-template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAppVersionTemplateDocument(appArn=input.appArn, appVersion=input.appVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2555,7 +2560,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_draft_app_version_resources_import_status(self, DescribeDraftAppVersionResourcesImportStatusRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-draft-app-version-resources-import-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-draft-app-version-resources-import-status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeDraftAppVersionResourcesImportStatusDocument(appArn=input.appArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2564,7 +2569,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_metrics_export(self, DescribeMetricsExportRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-metrics-export", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-metrics-export", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeMetricsExportDocument(metricsExportId=input.metricsExportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2573,7 +2578,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_resiliency_policy(self, DescribeResiliencyPolicyRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-resiliency-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-resiliency-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeResiliencyPolicyDocument(policyArn=input.policyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2582,7 +2587,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_resource_grouping_recommendation_task(self, DescribeResourceGroupingRecommendationTaskRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-resource-grouping-recommendation-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-resource-grouping-recommendation-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeResourceGroupingRecommendationTaskDocument(appArn=input.appArn, groupingId=input.groupingId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2591,7 +2596,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def import_resources_to_draft_app_version(self, ImportResourcesToDraftAppVersionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/import-resources-to-draft-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/import-resources-to-draft-app-version", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         if input.eksSources.is_some():
@@ -2622,7 +2627,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_alarm_recommendations(self, ListAlarmRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-alarm-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-alarm-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAlarmRecommendationsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2631,7 +2636,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_app_assessment_compliance_drifts(self, ListAppAssessmentComplianceDriftsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-assessment-compliance-drifts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-assessment-compliance-drifts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppAssessmentComplianceDriftsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2640,7 +2645,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_app_assessment_resource_drifts(self, ListAppAssessmentResourceDriftsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-assessment-resource-drifts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-assessment-resource-drifts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppAssessmentResourceDriftsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2649,7 +2654,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_component_compliances(self, ListAppComponentCompliancesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-component-compliances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-component-compliances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppComponentCompliancesDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2658,7 +2663,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_component_recommendations(self, ListAppComponentRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-component-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-component-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppComponentRecommendationsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2667,7 +2672,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_input_sources(self, ListAppInputSourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-input-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-input-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppInputSourcesDocument(appArn=input.appArn, appVersion=input.appVersion, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2676,7 +2681,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_version_app_components(self, ListAppVersionAppComponentsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-app-components", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-app-components", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppVersionAppComponentsDocument(appArn=input.appArn, appVersion=input.appVersion, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2685,7 +2690,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_version_resource_mappings(self, ListAppVersionResourceMappingsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppVersionResourceMappingsDocument(appArn=input.appArn, appVersion=input.appVersion, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2694,7 +2699,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_app_version_resources(self, ListAppVersionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-version-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppVersionResourcesDocument(appArn=input.appArn, appVersion=input.appVersion, maxResults=input.maxResults, nextToken=input.nextToken, resolutionId=input.resolutionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2703,16 +2708,43 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def list_app_versions(self, ListAppVersionsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-app-versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-app-versions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppVersionsDocument(appArn=input.appArn, endTime=input.endTime, maxResults=input.maxResults, nextToken=input.nextToken, startTime=input.startTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
+
+    # ListApps  GET /list-apps
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_apps(self, ListAppsRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] query = {}
+        if input.appArn.is_some():
+            query["appArn"] = input.appArn.unwrap_or("")
+        if input.awsApplicationArn.is_some():
+            query["awsApplicationArn"] = input.awsApplicationArn.unwrap_or("")
+        if input.fromLastAssessmentTime.is_some():
+            auto qt0 = datetime.strftime(input.fromLastAssessmentTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["fromLastAssessmentTime"] = qt0
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.name.is_some():
+            query["name"] = input.name.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.reverseOrder.is_some():
+            auto qt1 = resiliencehub_bind_bool(input.reverseOrder.unwrap_or(False))
+            query["reverseOrder"] = qt1
+        if input.toLastAssessmentTime.is_some():
+            auto qt2 = datetime.strftime(input.toLastAssessmentTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["toLastAssessmentTime"] = qt2
+        auto b = binding.HttpBinding(method="GET", path_template="/list-apps", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListMetrics  POST /list-metrics
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_metrics(self, ListMetricsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-metrics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.conditions.is_some():
             auto u0 = input.conditions.unwrap()
@@ -2755,7 +2787,7 @@ struct resiliencehubClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.policyName.is_some():
             query["policyName"] = input.policyName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-resiliency-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-resiliency-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListResourceGroupingRecommendations  GET /list-resource-grouping-recommendations
@@ -2769,14 +2801,14 @@ struct resiliencehubClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-resource-grouping-recommendations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-resource-grouping-recommendations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListSopRecommendations  POST /list-sop-recommendations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_sop_recommendations(self, ListSopRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-sop-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-sop-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSopRecommendationsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2790,7 +2822,7 @@ struct resiliencehubClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-suggested-resiliency-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-suggested-resiliency-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2799,14 +2831,14 @@ struct resiliencehubClient:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
 
     # ListTestRecommendations  POST /list-test-recommendations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_test_recommendations(self, ListTestRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-test-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-test-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTestRecommendationsDocument(assessmentArn=input.assessmentArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2815,7 +2847,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_unsupported_app_version_resources(self, ListUnsupportedAppVersionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-unsupported-app-version-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-unsupported-app-version-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListUnsupportedAppVersionResourcesDocument(appArn=input.appArn, appVersion=input.appVersion, maxResults=input.maxResults, nextToken=input.nextToken, resolutionId=input.resolutionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2824,7 +2856,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def publish_app_version(self, PublishAppVersionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/publish-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/publish-app-version", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishAppVersionDocument(appArn=input.appArn, versionName=input.versionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2833,7 +2865,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_draft_app_version_template(self, PutDraftAppVersionTemplateRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-draft-app-version-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-draft-app-version-template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDraftAppVersionTemplateDocument(appArn=input.appArn, appTemplateBody=input.appTemplateBody)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2842,7 +2874,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reject_resource_grouping_recommendations(self, RejectResourceGroupingRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reject-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reject-resource-grouping-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         list[str] e0 = []
@@ -2856,7 +2888,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def remove_draft_app_version_resource_mappings(self, RemoveDraftAppVersionResourceMappingsRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/remove-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/remove-draft-app-version-resource-mappings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         if input.appRegistryAppNames.is_some():
@@ -2902,7 +2934,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def resolve_app_version_resources(self, ResolveAppVersionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resolve-app-version-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resolve-app-version-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResolveAppVersionResourcesDocument(appArn=input.appArn, appVersion=input.appVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2911,7 +2943,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_app_assessment(self, StartAppAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-app-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-app-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         parts.append("\"appVersion\":" + resiliencehub_json_str(input.appVersion))
@@ -2932,7 +2964,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_metrics_export(self, StartMetricsExportRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-metrics-export", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-metrics-export", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMetricsExportDocument(bucketName=input.bucketName, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2941,7 +2973,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_resource_grouping_recommendation_task(self, StartResourceGroupingRecommendationTaskRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-resource-grouping-recommendation-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-resource-grouping-recommendation-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartResourceGroupingRecommendationTaskDocument(appArn=input.appArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
@@ -2952,7 +2984,7 @@ struct resiliencehubClient:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2961,11 +2993,22 @@ struct resiliencehubClient:
         auto bp = restjson.rest_json_document(b, resiliencehub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resiliencehub_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(resiliencehub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resiliencehub_service(), self.region, host)
+
     # UpdateApp  POST /update-app
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_app(self, UpdateAppRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-app", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appArn\":" + resiliencehub_json_str(input.appArn))
         if input.assessmentSchedule.is_some():
@@ -2996,7 +3039,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_app_version(self, UpdateAppVersionRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.additionalInfo.is_some():
             auto u0 = input.additionalInfo.unwrap()
@@ -3015,7 +3058,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_app_version_app_component(self, UpdateAppVersionAppComponentRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-app-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-app-component", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.additionalInfo.is_some():
             auto u0 = input.additionalInfo.unwrap()
@@ -3041,7 +3084,7 @@ struct resiliencehubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_app_version_resource(self, UpdateAppVersionResourceRequest input) -> str:
         auto host = endpoints.regional_host(resiliencehub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-app-version-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.additionalInfo.is_some():
             auto u0 = input.additionalInfo.unwrap()

@@ -1112,7 +1112,7 @@ struct Payment_Cryptography_DataClient:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
         dict[str, str] labels = {}
         labels["KeyIdentifier"] = input.KeyIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/keys/{KeyIdentifier}/decrypt", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/keys/{KeyIdentifier}/decrypt", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DecryptDataDocument(CipherText=input.CipherText, DecryptionAttributes=input.DecryptionAttributes, WrappedKey=input.WrappedKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1123,7 +1123,7 @@ struct Payment_Cryptography_DataClient:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
         dict[str, str] labels = {}
         labels["KeyIdentifier"] = input.KeyIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/keys/{KeyIdentifier}/encrypt", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/keys/{KeyIdentifier}/encrypt", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EncryptDataDocument(PlainText=input.PlainText, EncryptionAttributes=input.EncryptionAttributes, WrappedKey=input.WrappedKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1132,7 +1132,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_as2805_kek_validation(self, GenerateAs2805KekValidationInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/as2805kekvalidation/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/as2805kekvalidation/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateAs2805KekValidationDocument(KeyIdentifier=input.KeyIdentifier, KekValidationType=input.KekValidationType, RandomKeySendVariantMask=input.RandomKeySendVariantMask)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1141,7 +1141,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_auth_request_cryptogram(self, GenerateAuthRequestCryptogramInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cryptogram/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cryptogram/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateAuthRequestCryptogramDocument(KeyIdentifier=input.KeyIdentifier, TransactionData=input.TransactionData, MajorKeyDerivationMode=input.MajorKeyDerivationMode, SessionKeyDerivationAttributes=input.SessionKeyDerivationAttributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1150,7 +1150,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_card_validation_data(self, GenerateCardValidationDataInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cardvalidationdata/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cardvalidationdata/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateCardValidationDataDocument(KeyIdentifier=input.KeyIdentifier, PrimaryAccountNumber=input.PrimaryAccountNumber, GenerationAttributes=input.GenerationAttributes, ValidationDataLength=input.ValidationDataLength)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1159,7 +1159,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_mac(self, GenerateMacInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/mac/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/mac/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateMacDocument(KeyIdentifier=input.KeyIdentifier, MessageData=input.MessageData, GenerationAttributes=input.GenerationAttributes, MacLength=input.MacLength)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1168,7 +1168,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_mac_emv_pin_change(self, GenerateMacEmvPinChangeInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/macemvpinchange/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/macemvpinchange/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateMacEmvPinChangeDocument(NewPinPekIdentifier=input.NewPinPekIdentifier, NewEncryptedPinBlock=input.NewEncryptedPinBlock, PinBlockFormat=input.PinBlockFormat, SecureMessagingIntegrityKeyIdentifier=input.SecureMessagingIntegrityKeyIdentifier, SecureMessagingConfidentialityKeyIdentifier=input.SecureMessagingConfidentialityKeyIdentifier, MessageData=input.MessageData, DerivationMethodAttributes=input.DerivationMethodAttributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1177,7 +1177,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def generate_pin_data(self, GeneratePinDataInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/pindata/generate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/pindata/generate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GeneratePinDataDocument(GenerationKeyIdentifier=input.GenerationKeyIdentifier, EncryptionKeyIdentifier=input.EncryptionKeyIdentifier, GenerationAttributes=input.GenerationAttributes, PinDataLength=input.PinDataLength, PrimaryAccountNumber=input.PrimaryAccountNumber, PinBlockFormat=input.PinBlockFormat, EncryptionWrappedKey=input.EncryptionWrappedKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1188,7 +1188,7 @@ struct Payment_Cryptography_DataClient:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
         dict[str, str] labels = {}
         labels["IncomingKeyIdentifier"] = input.IncomingKeyIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/keys/{IncomingKeyIdentifier}/reencrypt", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/keys/{IncomingKeyIdentifier}/reencrypt", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReEncryptDataDocument(OutgoingKeyIdentifier=input.OutgoingKeyIdentifier, CipherText=input.CipherText, IncomingEncryptionAttributes=input.IncomingEncryptionAttributes, OutgoingEncryptionAttributes=input.OutgoingEncryptionAttributes, IncomingWrappedKey=input.IncomingWrappedKey, OutgoingWrappedKey=input.OutgoingWrappedKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1197,7 +1197,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def translate_key_material(self, TranslateKeyMaterialInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/keymaterial/translate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/keymaterial/translate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TranslateKeyMaterialDocument(IncomingKeyMaterial=input.IncomingKeyMaterial, OutgoingKeyMaterial=input.OutgoingKeyMaterial, KeyCheckValueAlgorithm=input.KeyCheckValueAlgorithm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1206,7 +1206,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def translate_pin_data(self, TranslatePinDataInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/pindata/translate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/pindata/translate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TranslatePinDataDocument(IncomingKeyIdentifier=input.IncomingKeyIdentifier, OutgoingKeyIdentifier=input.OutgoingKeyIdentifier, IncomingTranslationAttributes=input.IncomingTranslationAttributes, OutgoingTranslationAttributes=input.OutgoingTranslationAttributes, EncryptedPinBlock=input.EncryptedPinBlock, IncomingDukptAttributes=input.IncomingDukptAttributes, OutgoingDukptAttributes=input.OutgoingDukptAttributes, IncomingWrappedKey=input.IncomingWrappedKey, OutgoingWrappedKey=input.OutgoingWrappedKey, IncomingAs2805Attributes=input.IncomingAs2805Attributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1215,7 +1215,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException, VerificationFailedException
     def verify_auth_request_cryptogram(self, VerifyAuthRequestCryptogramInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cryptogram/verify", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cryptogram/verify", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyAuthRequestCryptogramDocument(KeyIdentifier=input.KeyIdentifier, TransactionData=input.TransactionData, AuthRequestCryptogram=input.AuthRequestCryptogram, MajorKeyDerivationMode=input.MajorKeyDerivationMode, SessionKeyDerivationAttributes=input.SessionKeyDerivationAttributes, AuthResponseAttributes=input.AuthResponseAttributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1224,7 +1224,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException, VerificationFailedException
     def verify_card_validation_data(self, VerifyCardValidationDataInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cardvalidationdata/verify", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cardvalidationdata/verify", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyCardValidationDataDocument(KeyIdentifier=input.KeyIdentifier, PrimaryAccountNumber=input.PrimaryAccountNumber, VerificationAttributes=input.VerificationAttributes, ValidationData=input.ValidationData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1233,7 +1233,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException, VerificationFailedException
     def verify_mac(self, VerifyMacInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/mac/verify", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/mac/verify", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyMacDocument(KeyIdentifier=input.KeyIdentifier, MessageData=input.MessageData, Mac=input.Mac, VerificationAttributes=input.VerificationAttributes, MacLength=input.MacLength)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)
@@ -1242,7 +1242,7 @@ struct Payment_Cryptography_DataClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException, VerificationFailedException
     def verify_pin_data(self, VerifyPinDataInput input) -> str:
         auto host = endpoints.regional_host(dataplane_payment_cryptography_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/pindata/verify", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/pindata/verify", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyPinDataDocument(VerificationKeyIdentifier=input.VerificationKeyIdentifier, EncryptionKeyIdentifier=input.EncryptionKeyIdentifier, VerificationAttributes=input.VerificationAttributes, EncryptedPinBlock=input.EncryptedPinBlock, PrimaryAccountNumber=input.PrimaryAccountNumber, PinBlockFormat=input.PinBlockFormat, PinDataLength=input.PinDataLength, DukptAttributes=input.DukptAttributes, EncryptionWrappedKey=input.EncryptionWrappedKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataplane_payment_cryptography_service(), self.region, host)

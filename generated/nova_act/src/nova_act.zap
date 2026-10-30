@@ -635,7 +635,7 @@ struct Nova_ActClient:
         labels["workflowDefinitionName"] = input.workflowDefinitionName
         labels["workflowRunId"] = input.workflowRunId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"task\":" + nova_act_json_str(input.task))
         if input.toolSpecs.is_some():
@@ -657,7 +657,7 @@ struct Nova_ActClient:
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
         labels["workflowRunId"] = input.workflowRunId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSessionDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -666,7 +666,7 @@ struct Nova_ActClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_workflow_definition(self, CreateWorkflowDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(nova_act_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkflowDefinitionDocument(name=input.name, description=input.description, exportConfig=input.exportConfig, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -677,7 +677,7 @@ struct Nova_ActClient:
         auto host = endpoints.regional_host(nova_act_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkflowRunDocument(modelId=input.modelId, clientToken=input.clientToken, logGroupName=input.logGroupName, clientInfo=input.clientInfo)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -688,7 +688,7 @@ struct Nova_ActClient:
         auto host = endpoints.regional_host(nova_act_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow-definitions/{workflowDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow-definitions/{workflowDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
 
     # DeleteWorkflowRun  DELETE /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}
@@ -698,7 +698,7 @@ struct Nova_ActClient:
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
         labels["workflowRunId"] = input.workflowRunId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
 
     # GetWorkflowDefinition  GET /workflow-definitions/{workflowDefinitionName}
@@ -707,7 +707,7 @@ struct Nova_ActClient:
         auto host = endpoints.regional_host(nova_act_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
-        auto b = binding.HttpBinding(method="GET", path_template="/workflow-definitions/{workflowDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflow-definitions/{workflowDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
 
     # GetWorkflowRun  GET /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}
@@ -717,7 +717,7 @@ struct Nova_ActClient:
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
         labels["workflowRunId"] = input.workflowRunId
-        auto b = binding.HttpBinding(method="GET", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
 
     # InvokeActStep  PUT /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/
@@ -729,7 +729,7 @@ struct Nova_ActClient:
         labels["workflowRunId"] = input.workflowRunId
         labels["sessionId"] = input.sessionId
         labels["actId"] = input.actId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}/invoke-step/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.callResults:
@@ -756,7 +756,7 @@ struct Nova_ActClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/acts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/acts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListActsDocument(sortOrder=input.sortOrder)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -767,7 +767,7 @@ struct Nova_ActClient:
         auto host = endpoints.regional_host(nova_act_service(), self.region)
         dict[str, str] query = {}
         query["clientCompatibilityVersion"] = str(input.clientCompatibilityVersion)
-        auto b = binding.HttpBinding(method="POST", path_template="/models", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/models", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, nova_act_service(), self.region, host)
 
     # ListSessions  POST /workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}
@@ -782,7 +782,7 @@ struct Nova_ActClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSessionsDocument(sortOrder=input.sortOrder)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -796,7 +796,7 @@ struct Nova_ActClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowDefinitionsDocument(sortOrder=input.sortOrder)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -812,7 +812,7 @@ struct Nova_ActClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowRunsDocument(sortOrder=input.sortOrder)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -826,7 +826,7 @@ struct Nova_ActClient:
         labels["workflowRunId"] = input.workflowRunId
         labels["sessionId"] = input.sessionId
         labels["actId"] = input.actId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}/sessions/{sessionId}/acts/{actId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateActDocument(status=input.status, error=input.error)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)
@@ -838,7 +838,7 @@ struct Nova_ActClient:
         dict[str, str] labels = {}
         labels["workflowDefinitionName"] = input.workflowDefinitionName
         labels["workflowRunId"] = input.workflowRunId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workflow-definitions/{workflowDefinitionName}/workflow-runs/{workflowRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkflowRunDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, nova_act_service(), self.region, host)

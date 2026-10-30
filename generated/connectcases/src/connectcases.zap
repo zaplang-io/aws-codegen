@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 43 operations — 40 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 43 operations — 42 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   174 structs (93 @derive(Json)), 10 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1352,9 +1352,7 @@ def cases_error_from_code(str code) -> ConnectCasesError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListFieldOptions (httpQuery `values` has unsupported type list[str])
 #   ListTemplates (httpQuery `status` has unsupported type list[TemplateStatus])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1778,7 +1776,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/rules-batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/rules-batch", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.caseRules:
@@ -1793,7 +1791,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields-batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields-batch", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.fields:
@@ -1809,7 +1807,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["fieldId"] = input.fieldId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/fields/{fieldId}/options", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/fields/{fieldId}/options", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.options:
@@ -1824,7 +1822,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"templateId\":" + cases_json_str(input.templateId))
         list[str] e0 = []
@@ -1852,7 +1850,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/case-rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/case-rules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cases_json_str(input.name))
         if input.description.is_some():
@@ -1866,7 +1864,7 @@ struct ConnectCasesClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_domain(self, CreateDomainRequest input) -> str:
         auto host = endpoints.regional_host(cases_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDomainDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
@@ -1877,7 +1875,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFieldDocument(name=input.name, type=input.type, description=input.description, attributes=input.attributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
@@ -1888,7 +1886,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cases_json_str(input.name))
         parts.append("\"content\":" + layout_content_to_json(input.content))
@@ -1902,7 +1900,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + input.type.to_json())
         parts.append("\"content\":" + related_item_input_content_to_json(input.content))
@@ -1918,7 +1916,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/templates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/templates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cases_json_str(input.name))
         if input.description.is_some():
@@ -1958,7 +1956,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteCaseRule  DELETE /domains/{domainId}/case-rules/{caseRuleId}
@@ -1968,7 +1966,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseRuleId"] = input.caseRuleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/case-rules/{caseRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/case-rules/{caseRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteDomain  DELETE /domains/{domainId}
@@ -1977,7 +1975,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteField  DELETE /domains/{domainId}/fields/{fieldId}
@@ -1987,7 +1985,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["fieldId"] = input.fieldId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/fields/{fieldId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/fields/{fieldId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteLayout  DELETE /domains/{domainId}/layouts/{layoutId}
@@ -1997,7 +1995,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["layoutId"] = input.layoutId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteRelatedItem  DELETE /domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}
@@ -2008,7 +2006,7 @@ struct ConnectCasesClient:
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
         labels["relatedItemId"] = input.relatedItemId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # DeleteTemplate  DELETE /domains/{domainId}/templates/{templateId}
@@ -2018,7 +2016,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["templateId"] = input.templateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # GetCase  POST /domains/{domainId}/cases/{caseId}
@@ -2028,7 +2026,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.fields:
@@ -2047,7 +2045,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/audit-history", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/audit-history", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCaseAuditEventsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
@@ -2058,7 +2056,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/case-event-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/case-event-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # GetDomain  POST /domains/{domainId}
@@ -2067,7 +2065,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # GetLayout  POST /domains/{domainId}/layouts/{layoutId}
@@ -2077,7 +2075,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["layoutId"] = input.layoutId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # GetTemplate  POST /domains/{domainId}/templates/{templateId}
@@ -2087,7 +2085,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["templateId"] = input.templateId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # ListCaseRules  POST /domains/{domainId}/rules-list/
@@ -2101,7 +2099,7 @@ struct ConnectCasesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/rules-list/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/rules-list/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # ListCasesForContact  POST /domains/{domainId}/list-cases-for-contact
@@ -2110,7 +2108,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/list-cases-for-contact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/list-cases-for-contact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCasesForContactDocument(contactArn=input.contactArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
@@ -2124,7 +2122,25 @@ struct ConnectCasesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/domains-list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains-list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
+
+    # ListFieldOptions  POST /domains/{domainId}/fields/{fieldId}/options-list
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_field_options(self, ListFieldOptionsRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainId"] = input.domainId
+        labels["fieldId"] = input.fieldId
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.values.is_some():
+            multi_query["values"] = input.values.unwrap()
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields/{fieldId}/options-list", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # ListFields  POST /domains/{domainId}/fields-list
@@ -2138,7 +2154,7 @@ struct ConnectCasesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields-list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/fields-list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # ListLayouts  POST /domains/{domainId}/layouts-list
@@ -2152,7 +2168,7 @@ struct ConnectCasesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts-list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/layouts-list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{arn}
@@ -2161,7 +2177,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
 
     # PutCaseEventConfiguration  PUT /domains/{domainId}/case-event-configuration
@@ -2170,7 +2186,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-event-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-event-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"eventBridge\":" + event_bridge_configuration_to_json(input.eventBridge))
         auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
@@ -2182,7 +2198,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/related-items-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/related-items-search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -2211,7 +2227,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases-search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -2247,7 +2263,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/cases/{caseId}/related-items-search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -2270,7 +2286,7 @@ struct ConnectCasesClient:
         auto host = endpoints.regional_host(cases_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2279,6 +2295,17 @@ struct ConnectCasesClient:
         auto bp = restjson.rest_json_document(b, cases_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(cases_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, cases_service(), self.region, host)
+
     # UpdateCase  PUT /domains/{domainId}/cases/{caseId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_case(self, UpdateCaseRequest input) -> str:
@@ -2286,7 +2313,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.fields:
@@ -2305,7 +2332,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["caseRuleId"] = input.caseRuleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-rules/{caseRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/case-rules/{caseRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2326,7 +2353,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["fieldId"] = input.fieldId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/fields/{fieldId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/fields/{fieldId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFieldDocument(name=input.name, description=input.description, attributes=input.attributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cases_service(), self.region, host)
@@ -2338,7 +2365,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["layoutId"] = input.layoutId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/layouts/{layoutId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2357,7 +2384,7 @@ struct ConnectCasesClient:
         labels["domainId"] = input.domainId
         labels["caseId"] = input.caseId
         labels["relatedItemId"] = input.relatedItemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"content\":" + related_item_update_content_to_json(input.content))
         if input.performedBy.is_some():
@@ -2373,7 +2400,7 @@ struct ConnectCasesClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["templateId"] = input.templateId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{domainId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()

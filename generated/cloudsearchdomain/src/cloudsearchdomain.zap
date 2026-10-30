@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 3 operations — 2 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 3 operations — 3 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   18 structs (11 @derive(Json)), 2 enums, 2 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -214,15 +214,52 @@ def cloudsearchdomain_error_from_code(str code) -> CloudSearch_DomainError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   Search (httpQuery `partial` has unsupported type bool)
+# Render a bool bound to a URI/query/header slot as its wire text.
+def cloudsearchdomain_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound CloudSearch_Domain client: credentials + region, threaded into every operation.
 struct CloudSearch_DomainClient:
     core.Credentials creds
     str region
+
+    # Search  GET /2013-01-01/search?format=sdk&pretty=true
+    # errors: SearchException
+    def search(self, SearchRequest input) -> str:
+        auto host = endpoints.regional_host(cloudsearchdomain_service(), self.region)
+        dict[str, str] query = {}
+        if input.cursor.is_some():
+            query["cursor"] = input.cursor.unwrap_or("")
+        if input.expr.is_some():
+            query["expr"] = input.expr.unwrap_or("")
+        if input.facet.is_some():
+            query["facet"] = input.facet.unwrap_or("")
+        if input.filterQuery.is_some():
+            query["fq"] = input.filterQuery.unwrap_or("")
+        if input.highlight.is_some():
+            query["highlight"] = input.highlight.unwrap_or("")
+        if input.partial.is_some():
+            auto qt0 = cloudsearchdomain_bind_bool(input.partial.unwrap_or(False))
+            query["partial"] = qt0
+        query["q"] = input.query
+        if input.queryOptions.is_some():
+            query["q.options"] = input.queryOptions.unwrap_or("")
+        if input.queryParser.is_some():
+            query["q.parser"] = input.queryParser.unwrap_or("")
+        if input.return_.is_some():
+            query["return"] = input.return_.unwrap_or("")
+        if input.size.is_some():
+            query["size"] = str(input.size.unwrap_or(0))
+        if input.sort.is_some():
+            query["sort"] = input.sort.unwrap_or("")
+        if input.start.is_some():
+            query["start"] = str(input.start.unwrap_or(0))
+        if input.stats.is_some():
+            query["stats"] = input.stats.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-01-01/search?format=sdk&pretty=true", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, cloudsearchdomain_service(), self.region, host)
 
     # Suggest  GET /2013-01-01/suggest?format=sdk&pretty=true
     # errors: SearchException
@@ -233,7 +270,7 @@ struct CloudSearch_DomainClient:
         query["suggester"] = input.suggester
         if input.size.is_some():
             query["size"] = str(input.size.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-01-01/suggest?format=sdk&pretty=true", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-01-01/suggest?format=sdk&pretty=true", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cloudsearchdomain_service(), self.region, host)
 
     # UploadDocuments  POST /2013-01-01/documents/batch?format=sdk
@@ -242,7 +279,7 @@ struct CloudSearch_DomainClient:
         auto host = endpoints.regional_host(cloudsearchdomain_service(), self.region)
         dict[str, str] headers = {}
         headers["Content-Type"] = input.contentType
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-01-01/documents/batch?format=sdk", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-01-01/documents/batch?format=sdk", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.documents), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, cloudsearchdomain_service(), self.region, host)
 

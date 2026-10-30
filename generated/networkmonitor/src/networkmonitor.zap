@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 11 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 12 operations — 12 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   35 structs (19 @derive(Json)), 4 enums, 7 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -390,11 +390,6 @@ def networkmonitor_error_from_code(str code) -> NetworkMonitorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -491,7 +486,7 @@ struct NetworkMonitorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_monitor(self, CreateMonitorInput input) -> str:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"monitorName\":" + networkmonitor_json_str(input.monitorName))
         if input.probes.is_some():
@@ -521,7 +516,7 @@ struct NetworkMonitorClient:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="POST", path_template="/monitors/{monitorName}/probes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors/{monitorName}/probes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"probe\":" + probe_input_to_json(input.probe))
         if input.clientToken.is_some():
@@ -542,7 +537,7 @@ struct NetworkMonitorClient:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # DeleteProbe  DELETE /monitors/{monitorName}/probes/{probeId}
@@ -552,7 +547,7 @@ struct NetworkMonitorClient:
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
         labels["probeId"] = input.probeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # GetMonitor  GET /monitors/{monitorName}
@@ -561,7 +556,7 @@ struct NetworkMonitorClient:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # GetProbe  GET /monitors/{monitorName}/probes/{probeId}
@@ -571,7 +566,7 @@ struct NetworkMonitorClient:
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
         labels["probeId"] = input.probeId
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # ListMonitors  GET /monitors
@@ -585,7 +580,7 @@ struct NetworkMonitorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.state.is_some():
             query["state"] = input.state.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -594,7 +589,7 @@ struct NetworkMonitorClient:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -603,7 +598,7 @@ struct NetworkMonitorClient:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -612,13 +607,24 @@ struct NetworkMonitorClient:
         auto bp = restjson.rest_json_document(b, networkmonitor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(networkmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmonitor_service(), self.region, host)
+
     # UpdateMonitor  PATCH /monitors/{monitorName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_monitor(self, UpdateMonitorInput input) -> str:
         auto host = endpoints.regional_host(networkmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMonitorDocument(aggregationPeriod=input.aggregationPeriod)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)
@@ -630,7 +636,7 @@ struct NetworkMonitorClient:
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
         labels["probeId"] = input.probeId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}/probes/{probeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProbeDocument(state=input.state, destination=input.destination, destinationPort=input.destinationPort, protocol=input.protocol, packetSize=input.packetSize)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmonitor_service(), self.region, host)

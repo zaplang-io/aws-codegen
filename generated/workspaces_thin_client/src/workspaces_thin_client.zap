@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 15 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   48 structs (31 @derive(Json)), 13 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -554,11 +554,6 @@ def thinclient_error_from_code(str code) -> WorkSpaces_Thin_ClientError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -646,7 +641,7 @@ struct WorkSpaces_Thin_ClientClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_environment(self, CreateEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -697,7 +692,7 @@ struct WorkSpaces_Thin_ClientClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/devices/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/devices/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /environments/{id}
@@ -709,7 +704,7 @@ struct WorkSpaces_Thin_ClientClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # DeregisterDevice  POST /deregister-device/{id}
@@ -718,7 +713,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/deregister-device/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deregister-device/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterDeviceDocument(targetDeviceStatus=input.targetDeviceStatus, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
@@ -729,7 +724,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/devices/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/devices/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # GetEnvironment  GET /environments/{id}
@@ -738,7 +733,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # GetSoftwareSet  GET /softwaresets/{id}
@@ -747,7 +742,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/softwaresets/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/softwaresets/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # ListDevices  GET /devices
@@ -759,7 +754,7 @@ struct WorkSpaces_Thin_ClientClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/devices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/devices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # ListEnvironments  GET /environments
@@ -771,7 +766,7 @@ struct WorkSpaces_Thin_ClientClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # ListSoftwareSets  GET /softwaresets
@@ -783,7 +778,7 @@ struct WorkSpaces_Thin_ClientClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/softwaresets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/softwaresets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -792,7 +787,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -801,7 +796,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -810,13 +805,24 @@ struct WorkSpaces_Thin_ClientClient:
         auto bp = restjson.rest_json_document(b, thinclient_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(thinclient_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, thinclient_service(), self.region, host)
+
     # UpdateDevice  PATCH /devices/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_device(self, UpdateDeviceRequest input) -> str:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/devices/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/devices/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeviceDocument(name=input.name, desiredSoftwareSetId=input.desiredSoftwareSetId, softwareSetUpdateSchedule=input.softwareSetUpdateSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)
@@ -827,7 +833,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -865,7 +871,7 @@ struct WorkSpaces_Thin_ClientClient:
         auto host = endpoints.regional_host(thinclient_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/softwaresets/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/softwaresets/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSoftwareSetDocument(validationStatus=input.validationStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, thinclient_service(), self.region, host)

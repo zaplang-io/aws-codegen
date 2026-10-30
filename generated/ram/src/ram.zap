@@ -1207,7 +1207,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, MalformedArnException, OperationNotPermittedException, ResourceShareInvitationAlreadyAcceptedException, ResourceShareInvitationAlreadyRejectedException, ResourceShareInvitationArnNotFoundException, ResourceShareInvitationExpiredException, ServerInternalException, ServiceUnavailableException
     def accept_resource_share_invitation(self, AcceptResourceShareInvitationRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/acceptresourceshareinvitation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/acceptresourceshareinvitation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptResourceShareInvitationDocument(resourceShareInvitationArn=input.resourceShareInvitationArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1216,7 +1216,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, ThrottlingException, UnknownResourceException, UnknownResourceException
     def associate_resource_share(self, AssociateResourceShareRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associateresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associateresourceshare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceShareArn\":" + ram_json_str(input.resourceShareArn))
         if input.resourceArns.is_some():
@@ -1247,7 +1247,7 @@ struct RAMClient:
     # errors: InvalidClientTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def associate_resource_share_permission(self, AssociateResourceSharePermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associateresourcesharepermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associateresourcesharepermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateResourceSharePermissionDocument(resourceShareArn=input.resourceShareArn, permissionArn=input.permissionArn, replace=input.replace, clientToken=input.clientToken, permissionVersion=input.permissionVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1256,7 +1256,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedPolicyTemplateException, OperationNotPermittedException, PermissionAlreadyExistsException, PermissionLimitExceededException, ServerInternalException, ServiceUnavailableException
     def create_permission(self, CreatePermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createpermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createpermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + ram_json_str(input.name))
         parts.append("\"resourceType\":" + ram_json_str(input.resourceType))
@@ -1277,7 +1277,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidPolicyException, MalformedArnException, MalformedPolicyTemplateException, PermissionVersionsLimitExceededException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def create_permission_version(self, CreatePermissionVersionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createpermissionversion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createpermissionversion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePermissionVersionDocument(permissionArn=input.permissionArn, policyTemplate=input.policyTemplate, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1286,7 +1286,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, TagLimitExceededException, TagPolicyViolationException, ThrottlingException, UnknownResourceException
     def create_resource_share(self, CreateResourceShareRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createresourceshare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + ram_json_str(input.name))
         if input.resourceArns.is_some():
@@ -1339,7 +1339,7 @@ struct RAMClient:
         query["permissionArn"] = input.permissionArn
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/deletepermission", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/deletepermission", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
     # DeletePermissionVersion  DELETE /deletepermissionversion
@@ -1351,7 +1351,7 @@ struct RAMClient:
         query["permissionVersion"] = str(input.permissionVersion)
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/deletepermissionversion", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/deletepermissionversion", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
     # DeleteResourceShare  DELETE /deleteresourceshare
@@ -1362,14 +1362,14 @@ struct RAMClient:
         query["resourceShareArn"] = input.resourceShareArn
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/deleteresourceshare", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/deleteresourceshare", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
     # DisassociateResourceShare  POST /disassociateresourceshare
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ResourceShareLimitExceededException, ServerInternalException, ServiceUnavailableException, ThrottlingException, UnknownResourceException
     def disassociate_resource_share(self, DisassociateResourceShareRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disassociateresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociateresourceshare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceShareArn\":" + ram_json_str(input.resourceShareArn))
         if input.resourceArns.is_some():
@@ -1400,7 +1400,7 @@ struct RAMClient:
     # errors: InvalidClientTokenException, InvalidParameterException, InvalidStateTransitionException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def disassociate_resource_share_permission(self, DisassociateResourceSharePermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disassociateresourcesharepermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociateresourcesharepermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateResourceSharePermissionDocument(resourceShareArn=input.resourceShareArn, permissionArn=input.permissionArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1409,14 +1409,14 @@ struct RAMClient:
     # errors: OperationNotPermittedException, ServerInternalException, ServiceUnavailableException
     def enable_sharing_with_aws_organization(self) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/enablesharingwithawsorganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/enablesharingwithawsorganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
     # GetPermission  POST /getpermission
     # errors: InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def get_permission(self, GetPermissionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getpermission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getpermission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPermissionDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1425,7 +1425,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ResourceArnNotFoundException, ServerInternalException, ServiceUnavailableException
     def get_resource_policies(self, GetResourcePoliciesRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getresourcepolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourcepolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.resourceArns:
@@ -1447,7 +1447,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def get_resource_share_associations(self, GetResourceShareAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"associationType\":" + input.associationType.to_json())
         if input.resourceShareArns.is_some():
@@ -1478,7 +1478,7 @@ struct RAMClient:
     # errors: InvalidMaxResultsException, InvalidNextTokenException, InvalidParameterException, MalformedArnException, ResourceShareInvitationArnNotFoundException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def get_resource_share_invitations(self, GetResourceShareInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareinvitations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshareinvitations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceShareInvitationArns.is_some():
             auto u0 = input.resourceShareInvitationArns.unwrap()
@@ -1505,7 +1505,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def get_resource_shares(self, GetResourceSharesRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshares", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getresourceshares", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceShareArns.is_some():
             auto u0 = input.resourceShareArns.unwrap()
@@ -1545,7 +1545,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, MissingRequiredParameterException, ResourceShareInvitationAlreadyRejectedException, ResourceShareInvitationArnNotFoundException, ResourceShareInvitationExpiredException, ServerInternalException, ServiceUnavailableException
     def list_pending_invitation_resources(self, ListPendingInvitationResourcesRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listpendinginvitationresources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listpendinginvitationresources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPendingInvitationResourcesDocument(resourceShareInvitationArn=input.resourceShareInvitationArn, nextToken=input.nextToken, maxResults=input.maxResults, resourceRegionScope=input.resourceRegionScope)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1554,7 +1554,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException
     def list_permission_associations(self, ListPermissionAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listpermissionassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listpermissionassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPermissionAssociationsDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion, associationStatus=input.associationStatus, resourceType=input.resourceType, featureSet=input.featureSet, defaultVersion=input.defaultVersion, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1563,7 +1563,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_permission_versions(self, ListPermissionVersionsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listpermissionversions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listpermissionversions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPermissionVersionsDocument(permissionArn=input.permissionArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1572,7 +1572,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException
     def list_permissions(self, ListPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listpermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listpermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPermissionsDocument(resourceType=input.resourceType, nextToken=input.nextToken, maxResults=input.maxResults, permissionType=input.permissionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1581,7 +1581,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_principals(self, ListPrincipalsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listprincipals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listprincipals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
         if input.resourceArn.is_some():
@@ -1615,7 +1615,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, ServerInternalException, ServiceUnavailableException
     def list_replace_permission_associations_work(self, ListReplacePermissionAssociationsWorkRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listreplacepermissionassociationswork", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listreplacepermissionassociationswork", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.workIds.is_some():
             auto u0 = input.workIds.unwrap()
@@ -1639,7 +1639,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_resource_share_permissions(self, ListResourceSharePermissionsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listresourcesharepermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listresourcesharepermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourceSharePermissionsDocument(resourceShareArn=input.resourceShareArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1648,7 +1648,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, ServerInternalException, ServiceUnavailableException
     def list_resource_types(self, ListResourceTypesRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listresourcetypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listresourcetypes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourceTypesDocument(nextToken=input.nextToken, maxResults=input.maxResults, resourceRegionScope=input.resourceRegionScope)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1657,7 +1657,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, InvalidResourceTypeException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_resources(self, ListResourcesRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listresources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listresources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
         if input.principal.is_some():
@@ -1694,7 +1694,7 @@ struct RAMClient:
     # errors: InvalidNextTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def list_source_associations(self, ListSourceAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listsourceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listsourceassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceShareArns.is_some():
             auto u0 = input.resourceShareArns.unwrap()
@@ -1724,7 +1724,7 @@ struct RAMClient:
     # errors: InvalidParameterException, InvalidPolicyException, MalformedArnException, MissingRequiredParameterException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def promote_permission_created_from_policy(self, PromotePermissionCreatedFromPolicyRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/promotepermissioncreatedfrompolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/promotepermissioncreatedfrompolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PromotePermissionCreatedFromPolicyDocument(permissionArn=input.permissionArn, name=input.name, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1735,14 +1735,14 @@ struct RAMClient:
         auto host = endpoints.regional_host(ram_service(), self.region)
         dict[str, str] query = {}
         query["resourceShareArn"] = input.resourceShareArn
-        auto b = binding.HttpBinding(method="POST", path_template="/promoteresourcesharecreatedfrompolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/promoteresourcesharecreatedfrompolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ram_service(), self.region, host)
 
     # RejectResourceShareInvitation  POST /rejectresourceshareinvitation
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, MalformedArnException, OperationNotPermittedException, ResourceShareInvitationAlreadyAcceptedException, ResourceShareInvitationAlreadyRejectedException, ResourceShareInvitationArnNotFoundException, ResourceShareInvitationExpiredException, ServerInternalException, ServiceUnavailableException
     def reject_resource_share_invitation(self, RejectResourceShareInvitationRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/rejectresourceshareinvitation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rejectresourceshareinvitation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RejectResourceShareInvitationDocument(resourceShareInvitationArn=input.resourceShareInvitationArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1751,7 +1751,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, MalformedArnException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def replace_permission_associations(self, ReplacePermissionAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/replacepermissionassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/replacepermissionassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReplacePermissionAssociationsDocument(fromPermissionArn=input.fromPermissionArn, fromPermissionVersion=input.fromPermissionVersion, toPermissionArn=input.toPermissionArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1760,7 +1760,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def set_default_permission_version(self, SetDefaultPermissionVersionRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/setdefaultpermissionversion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/setdefaultpermissionversion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SetDefaultPermissionVersionDocument(permissionArn=input.permissionArn, permissionVersion=input.permissionVersion, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)
@@ -1769,7 +1769,7 @@ struct RAMClient:
     # errors: InvalidParameterException, MalformedArnException, ResourceArnNotFoundException, ServerInternalException, ServiceUnavailableException, TagLimitExceededException, TagPolicyViolationException, UnknownResourceException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tagresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tagresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceShareArn.is_some():
             auto u0 = input.resourceShareArn.unwrap()
@@ -1788,7 +1788,7 @@ struct RAMClient:
     # errors: InvalidParameterException, MalformedArnException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untagresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untagresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceShareArn.is_some():
             auto u0 = input.resourceShareArn.unwrap()
@@ -1807,7 +1807,7 @@ struct RAMClient:
     # errors: IdempotentParameterMismatchException, InvalidClientTokenException, InvalidParameterException, MalformedArnException, MissingRequiredParameterException, OperationNotPermittedException, ServerInternalException, ServiceUnavailableException, UnknownResourceException
     def update_resource_share(self, UpdateResourceShareRequest input) -> str:
         auto host = endpoints.regional_host(ram_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateresourceshare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateresourceshare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourceShareDocument(resourceShareArn=input.resourceShareArn, name=input.name, allowExternalPrincipals=input.allowExternalPrincipals, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ram_service(), self.region, host)

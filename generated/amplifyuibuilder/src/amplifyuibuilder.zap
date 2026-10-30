@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 28 operations — 20 with a generated method,
-#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 28 operations — 21 with a generated method,
+#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   125 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1179,7 +1179,6 @@ def amplifyuibuilder_error_from_code(str code) -> AmplifyUIBuilderError:
 #   CreateForm (httpPayload member `formToCreate` is a non-derivable structure)
 #   CreateTheme (httpPayload member `themeToCreate` is a non-derivable structure)
 #   StartCodegenJob (httpPayload member `codegenJobToCreate` is a non-derivable structure)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateComponent (httpPayload member `updatedComponent` is a non-derivable structure)
 #   UpdateForm (httpPayload member `updatedForm` is a non-derivable structure)
 #   UpdateTheme (httpPayload member `updatedTheme` is a non-derivable structure)
@@ -1197,7 +1196,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/components/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/components/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # DeleteForm  DELETE /app/{appId}/environment/{environmentName}/forms/{id}
@@ -1208,7 +1207,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/forms/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/forms/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # DeleteTheme  DELETE /app/{appId}/environment/{environmentName}/themes/{id}
@@ -1219,7 +1218,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/themes/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app/{appId}/environment/{environmentName}/themes/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ExchangeCodeForToken  POST /tokens/{provider}
@@ -1228,7 +1227,7 @@ struct AmplifyUIBuilderClient:
         auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["provider"] = input.provider
-        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{provider}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{provider}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.request.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
@@ -1242,7 +1241,7 @@ struct AmplifyUIBuilderClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/components", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/components", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ExportForms  GET /export/app/{appId}/environment/{environmentName}/forms
@@ -1255,7 +1254,7 @@ struct AmplifyUIBuilderClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/forms", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/forms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ExportThemes  GET /export/app/{appId}/environment/{environmentName}/themes
@@ -1268,7 +1267,7 @@ struct AmplifyUIBuilderClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/themes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/export/app/{appId}/environment/{environmentName}/themes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # GetCodegenJob  GET /app/{appId}/environment/{environmentName}/codegen-jobs/{id}
@@ -1279,7 +1278,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/codegen-jobs/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/codegen-jobs/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # GetComponent  GET /app/{appId}/environment/{environmentName}/components/{id}
@@ -1290,7 +1289,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/components/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/components/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # GetForm  GET /app/{appId}/environment/{environmentName}/forms/{id}
@@ -1301,7 +1300,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/forms/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/forms/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # GetMetadata  GET /app/{appId}/environment/{environmentName}/metadata
@@ -1311,7 +1310,7 @@ struct AmplifyUIBuilderClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # GetTheme  GET /app/{appId}/environment/{environmentName}/themes/{id}
@@ -1322,7 +1321,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/themes/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/themes/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ListCodegenJobs  GET /app/{appId}/environment/{environmentName}/codegen-jobs
@@ -1337,7 +1336,7 @@ struct AmplifyUIBuilderClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/codegen-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/codegen-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ListComponents  GET /app/{appId}/environment/{environmentName}/components
@@ -1352,7 +1351,7 @@ struct AmplifyUIBuilderClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/components", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/components", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ListForms  GET /app/{appId}/environment/{environmentName}/forms
@@ -1367,7 +1366,7 @@ struct AmplifyUIBuilderClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/forms", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/forms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1376,7 +1375,7 @@ struct AmplifyUIBuilderClient:
         auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # ListThemes  GET /app/{appId}/environment/{environmentName}/themes
@@ -1391,7 +1390,7 @@ struct AmplifyUIBuilderClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/themes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app/{appId}/environment/{environmentName}/themes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # PutMetadataFlag  PUT /app/{appId}/environment/{environmentName}/metadata/features/{featureName}
@@ -1402,7 +1401,7 @@ struct AmplifyUIBuilderClient:
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
         labels["featureName"] = input.featureName
-        auto b = binding.HttpBinding(method="PUT", path_template="/app/{appId}/environment/{environmentName}/metadata/features/{featureName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app/{appId}/environment/{environmentName}/metadata/features/{featureName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.body.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
@@ -1412,7 +1411,7 @@ struct AmplifyUIBuilderClient:
         auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["provider"] = input.provider
-        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{provider}/refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{provider}/refresh", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.refreshTokenBody.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
@@ -1422,7 +1421,7 @@ struct AmplifyUIBuilderClient:
         auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1430,6 +1429,17 @@ struct AmplifyUIBuilderClient:
         parts.append("\"tags\":" + amplifyuibuilder_json_obj(m0))
         auto bp = restjson.rest_json_document(b, amplifyuibuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, InvalidParameterException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
 
     # Paginator for ExportComponents — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: entities).

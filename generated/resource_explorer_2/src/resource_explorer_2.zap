@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 32 operations — 31 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 32 operations — 32 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   87 structs (49 @derive(Json)), 5 enums, 8 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -677,11 +677,6 @@ def resource_explorer_2_error_from_code(str code) -> Resource_Explorer_2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -784,7 +779,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def associate_default_view(self, AssociateDefaultViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AssociateDefaultView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateDefaultView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateDefaultViewDocument(ViewArn=input.ViewArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -793,7 +788,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def batch_get_view(self, BatchGetViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ViewArns.is_some():
             auto u0 = input.ViewArns.unwrap()
@@ -808,7 +803,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_index(self, CreateIndexInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -826,7 +821,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_resource_explorer_setup(self, CreateResourceExplorerSetupInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateResourceExplorerSetup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateResourceExplorerSetup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.RegionList:
@@ -846,7 +841,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_view(self, CreateViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -877,7 +872,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_index(self, DeleteIndexInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIndexDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -886,7 +881,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def delete_resource_explorer_setup(self, DeleteResourceExplorerSetupInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteResourceExplorerSetup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteResourceExplorerSetup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RegionList.is_some():
             auto u0 = input.RegionList.unwrap()
@@ -904,7 +899,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_view(self, DeleteViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteViewDocument(ViewArn=input.ViewArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -913,35 +908,35 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disassociate_default_view(self) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateDefaultView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateDefaultView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # GetAccountLevelServiceConfiguration  POST /GetAccountLevelServiceConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_account_level_service_configuration(self) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetAccountLevelServiceConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetAccountLevelServiceConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # GetDefaultView  POST /GetDefaultView
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_default_view(self) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDefaultView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDefaultView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # GetIndex  POST /GetIndex
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_index(self) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # GetManagedView  POST /GetManagedView
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_managed_view(self, GetManagedViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetManagedView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetManagedView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetManagedViewDocument(ManagedViewArn=input.ManagedViewArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -950,7 +945,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_resource_explorer_setup(self, GetResourceExplorerSetupInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetResourceExplorerSetup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetResourceExplorerSetup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetResourceExplorerSetupDocument(TaskId=input.TaskId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -959,14 +954,14 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_service_index(self) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetServiceIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetServiceIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # GetServiceView  POST /GetServiceView
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_service_view(self, GetServiceViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetServiceView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetServiceView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetServiceViewDocument(ServiceViewArn=input.ServiceViewArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -975,7 +970,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_view(self, GetViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetViewDocument(ViewArn=input.ViewArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -984,7 +979,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_indexes(self, ListIndexesInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Type.is_some():
             auto u0 = input.Type.unwrap()
@@ -1008,7 +1003,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_indexes_for_members(self, ListIndexesForMembersInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexesForMembers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexesForMembers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIdList:
@@ -1027,7 +1022,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def list_managed_views(self, ListManagedViewsInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListManagedViews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListManagedViews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListManagedViewsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, ServicePrincipal=input.ServicePrincipal)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1036,7 +1031,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def list_resources(self, ListResourcesInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourcesDocument(Filters=input.Filters, MaxResults=input.MaxResults, ViewArn=input.ViewArn, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1045,7 +1040,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_service_indexes(self, ListServiceIndexesInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListServiceIndexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListServiceIndexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Regions.is_some():
             auto u0 = input.Regions.unwrap()
@@ -1066,7 +1061,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_service_views(self, ListServiceViewsInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListServiceViews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListServiceViews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListServiceViewsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1075,7 +1070,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_streaming_access_for_services(self, ListStreamingAccessForServicesInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamingAccessForServices", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamingAccessForServices", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStreamingAccessForServicesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1084,7 +1079,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_supported_resource_types(self, ListSupportedResourceTypesInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSupportedResourceTypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSupportedResourceTypes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSupportedResourceTypesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1095,14 +1090,14 @@ struct Resource_Explorer_2Client:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
 
     # ListViews  POST /ListViews
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_views(self, ListViewsInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListViews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListViews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListViewsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1111,7 +1106,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def search(self, SearchInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/Search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchDocument(QueryString=input.QueryString, MaxResults=input.MaxResults, ViewArn=input.ViewArn, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1122,7 +1117,7 @@ struct Resource_Explorer_2Client:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -1133,11 +1128,22 @@ struct Resource_Explorer_2Client:
         auto bp = restjson.rest_json_document(b, resource_explorer_2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, resource_explorer_2_service(), self.region, host)
+
     # UpdateIndexType  POST /UpdateIndexType
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_index_type(self, UpdateIndexTypeInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexType", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexType", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIndexTypeDocument(Arn=input.Arn, Type=input.Type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_explorer_2_service(), self.region, host)
@@ -1146,7 +1152,7 @@ struct Resource_Explorer_2Client:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_view(self, UpdateViewInput input) -> str:
         auto host = endpoints.regional_host(resource_explorer_2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateView", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateView", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ViewArn\":" + resource_explorer_2_json_str(input.ViewArn))
         if input.IncludedProperties.is_some():

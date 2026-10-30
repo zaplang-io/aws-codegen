@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 18 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 19 operations — 19 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   46 structs (24 @derive(Json)), 9 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -502,11 +502,6 @@ def repostspace_error_from_code(str code) -> repostspaceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -578,7 +573,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["channelId"] = input.channelId
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accessorIds:
@@ -594,7 +589,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accessorIds:
@@ -611,7 +606,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["channelId"] = input.channelId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/channels/{channelId}/roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accessorIds:
@@ -627,7 +622,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/spaces/{spaceId}/roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accessorIds:
@@ -643,7 +638,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/channels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelDocument(channelName=input.channelName, channelDescription=input.channelDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
@@ -652,7 +647,7 @@ struct repostspaceClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_space(self, CreateSpaceInput input) -> str:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + repostspace_json_str(input.name))
         parts.append("\"subdomain\":" + repostspace_json_str(input.subdomain))
@@ -684,7 +679,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # DeregisterAdmin  DELETE /spaces/{spaceId}/admins/{adminId}
@@ -694,7 +689,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["adminId"] = input.adminId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/spaces/{spaceId}/admins/{adminId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/spaces/{spaceId}/admins/{adminId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # GetChannel  GET /spaces/{spaceId}/channels/{channelId}
@@ -704,7 +699,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["channelId"] = input.channelId
-        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}/channels/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # GetSpace  GET /spaces/{spaceId}
@@ -713,7 +708,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # ListChannels  GET /spaces/{spaceId}/channels
@@ -727,7 +722,7 @@ struct repostspaceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}/channels", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/spaces/{spaceId}/channels", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # ListSpaces  GET /spaces
@@ -739,7 +734,7 @@ struct repostspaceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/spaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/spaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -748,7 +743,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # RegisterAdmin  POST /spaces/{spaceId}/admins/{adminId}
@@ -758,7 +753,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["adminId"] = input.adminId
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/admins/{adminId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/admins/{adminId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
 
     # SendInvites  POST /spaces/{spaceId}/invite
@@ -767,7 +762,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/invite", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spaces/{spaceId}/invite", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accessorIds:
@@ -784,7 +779,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -793,6 +788,17 @@ struct repostspaceClient:
         auto bp = restjson.rest_json_document(b, repostspace_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(repostspace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, repostspace_service(), self.region, host)
+
     # UpdateChannel  PUT /spaces/{spaceId}/channels/{channelId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_channel(self, UpdateChannelInput input) -> str:
@@ -800,7 +806,7 @@ struct repostspaceClient:
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
         labels["channelId"] = input.channelId
-        auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}/channels/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(channelName=input.channelName, channelDescription=input.channelDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, repostspace_service(), self.region, host)
@@ -811,7 +817,7 @@ struct repostspaceClient:
         auto host = endpoints.regional_host(repostspace_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceId"] = input.spaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/spaces/{spaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()

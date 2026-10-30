@@ -1922,14 +1922,14 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.CrossClusterSearchConnectionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # AddTags  POST /2015-01-01/tags
     # errors: BaseException, InternalException, LimitExceededException, ValidationException
     def add_tags(self, AddTagsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ARN\":" + es_json_str(input.ARN))
         list[str] e0 = []
@@ -1946,7 +1946,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/associate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/associate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # AuthorizeVpcEndpointAccess  POST /2015-01-01/es/domain/{DomainName}/authorizeVpcEndpointAccess
@@ -1955,7 +1955,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/authorizeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/authorizeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AuthorizeVpcEndpointAccessDocument(Account=input.Account)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -1966,7 +1966,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/config/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/config/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelDomainConfigChangeDocument(DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -1975,7 +1975,7 @@ struct Elasticsearch_ServiceClient:
     # errors: BaseException, InternalException, ResourceNotFoundException, ValidationException
     def cancel_elasticsearch_service_software_update(self, CancelElasticsearchServiceSoftwareUpdateRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/serviceSoftwareUpdate/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/serviceSoftwareUpdate/cancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelElasticsearchServiceSoftwareUpdateDocument(DomainName=input.DomainName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -1984,7 +1984,7 @@ struct Elasticsearch_ServiceClient:
     # errors: DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException
     def create_outbound_cross_cluster_search_connection(self, CreateOutboundCrossClusterSearchConnectionRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/outboundConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/outboundConnection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateOutboundCrossClusterSearchConnectionDocument(SourceDomainInfo=input.SourceDomainInfo, DestinationDomainInfo=input.DestinationDomainInfo, ConnectionAlias=input.ConnectionAlias)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -1993,7 +1993,7 @@ struct Elasticsearch_ServiceClient:
     # errors: AccessDeniedException, BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceAlreadyExistsException, ValidationException
     def create_package(self, CreatePackageRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePackageDocument(PackageName=input.PackageName, PackageType=input.PackageType, PackageDescription=input.PackageDescription, PackageSource=input.PackageSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -2002,7 +2002,7 @@ struct Elasticsearch_ServiceClient:
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, LimitExceededException, ValidationException
     def create_vpc_endpoint(self, CreateVpcEndpointRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DomainArn\":" + es_json_str(input.DomainArn))
         parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
@@ -2018,14 +2018,14 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteElasticsearchServiceRole  DELETE /2015-01-01/es/role
     # errors: BaseException, InternalException, ValidationException
     def delete_elasticsearch_service_role(self) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/role", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/role", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteInboundCrossClusterSearchConnection  DELETE /2015-01-01/es/ccs/inboundConnection/{ConnectionId}
@@ -2034,7 +2034,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.CrossClusterSearchConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteOutboundCrossClusterSearchConnection  DELETE /2015-01-01/es/ccs/outboundConnection/{ConnectionId}
@@ -2043,7 +2043,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.CrossClusterSearchConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/ccs/outboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/ccs/outboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeletePackage  DELETE /2015-01-01/packages/{PackageID}
@@ -2052,7 +2052,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/packages/{PackageID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/packages/{PackageID}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteVpcEndpoint  DELETE /2015-01-01/es/vpcEndpoints/{VpcEndpointId}
@@ -2061,7 +2061,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["VpcEndpointId"] = input.VpcEndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/vpcEndpoints/{VpcEndpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-01-01/es/vpcEndpoints/{VpcEndpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainAutoTunes  GET /2015-01-01/es/domain/{DomainName}/autoTunes
@@ -2075,7 +2075,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/autoTunes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/autoTunes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainChangeProgress  GET /2015-01-01/es/domain/{DomainName}/progress
@@ -2087,7 +2087,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.ChangeId.is_some():
             query["changeid"] = input.ChangeId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/progress", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/progress", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeElasticsearchDomain  GET /2015-01-01/es/domain/{DomainName}
@@ -2096,7 +2096,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeElasticsearchDomainConfig  GET /2015-01-01/es/domain/{DomainName}/config
@@ -2105,14 +2105,14 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeElasticsearchDomains  POST /2015-01-01/es/domain-info
     # errors: BaseException, InternalException, ValidationException
     def describe_elasticsearch_domains(self, DescribeElasticsearchDomainsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain-info", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain-info", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DomainNames:
@@ -2131,14 +2131,14 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.DomainName.is_some():
             query["domainName"] = input.DomainName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/instanceTypeLimits/{ElasticsearchVersion}/{InstanceType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/instanceTypeLimits/{ElasticsearchVersion}/{InstanceType}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeInboundCrossClusterSearchConnections  POST /2015-01-01/es/ccs/inboundConnection/search
     # errors: DisabledOperationException, InvalidPaginationTokenException
     def describe_inbound_cross_cluster_search_connections(self, DescribeInboundCrossClusterSearchConnectionsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/inboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/inboundConnection/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -2159,7 +2159,7 @@ struct Elasticsearch_ServiceClient:
     # errors: DisabledOperationException, InvalidPaginationTokenException
     def describe_outbound_cross_cluster_search_connections(self, DescribeOutboundCrossClusterSearchConnectionsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/outboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/ccs/outboundConnection/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -2180,7 +2180,7 @@ struct Elasticsearch_ServiceClient:
     # errors: AccessDeniedException, BaseException, InternalException, ResourceNotFoundException, ValidationException
     def describe_packages(self, DescribePackagesRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -2203,12 +2203,13 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] query = {}
         if input.ReservedElasticsearchInstanceOfferingId.is_some():
-            query["offeringId"] = input.ReservedElasticsearchInstanceOfferingId.unwrap_or("")
+            auto qt0 = input.ReservedElasticsearchInstanceOfferingId.unwrap_or("")
+            query["offeringId"] = qt0
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/reservedInstanceOfferings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/reservedInstanceOfferings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeReservedElasticsearchInstances  GET /2015-01-01/es/reservedInstances
@@ -2222,14 +2223,14 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/reservedInstances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/reservedInstances", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeVpcEndpoints  POST /2015-01-01/es/vpcEndpoints/describe
     # errors: BaseException, DisabledOperationException, InternalException, ValidationException
     def describe_vpc_endpoints(self, DescribeVpcEndpointsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.VpcEndpointIds:
@@ -2245,7 +2246,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/dissociate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/dissociate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetCompatibleElasticsearchVersions  GET /2015-01-01/es/compatibleVersions
@@ -2255,7 +2256,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.DomainName.is_some():
             query["domainName"] = input.DomainName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/compatibleVersions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/compatibleVersions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetPackageVersionHistory  GET /2015-01-01/packages/{PackageID}/history
@@ -2269,7 +2270,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/packages/{PackageID}/history", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/packages/{PackageID}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetUpgradeHistory  GET /2015-01-01/es/upgradeDomain/{DomainName}/history
@@ -2283,7 +2284,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/upgradeDomain/{DomainName}/history", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/upgradeDomain/{DomainName}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetUpgradeStatus  GET /2015-01-01/es/upgradeDomain/{DomainName}/status
@@ -2292,7 +2293,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/upgradeDomain/{DomainName}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/upgradeDomain/{DomainName}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDomainNames  GET /2015-01-01/domain
@@ -2302,7 +2303,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.EngineType.is_some():
             query["engineType"] = input.EngineType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDomainsForPackage  GET /2015-01-01/packages/{PackageID}/domains
@@ -2316,7 +2317,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/packages/{PackageID}/domains", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/packages/{PackageID}/domains", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListElasticsearchInstanceTypes  GET /2015-01-01/es/instanceTypes/{ElasticsearchVersion}
@@ -2332,7 +2333,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/instanceTypes/{ElasticsearchVersion}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/instanceTypes/{ElasticsearchVersion}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListElasticsearchVersions  GET /2015-01-01/es/versions
@@ -2344,7 +2345,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListPackagesForDomain  GET /2015-01-01/domain/{DomainName}/packages
@@ -2358,7 +2359,7 @@ struct Elasticsearch_ServiceClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/domain/{DomainName}/packages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/domain/{DomainName}/packages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListTags  GET /2015-01-01/tags/
@@ -2367,7 +2368,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ARN
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/tags/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/tags/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpointAccess  GET /2015-01-01/es/domain/{DomainName}/listVpcEndpointAccess
@@ -2379,7 +2380,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/listVpcEndpointAccess", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/listVpcEndpointAccess", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpoints  GET /2015-01-01/es/vpcEndpoints
@@ -2389,7 +2390,7 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/vpcEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/vpcEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpointsForDomain  GET /2015-01-01/es/domain/{DomainName}/vpcEndpoints
@@ -2401,14 +2402,14 @@ struct Elasticsearch_ServiceClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/vpcEndpoints", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-01-01/es/domain/{DomainName}/vpcEndpoints", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # PurchaseReservedElasticsearchInstanceOffering  POST /2015-01-01/es/purchaseReservedInstanceOffering
     # errors: DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
     def purchase_reserved_elasticsearch_instance_offering(self, PurchaseReservedElasticsearchInstanceOfferingRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/purchaseReservedInstanceOffering", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/purchaseReservedInstanceOffering", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PurchaseReservedElasticsearchInstanceOfferingDocument(ReservedElasticsearchInstanceOfferingId=input.ReservedElasticsearchInstanceOfferingId, ReservationName=input.ReservationName, InstanceCount=input.InstanceCount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -2419,14 +2420,14 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.CrossClusterSearchConnectionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-01-01/es/ccs/inboundConnection/{ConnectionId}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # RemoveTags  POST /2015-01-01/tags-removal
     # errors: BaseException, InternalException, ValidationException
     def remove_tags(self, RemoveTagsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags-removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/tags-removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ARN\":" + es_json_str(input.ARN))
         list[str] e0 = []
@@ -2442,7 +2443,7 @@ struct Elasticsearch_ServiceClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/revokeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/domain/{DomainName}/revokeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeVpcEndpointAccessDocument(Account=input.Account)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -2451,7 +2452,7 @@ struct Elasticsearch_ServiceClient:
     # errors: BaseException, InternalException, ResourceNotFoundException, ValidationException
     def start_elasticsearch_service_software_update(self, StartElasticsearchServiceSoftwareUpdateRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/serviceSoftwareUpdate/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/serviceSoftwareUpdate/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartElasticsearchServiceSoftwareUpdateDocument(DomainName=input.DomainName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -2460,7 +2461,7 @@ struct Elasticsearch_ServiceClient:
     # errors: AccessDeniedException, BaseException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def update_package(self, UpdatePackageRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/packages/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageDocument(PackageID=input.PackageID, PackageSource=input.PackageSource, PackageDescription=input.PackageDescription, CommitMessage=input.CommitMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -2469,7 +2470,7 @@ struct Elasticsearch_ServiceClient:
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def update_vpc_endpoint(self, UpdateVpcEndpointRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/vpcEndpoints/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"VpcEndpointId\":" + es_json_str(input.VpcEndpointId))
         parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
@@ -2480,7 +2481,7 @@ struct Elasticsearch_ServiceClient:
     # errors: BaseException, DisabledOperationException, InternalException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
     def upgrade_elasticsearch_domain(self, UpgradeElasticsearchDomainRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/upgradeDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-01-01/es/upgradeDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradeElasticsearchDomainDocument(DomainName=input.DomainName, TargetVersion=input.TargetVersion, PerformCheckOnly=input.PerformCheckOnly)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)

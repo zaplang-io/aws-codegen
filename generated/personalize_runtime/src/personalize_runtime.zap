@@ -206,7 +206,7 @@ struct Personalize_RuntimeClient:
     # errors: InvalidInputException, ResourceNotFoundException
     def get_action_recommendations(self, GetActionRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/action-recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/action-recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.campaignArn.is_some():
             auto u0 = input.campaignArn.unwrap()
@@ -233,7 +233,7 @@ struct Personalize_RuntimeClient:
     # errors: InvalidInputException, ResourceNotFoundException
     def get_personalized_ranking(self, GetPersonalizedRankingRequest input) -> str:
         auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/personalize-ranking", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/personalize-ranking", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"campaignArn\":" + personalize_runtime_json_str(input.campaignArn))
         list[str] e0 = []
@@ -272,7 +272,7 @@ struct Personalize_RuntimeClient:
     # errors: InvalidInputException, ResourceNotFoundException
     def get_recommendations(self, GetRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_runtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.campaignArn.is_some():
             auto u0 = input.campaignArn.unwrap()

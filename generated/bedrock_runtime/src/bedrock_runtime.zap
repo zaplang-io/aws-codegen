@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 10 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   195 structs (129 @derive(Json)), 39 enums, 12 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -32,6 +32,7 @@ import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
 import base64
+import datetime
 
 # The Bedrock_Runtime rest-json protocol: SigV4 service "bedrock" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1775,15 +1776,6 @@ def bedrock_runtime_error_from_code(str code) -> Bedrock_RuntimeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListAsyncInvokes (httpQuery `submitTimeAfter` has unsupported type DateTime)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAsyncInvokes (operation not generated)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -2186,7 +2178,7 @@ struct Bedrock_RuntimeClient:
         dict[str, str] labels = {}
         labels["guardrailIdentifier"] = input.guardrailIdentifier
         labels["guardrailVersion"] = input.guardrailVersion
-        auto b = binding.HttpBinding(method="POST", path_template="/guardrail/{guardrailIdentifier}/version/{guardrailVersion}/apply", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrail/{guardrailIdentifier}/version/{guardrailVersion}/apply", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"source\":" + input.source.to_json())
         list[str] e0 = []
@@ -2205,7 +2197,7 @@ struct Bedrock_RuntimeClient:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
         dict[str, str] labels = {}
         labels["modelId"] = input.modelId
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.messages.is_some():
             auto u0 = input.messages.unwrap()
@@ -2267,7 +2259,7 @@ struct Bedrock_RuntimeClient:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
         dict[str, str] labels = {}
         labels["modelId"] = input.modelId
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse-stream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/converse-stream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.messages.is_some():
             auto u0 = input.messages.unwrap()
@@ -2329,7 +2321,7 @@ struct Bedrock_RuntimeClient:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
         dict[str, str] labels = {}
         labels["modelId"] = input.modelId
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/count-tokens", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/count-tokens", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"input\":" + count_tokens_input_to_json(input.input))
         auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
@@ -2341,14 +2333,14 @@ struct Bedrock_RuntimeClient:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
         dict[str, str] labels = {}
         labels["invocationArn"] = input.invocationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/async-invoke/{invocationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/async-invoke/{invocationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_runtime_service(), self.region, host)
 
     # InvokeGuardrailChecks  POST /guardrail-checks/invoke
     # errors: AccessDeniedException, InternalServerException, ServiceUnavailableException, ThrottlingException, ValidationException
     def invoke_guardrail_checks(self, InvokeGuardrailChecksRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/guardrail-checks/invoke", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrail-checks/invoke", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.messages:
@@ -2372,16 +2364,20 @@ struct Bedrock_RuntimeClient:
         if input.trace.is_some():
             headers["X-Amzn-Bedrock-Trace"] = input.trace.unwrap_or("")
         if input.guardrailIdentifier.is_some():
-            headers["X-Amzn-Bedrock-GuardrailIdentifier"] = input.guardrailIdentifier.unwrap_or("")
+            auto qt0 = input.guardrailIdentifier.unwrap_or("")
+            headers["X-Amzn-Bedrock-GuardrailIdentifier"] = qt0
         if input.guardrailVersion.is_some():
-            headers["X-Amzn-Bedrock-GuardrailVersion"] = input.guardrailVersion.unwrap_or("")
+            auto qt1 = input.guardrailVersion.unwrap_or("")
+            headers["X-Amzn-Bedrock-GuardrailVersion"] = qt1
         if input.performanceConfigLatency.is_some():
-            headers["X-Amzn-Bedrock-PerformanceConfig-Latency"] = input.performanceConfigLatency.unwrap_or("")
+            auto qt2 = input.performanceConfigLatency.unwrap_or("")
+            headers["X-Amzn-Bedrock-PerformanceConfig-Latency"] = qt2
         if input.serviceTier.is_some():
             headers["X-Amzn-Bedrock-Service-Tier"] = input.serviceTier.unwrap_or("")
         if input.requestMetadata.is_some():
-            headers["X-Amzn-Bedrock-Request-Metadata"] = input.requestMetadata.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt3 = input.requestMetadata.unwrap_or("")
+            headers["X-Amzn-Bedrock-Request-Metadata"] = qt3
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
 
@@ -2391,7 +2387,7 @@ struct Bedrock_RuntimeClient:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
         dict[str, str] labels = {}
         labels["modelId"] = input.modelId
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke-with-bidirectional-stream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke-with-bidirectional-stream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.body.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
 
@@ -2409,24 +2405,52 @@ struct Bedrock_RuntimeClient:
         if input.trace.is_some():
             headers["X-Amzn-Bedrock-Trace"] = input.trace.unwrap_or("")
         if input.guardrailIdentifier.is_some():
-            headers["X-Amzn-Bedrock-GuardrailIdentifier"] = input.guardrailIdentifier.unwrap_or("")
+            auto qt0 = input.guardrailIdentifier.unwrap_or("")
+            headers["X-Amzn-Bedrock-GuardrailIdentifier"] = qt0
         if input.guardrailVersion.is_some():
-            headers["X-Amzn-Bedrock-GuardrailVersion"] = input.guardrailVersion.unwrap_or("")
+            auto qt1 = input.guardrailVersion.unwrap_or("")
+            headers["X-Amzn-Bedrock-GuardrailVersion"] = qt1
         if input.performanceConfigLatency.is_some():
-            headers["X-Amzn-Bedrock-PerformanceConfig-Latency"] = input.performanceConfigLatency.unwrap_or("")
+            auto qt2 = input.performanceConfigLatency.unwrap_or("")
+            headers["X-Amzn-Bedrock-PerformanceConfig-Latency"] = qt2
         if input.serviceTier.is_some():
             headers["X-Amzn-Bedrock-Service-Tier"] = input.serviceTier.unwrap_or("")
         if input.requestMetadata.is_some():
-            headers["X-Amzn-Bedrock-Request-Metadata"] = input.requestMetadata.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke-with-response-stream", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt3 = input.requestMetadata.unwrap_or("")
+            headers["X-Amzn-Bedrock-Request-Metadata"] = qt3
+        auto b = binding.HttpBinding(method="POST", path_template="/model/{modelId}/invoke-with-response-stream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # ListAsyncInvokes  GET /async-invoke
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_async_invokes(self, ListAsyncInvokesRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        dict[str, str] query = {}
+        if input.submitTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.submitTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["submitTimeAfter"] = qt0
+        if input.submitTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.submitTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["submitTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/async-invoke", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_runtime_service(), self.region, host)
 
     # StartAsyncInvoke  POST /async-invoke
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
     def start_async_invoke(self, StartAsyncInvokeRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/async-invoke", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/async-invoke", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientRequestToken.is_some():
             auto u0 = input.clientRequestToken.unwrap()
@@ -2442,6 +2466,19 @@ struct Bedrock_RuntimeClient:
             parts.append("\"tags\":" + bedrock_runtime_json_arr(e2))
         auto bp = restjson.rest_json_document(b, bedrock_runtime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_runtime_service(), self.region, host)
+
+    # Paginator for ListAsyncInvokes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: asyncInvokeSummaries).
+    def paginate_list_async_invokes(self, ListAsyncInvokesRequest input):
+        auto host = endpoints.regional_host(bedrock_runtime_service(), self.region)
+        while True:
+            auto raw = self.list_async_invokes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a Bedrock_RuntimeClient bound to credentials + region.
 def bedrock_runtime_client(core.Credentials creds, str region) -> Bedrock_RuntimeClient:

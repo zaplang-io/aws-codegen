@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 30 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   97 structs (57 @derive(Json)), 3 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -807,11 +807,6 @@ def schemas_error_from_code(str code) -> schemasError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -849,7 +844,7 @@ struct schemasClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
     def create_discoverer(self, CreateDiscovererRequest input) -> str:
         auto host = endpoints.regional_host(schemas_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -873,7 +868,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -894,7 +889,7 @@ struct schemasClient:
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
         labels["schemaName"] = input.SchemaName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Content\":" + schemas_json_str(input.Content))
         if input.Description.is_some():
@@ -916,7 +911,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["discovererId"] = input.DiscovererId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DeleteRegistry  DELETE /v1/registries/name/{registryName}
@@ -925,7 +920,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /v1/policy
@@ -935,7 +930,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.RegistryName.is_some():
             query["registryName"] = input.RegistryName.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DeleteSchema  DELETE /v1/registries/name/{registryName}/schemas/name/{schemaName}
@@ -945,7 +940,7 @@ struct schemasClient:
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
         labels["schemaName"] = input.SchemaName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DeleteSchemaVersion  DELETE /v1/registries/name/{registryName}/schemas/name/{schemaName}/version/{schemaVersion}
@@ -956,7 +951,7 @@ struct schemasClient:
         labels["registryName"] = input.RegistryName
         labels["schemaName"] = input.SchemaName
         labels["schemaVersion"] = input.SchemaVersion
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/version/{schemaVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/version/{schemaVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DescribeCodeBinding  GET /v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}
@@ -970,7 +965,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.SchemaVersion.is_some():
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DescribeDiscoverer  GET /v1/discoverers/id/{discovererId}
@@ -979,7 +974,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["discovererId"] = input.DiscovererId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DescribeRegistry  GET /v1/registries/name/{registryName}
@@ -988,7 +983,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # DescribeSchema  GET /v1/registries/name/{registryName}/schemas/name/{schemaName}
@@ -1001,7 +996,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.SchemaVersion.is_some():
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ExportSchema  GET /v1/registries/name/{registryName}/schemas/name/{schemaName}/export
@@ -1015,7 +1010,7 @@ struct schemasClient:
         if input.SchemaVersion.is_some():
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
         query["type"] = input.Type
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/export", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/export", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # GetCodeBindingSource  GET /v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}/source
@@ -1029,14 +1024,14 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.SchemaVersion.is_some():
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}/source", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}/source", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # GetDiscoveredSchema  POST /v1/discover
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
     def get_discovered_schema(self, GetDiscoveredSchemaRequest input) -> str:
         auto host = endpoints.regional_host(schemas_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/discover", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discover", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Events:
@@ -1053,7 +1048,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.RegistryName.is_some():
             query["registryName"] = input.RegistryName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ListDiscoverers  GET /v1/discoverers
@@ -1069,7 +1064,7 @@ struct schemasClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.SourceArnPrefix.is_some():
             query["sourceArnPrefix"] = input.SourceArnPrefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/discoverers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/discoverers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ListRegistries  GET /v1/registries
@@ -1085,7 +1080,7 @@ struct schemasClient:
             query["registryNamePrefix"] = input.RegistryNamePrefix.unwrap_or("")
         if input.Scope.is_some():
             query["scope"] = input.Scope.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ListSchemaVersions  GET /v1/registries/name/{registryName}/schemas/name/{schemaName}/versions
@@ -1100,7 +1095,7 @@ struct schemasClient:
             query["limit"] = str(input.Limit.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ListSchemas  GET /v1/registries/name/{registryName}/schemas
@@ -1116,7 +1111,7 @@ struct schemasClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.SchemaNamePrefix.is_some():
             query["schemaNamePrefix"] = input.SchemaNamePrefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resource-arn}
@@ -1125,7 +1120,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # PutCodeBinding  POST /v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}
@@ -1139,7 +1134,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.SchemaVersion.is_some():
             query["schemaVersion"] = input.SchemaVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}/language/{language}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # PutResourcePolicy  PUT /v1/policy
@@ -1149,7 +1144,7 @@ struct schemasClient:
         dict[str, str] query = {}
         if input.RegistryName.is_some():
             query["registryName"] = input.RegistryName.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(Policy=input.Policy, RevisionId=input.RevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
@@ -1166,7 +1161,7 @@ struct schemasClient:
             query["limit"] = str(input.Limit.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/registries/name/{registryName}/schemas/search", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # StartDiscoverer  POST /v1/discoverers/id/{discovererId}/start
@@ -1175,7 +1170,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["discovererId"] = input.DiscovererId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers/id/{discovererId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers/id/{discovererId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # StopDiscoverer  POST /v1/discoverers/id/{discovererId}/stop
@@ -1184,7 +1179,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["discovererId"] = input.DiscovererId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers/id/{discovererId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/discoverers/id/{discovererId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
 
     # TagResource  POST /tags/{resource-arn}
@@ -1193,7 +1188,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1202,13 +1197,24 @@ struct schemasClient:
         auto bp = restjson.rest_json_document(b, schemas_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(schemas_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, schemas_service(), self.region, host)
+
     # UpdateDiscoverer  PUT /v1/discoverers/id/{discovererId}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, UnauthorizedException
     def update_discoverer(self, UpdateDiscovererRequest input) -> str:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["discovererId"] = input.DiscovererId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/discoverers/id/{discovererId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDiscovererDocument(Description=input.Description, CrossAccount=input.CrossAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
@@ -1219,7 +1225,7 @@ struct schemasClient:
         auto host = endpoints.regional_host(schemas_service(), self.region)
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/registries/name/{registryName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRegistryDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)
@@ -1231,7 +1237,7 @@ struct schemasClient:
         dict[str, str] labels = {}
         labels["registryName"] = input.RegistryName
         labels["schemaName"] = input.SchemaName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/registries/name/{registryName}/schemas/name/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSchemaDocument(ClientTokenId=input.ClientTokenId, Content=input.Content, Description=input.Description, Type=input.Type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, schemas_service(), self.region, host)

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 39 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 40 operations — 40 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   128 structs (68 @derive(Json)), 20 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1255,11 +1255,6 @@ def ivsrealtime_error_from_code(str code) -> IVS_RealTimeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1589,7 +1584,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_encoder_configuration(self, CreateEncoderConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateEncoderConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateEncoderConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1610,7 +1605,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ValidationException
     def create_ingest_configuration(self, CreateIngestConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIngestConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1647,7 +1642,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_participant_token(self, CreateParticipantTokenRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateParticipantToken", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateParticipantToken", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stageArn\":" + ivsrealtime_json_str(input.stageArn))
         if input.duration.is_some():
@@ -1675,7 +1670,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ValidationException
     def create_stage(self, CreateStageRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1702,7 +1697,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_storage_configuration(self, CreateStorageConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1721,7 +1716,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def delete_encoder_configuration(self, DeleteEncoderConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteEncoderConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteEncoderConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteEncoderConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1730,7 +1725,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_ingest_configuration(self, DeleteIngestConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIngestConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIngestConfigurationDocument(arn=input.arn, force=input.force)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1739,7 +1734,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_public_key(self, DeletePublicKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeletePublicKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeletePublicKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePublicKeyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1748,7 +1743,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_stage(self, DeleteStageRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteStageDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1757,7 +1752,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def delete_storage_configuration(self, DeleteStorageConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteStorageConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1766,7 +1761,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def disconnect_participant(self, DisconnectParticipantRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectParticipant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectParticipant", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectParticipantDocument(stageArn=input.stageArn, participantId=input.participantId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1775,7 +1770,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def get_composition(self, GetCompositionRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetComposition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetComposition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCompositionDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1784,7 +1779,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def get_encoder_configuration(self, GetEncoderConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetEncoderConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetEncoderConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetEncoderConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1793,7 +1788,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_ingest_configuration(self, GetIngestConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetIngestConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIngestConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1802,7 +1797,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_participant(self, GetParticipantRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetParticipant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetParticipant", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetParticipantDocument(stageArn=input.stageArn, sessionId=input.sessionId, participantId=input.participantId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1811,7 +1806,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_public_key(self, GetPublicKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetPublicKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetPublicKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPublicKeyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1820,7 +1815,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_stage(self, GetStageRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStageDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1829,7 +1824,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_stage_session(self, GetStageSessionRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStageSession", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStageSession", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStageSessionDocument(stageArn=input.stageArn, sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1838,7 +1833,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def get_storage_configuration(self, GetStorageConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStorageConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1847,7 +1842,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ServiceQuotaExceededException, ValidationException
     def import_public_key(self, ImportPublicKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ImportPublicKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportPublicKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"publicKeyMaterial\":" + ivsrealtime_json_str(input.publicKeyMaterial))
         if input.name.is_some():
@@ -1866,7 +1861,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def list_compositions(self, ListCompositionsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListCompositions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListCompositions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCompositionsDocument(filterByStageArn=input.filterByStageArn, filterByEncoderConfigurationArn=input.filterByEncoderConfigurationArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1875,7 +1870,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def list_encoder_configurations(self, ListEncoderConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListEncoderConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListEncoderConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEncoderConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1884,7 +1879,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_ingest_configurations(self, ListIngestConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIngestConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIngestConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIngestConfigurationsDocument(filterByStageArn=input.filterByStageArn, filterByState=input.filterByState, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1893,7 +1888,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_participant_events(self, ListParticipantEventsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipantEvents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipantEvents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListParticipantEventsDocument(stageArn=input.stageArn, sessionId=input.sessionId, participantId=input.participantId, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1902,7 +1897,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_participant_replicas(self, ListParticipantReplicasRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipantReplicas", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipantReplicas", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListParticipantReplicasDocument(sourceStageArn=input.sourceStageArn, participantId=input.participantId, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1911,7 +1906,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_participants(self, ListParticipantsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListParticipants", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListParticipantsDocument(stageArn=input.stageArn, sessionId=input.sessionId, filterByUserId=input.filterByUserId, filterByPublished=input.filterByPublished, filterByState=input.filterByState, nextToken=input.nextToken, maxResults=input.maxResults, filterByRecordingState=input.filterByRecordingState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1920,7 +1915,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_public_keys(self, ListPublicKeysRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPublicKeys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPublicKeys", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPublicKeysDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1929,7 +1924,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ValidationException
     def list_stage_sessions(self, ListStageSessionsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStageSessions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStageSessions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStageSessionsDocument(stageArn=input.stageArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1938,7 +1933,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, ValidationException
     def list_stages(self, ListStagesRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStagesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1947,7 +1942,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def list_storage_configurations(self, ListStorageConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStorageConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStorageConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStorageConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1958,14 +1953,14 @@ struct IVS_RealTimeClient:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ivsrealtime_service(), self.region, host)
 
     # RevokeConnectionToken  POST /RevokeConnectionToken
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def revoke_connection_token(self, RevokeConnectionTokenRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RevokeConnectionToken", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RevokeConnectionToken", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeConnectionTokenDocument(tokenId=input.tokenId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -1974,7 +1969,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_composition(self, StartCompositionRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartComposition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartComposition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stageArn\":" + ivsrealtime_json_str(input.stageArn))
         if input.idempotencyToken.is_some():
@@ -2000,7 +1995,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_participant_replication(self, StartParticipantReplicationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartParticipantReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartParticipantReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceStageArn\":" + ivsrealtime_json_str(input.sourceStageArn))
         parts.append("\"destinationStageArn\":" + ivsrealtime_json_str(input.destinationStageArn))
@@ -2021,7 +2016,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def stop_composition(self, StopCompositionRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopComposition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopComposition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopCompositionDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -2030,7 +2025,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def stop_participant_replication(self, StopParticipantReplicationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopParticipantReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopParticipantReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopParticipantReplicationDocument(sourceStageArn=input.sourceStageArn, destinationStageArn=input.destinationStageArn, participantId=input.participantId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -2041,7 +2036,7 @@ struct IVS_RealTimeClient:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2050,11 +2045,22 @@ struct IVS_RealTimeClient:
         auto bp = restjson.rest_json_document(b, ivsrealtime_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ivsrealtime_service(), self.region, host)
+
     # UpdateIngestConfiguration  POST /UpdateIngestConfiguration
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_ingest_configuration(self, UpdateIngestConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIngestConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIngestConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIngestConfigurationDocument(arn=input.arn, stageArn=input.stageArn, redundantIngest=input.redundantIngest)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivsrealtime_service(), self.region, host)
@@ -2063,7 +2069,7 @@ struct IVS_RealTimeClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def update_stage(self, UpdateStageRequest input) -> str:
         auto host = endpoints.regional_host(ivsrealtime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateStage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateStage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + ivsrealtime_json_str(input.arn))
         if input.name.is_some():

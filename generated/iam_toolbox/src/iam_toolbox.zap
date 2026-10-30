@@ -180,7 +180,7 @@ struct IAM_ToolboxClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/authorization-details/{authorizationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/authorization-details/{authorizationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iam_toolbox_service(), self.region, host)
 
     # Paginator for GetRequestAuthorizationDetails — yields each Response page, threading the

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 39 with a generated method,
-#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 48 operations — 48 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   157 structs (127 @derive(Json)), 12 enums, 37 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1378,19 +1378,6 @@ def neptune_db_error_from_code(str code) -> neptunedataError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CancelMLDataProcessingJob (httpQuery `clean` has unsupported type bool)
-#   CancelMLModelTrainingJob (httpQuery `clean` has unsupported type bool)
-#   CancelMLModelTransformJob (httpQuery `clean` has unsupported type bool)
-#   CancelOpenCypherQuery (httpQuery `silent` has unsupported type bool)
-#   DeleteMLEndpoint (httpQuery `clean` has unsupported type bool)
-#   GetLoaderJobStatus (httpQuery `details` has unsupported type bool)
-#   ListGremlinQueries (httpQuery `includeWaiting` has unsupported type bool)
-#   ListLoaderJobs (httpQuery `includeQueuedLoads` has unsupported type bool)
-#   ListOpenCypherQueries (httpQuery `includeWaiting` has unsupported type bool)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1460,6 +1447,12 @@ struct StartIndexRebuildDocument:
     # document members of StartIndexRebuild
     Optional[str] clientToken
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def neptune_db_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound neptunedata client: credentials + region, threaded into every operation.
 struct neptunedataClient:
     core.Credentials creds
@@ -1471,7 +1464,7 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gremlin/status/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gremlin/status/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # CancelIndexRebuild  POST /storage/indexes/rebuilds/{rebuildId}/cancel
@@ -1480,7 +1473,7 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["rebuildId"] = input.rebuildId
-        auto b = binding.HttpBinding(method="POST", path_template="/storage/indexes/rebuilds/{rebuildId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/storage/indexes/rebuilds/{rebuildId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # CancelLoaderJob  DELETE /loader/{loadId}
@@ -1489,37 +1482,105 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["loadId"] = input.loadId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/loader/{loadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/loader/{loadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # CancelMLDataProcessingJob  DELETE /ml/dataprocessing/{id}
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def cancel_ml_data_processing_job(self, CancelMLDataProcessingJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.neptuneIamRoleArn.is_some():
+            query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
+        if input.clean.is_some():
+            query["clean"] = neptune_db_bind_bool(input.clean.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ml/dataprocessing/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # CancelMLModelTrainingJob  DELETE /ml/modeltraining/{id}
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def cancel_ml_model_training_job(self, CancelMLModelTrainingJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.neptuneIamRoleArn.is_some():
+            query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
+        if input.clean.is_some():
+            query["clean"] = neptune_db_bind_bool(input.clean.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ml/modeltraining/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # CancelMLModelTransformJob  DELETE /ml/modeltransform/{id}
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def cancel_ml_model_transform_job(self, CancelMLModelTransformJobInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.neptuneIamRoleArn.is_some():
+            query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
+        if input.clean.is_some():
+            query["clean"] = neptune_db_bind_bool(input.clean.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ml/modeltransform/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # CancelOpenCypherQuery  DELETE /opencypher/status/{queryId}
+    # errors: BadRequestException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidNumericDataException, InvalidParameterException, MissingParameterException, ParsingException, PreconditionsFailedException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
+    def cancel_open_cypher_query(self, CancelOpenCypherQueryInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["queryId"] = input.queryId
+        dict[str, str] query = {}
+        if input.silent.is_some():
+            query["silent"] = neptune_db_bind_bool(input.silent.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/opencypher/status/{queryId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # CreateMLEndpoint  POST /ml/endpoints
     # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def create_ml_endpoint(self, CreateMLEndpointInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ml/endpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/endpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMLEndpointDocument(id=input.id, mlModelTrainingJobId=input.mlModelTrainingJobId, mlModelTransformJobId=input.mlModelTransformJobId, update=input.update, neptuneIamRoleArn=input.neptuneIamRoleArn, modelName=input.modelName, instanceType=input.instanceType, instanceCount=input.instanceCount, volumeEncryptionKMSKey=input.volumeEncryptionKMSKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
+
+    # DeleteMLEndpoint  DELETE /ml/endpoints/{id}
+    # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def delete_ml_endpoint(self, DeleteMLEndpointInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.neptuneIamRoleArn.is_some():
+            query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
+        if input.clean.is_some():
+            query["clean"] = neptune_db_bind_bool(input.clean.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ml/endpoints/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # DeletePropertygraphStatistics  DELETE /propertygraph/statistics
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def delete_propertygraph_statistics(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # DeleteSparqlStatistics  DELETE /sparql/statistics
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def delete_sparql_statistics(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ExecuteFastReset  POST /system
     # errors: AccessDeniedException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MethodNotAllowedException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, ServerShutdownException, TooManyRequestsException, UnsupportedOperationException
     def execute_fast_reset(self, ExecuteFastResetInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/system", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/system", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteFastResetDocument(action=input.action, token=input.token)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1528,7 +1589,7 @@ struct neptunedataClient:
     # errors: BadRequestException, CancelledByMaintenanceException, CancelledByUserException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MalformedQueryException, MemoryLimitExceededException, MissingParameterException, ParsingException, PreconditionsFailedException, QueryLimitExceededException, QueryLimitException, QueryTooLargeException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
     def execute_gremlin_explain_query(self, ExecuteGremlinExplainQueryInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/gremlin/explain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gremlin/explain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteGremlinExplainQueryDocument(gremlinQuery=input.gremlinQuery)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1537,7 +1598,7 @@ struct neptunedataClient:
     # errors: BadRequestException, CancelledByMaintenanceException, CancelledByUserException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MalformedQueryException, MemoryLimitExceededException, MissingParameterException, ParsingException, PreconditionsFailedException, QueryLimitExceededException, QueryLimitException, QueryTooLargeException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
     def execute_gremlin_profile_query(self, ExecuteGremlinProfileQueryInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/gremlin/profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gremlin/profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteGremlinProfileQueryDocument(gremlinQuery=input.gremlinQuery, results=input.results, chop=input.chop, serializer=input.serializer, indexOps=input.indexOps)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1549,7 +1610,7 @@ struct neptunedataClient:
         dict[str, str] headers = {}
         if input.serializer.is_some():
             headers["accept"] = input.serializer.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/gremlin", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gremlin", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteGremlinQueryDocument(gremlinQuery=input.gremlinQuery)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1558,7 +1619,7 @@ struct neptunedataClient:
     # errors: BadRequestException, CancelledByMaintenanceException, CancelledByUserException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidNumericDataException, InvalidParameterException, MalformedQueryException, MemoryLimitExceededException, MissingParameterException, ParsingException, PreconditionsFailedException, QueryLimitExceededException, QueryLimitException, QueryTooLargeException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
     def execute_open_cypher_explain_query(self, ExecuteOpenCypherExplainQueryInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/opencypher/explain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/opencypher/explain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteOpenCypherExplainQueryDocument(openCypherQuery=input.openCypherQuery, parameters=input.parameters, explainMode=input.explainMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1567,7 +1628,7 @@ struct neptunedataClient:
     # errors: BadRequestException, CancelledByMaintenanceException, CancelledByUserException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidNumericDataException, InvalidParameterException, MalformedQueryException, MemoryLimitExceededException, MissingParameterException, ParsingException, PreconditionsFailedException, QueryLimitExceededException, QueryLimitException, QueryTooLargeException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
     def execute_open_cypher_query(self, ExecuteOpenCypherQueryInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/opencypher", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/opencypher", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteOpenCypherQueryDocument(openCypherQuery=input.openCypherQuery, parameters=input.parameters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1576,7 +1637,7 @@ struct neptunedataClient:
     # errors: ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def get_engine_status(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetGremlinQueryStatus  GET /gremlin/status/{queryId}
@@ -1585,7 +1646,7 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/gremlin/status/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gremlin/status/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetIndexRebuildStatus  GET /storage/indexes/rebuilds/{rebuildId}
@@ -1594,7 +1655,25 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["rebuildId"] = input.rebuildId
-        auto b = binding.HttpBinding(method="GET", path_template="/storage/indexes/rebuilds/{rebuildId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/storage/indexes/rebuilds/{rebuildId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # GetLoaderJobStatus  GET /loader/{loadId}
+    # errors: BadRequestException, BulkLoadIdNotFoundException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, LoadUrlAccessDeniedException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def get_loader_job_status(self, GetLoaderJobStatusInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] labels = {}
+        labels["loadId"] = input.loadId
+        dict[str, str] query = {}
+        if input.details.is_some():
+            query["details"] = neptune_db_bind_bool(input.details.unwrap_or(False))
+        if input.errors.is_some():
+            query["errors"] = neptune_db_bind_bool(input.errors.unwrap_or(False))
+        if input.page.is_some():
+            query["page"] = str(input.page.unwrap_or(0))
+        if input.errorsPerPage.is_some():
+            query["errorsPerPage"] = str(input.errorsPerPage.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/loader/{loadId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetMLDataProcessingJob  GET /ml/dataprocessing/{id}
@@ -1606,7 +1685,7 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/dataprocessing/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/dataprocessing/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetMLEndpoint  GET /ml/endpoints/{id}
@@ -1618,7 +1697,7 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/endpoints/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/endpoints/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetMLModelTrainingJob  GET /ml/modeltraining/{id}
@@ -1630,7 +1709,7 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltraining/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltraining/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetMLModelTransformJob  GET /ml/modeltransform/{id}
@@ -1642,7 +1721,7 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltransform/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltransform/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetOpenCypherQueryStatus  GET /opencypher/status/{queryId}
@@ -1651,14 +1730,14 @@ struct neptunedataClient:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
         dict[str, str] labels = {}
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/opencypher/status/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/opencypher/status/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetPropertygraphStatistics  GET /propertygraph/statistics
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def get_propertygraph_statistics(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetPropertygraphStream  GET /propertygraph/stream
@@ -1677,7 +1756,7 @@ struct neptunedataClient:
         dict[str, str] headers = {}
         if input.encoding.is_some():
             headers["Accept-Encoding"] = input.encoding.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/stream", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/stream", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetPropertygraphSummary  GET /propertygraph/statistics/summary
@@ -1687,7 +1766,7 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.mode.is_some():
             query["mode"] = input.mode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/statistics/summary", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/propertygraph/statistics/summary", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetRDFGraphSummary  GET /rdf/statistics/summary
@@ -1697,14 +1776,14 @@ struct neptunedataClient:
         dict[str, str] query = {}
         if input.mode.is_some():
             query["mode"] = input.mode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rdf/statistics/summary", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rdf/statistics/summary", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetSparqlStatistics  GET /sparql/statistics
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def get_sparql_statistics(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetSparqlStream  GET /sparql/stream
@@ -1723,21 +1802,45 @@ struct neptunedataClient:
         dict[str, str] headers = {}
         if input.encoding.is_some():
             headers["Accept-Encoding"] = input.encoding.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sparql/stream", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sparql/stream", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # GetStorageInfo  GET /storage/info
     # errors: AccessDeniedException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, MethodNotAllowedException, PreconditionsFailedException, ServerShutdownException, TooManyRequestsException, UnsupportedOperationException
     def get_storage_info(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/storage/info", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/storage/info", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # ListGremlinQueries  GET /gremlin/status
+    # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, ParsingException, PreconditionsFailedException, ReadOnlyViolationException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
+    def list_gremlin_queries(self, ListGremlinQueriesInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] query = {}
+        if input.includeWaiting.is_some():
+            auto qt0 = neptune_db_bind_bool(input.includeWaiting.unwrap_or(False))
+            query["includeWaiting"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/gremlin/status", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ListIndexRebuilds  GET /storage/indexes/rebuilds
     # errors: AccessDeniedException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, MethodNotAllowedException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def list_index_rebuilds(self) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/storage/indexes/rebuilds", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/storage/indexes/rebuilds", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # ListLoaderJobs  GET /loader
+    # errors: BadRequestException, BulkLoadIdNotFoundException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, LoadUrlAccessDeniedException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
+    def list_loader_jobs(self, ListLoaderJobsInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] query = {}
+        if input.limit.is_some():
+            query["limit"] = str(input.limit.unwrap_or(0))
+        if input.includeQueuedLoads.is_some():
+            auto qt0 = neptune_db_bind_bool(input.includeQueuedLoads.unwrap_or(False))
+            query["includeQueuedLoads"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/loader", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ListMLDataProcessingJobs  GET /ml/dataprocessing
@@ -1749,7 +1852,7 @@ struct neptunedataClient:
             query["maxItems"] = str(input.maxItems.unwrap_or(0))
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/dataprocessing", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/dataprocessing", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ListMLEndpoints  GET /ml/endpoints
@@ -1761,7 +1864,7 @@ struct neptunedataClient:
             query["maxItems"] = str(input.maxItems.unwrap_or(0))
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/endpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/endpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ListMLModelTrainingJobs  GET /ml/modeltraining
@@ -1773,7 +1876,7 @@ struct neptunedataClient:
             query["maxItems"] = str(input.maxItems.unwrap_or(0))
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltraining", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltraining", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ListMLModelTransformJobs  GET /ml/modeltransform
@@ -1785,14 +1888,25 @@ struct neptunedataClient:
             query["maxItems"] = str(input.maxItems.unwrap_or(0))
         if input.neptuneIamRoleArn.is_some():
             query["neptuneIamRoleArn"] = input.neptuneIamRoleArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltransform", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ml/modeltransform", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
+
+    # ListOpenCypherQueries  GET /opencypher/status
+    # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConcurrentModificationException, ConstraintViolationException, FailureByQueryException, IllegalArgumentException, InvalidArgumentException, InvalidNumericDataException, InvalidParameterException, MissingParameterException, ParsingException, PreconditionsFailedException, ReadOnlyViolationException, TimeLimitExceededException, TooManyRequestsException, UnsupportedOperationException
+    def list_open_cypher_queries(self, ListOpenCypherQueriesInput input) -> str:
+        auto host = endpoints.regional_host(neptune_db_service(), self.region)
+        dict[str, str] query = {}
+        if input.includeWaiting.is_some():
+            auto qt0 = neptune_db_bind_bool(input.includeWaiting.unwrap_or(False))
+            query["includeWaiting"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/opencypher/status", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_db_service(), self.region, host)
 
     # ManagePropertygraphStatistics  POST /propertygraph/statistics
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def manage_propertygraph_statistics(self, ManagePropertygraphStatisticsInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/propertygraph/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ManagePropertygraphStatisticsDocument(mode=input.mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1801,7 +1915,7 @@ struct neptunedataClient:
     # errors: AccessDeniedException, BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MissingParameterException, PreconditionsFailedException, ReadOnlyViolationException, StatisticsNotAvailableException, TooManyRequestsException, UnsupportedOperationException
     def manage_sparql_statistics(self, ManageSparqlStatisticsInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sparql/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ManageSparqlStatisticsDocument(mode=input.mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1817,7 +1931,7 @@ struct neptunedataClient:
             query["concurrency"] = str(input.concurrency.unwrap_or(0))
         if input.writeBufferSize.is_some():
             query["writeBufferSize"] = input.writeBufferSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/storage/indexes/rebuilds", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/storage/indexes/rebuilds", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartIndexRebuildDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_db_service(), self.region, host)
@@ -1826,7 +1940,7 @@ struct neptunedataClient:
     # errors: BadRequestException, BulkLoadIdNotFoundException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InternalFailureException, InvalidArgumentException, InvalidParameterException, LoadUrlAccessDeniedException, MissingParameterException, PreconditionsFailedException, S3Exception, TooManyRequestsException, UnsupportedOperationException
     def start_loader_job(self, StartLoaderJobInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/loader", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/loader", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"source\":" + neptune_db_json_str(input.source))
         parts.append("\"format\":" + input.format.to_json())
@@ -1872,7 +1986,7 @@ struct neptunedataClient:
     # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def start_ml_data_processing_job(self, StartMLDataProcessingJobInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ml/dataprocessing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/dataprocessing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.id.is_some():
             auto u0 = input.id.unwrap()
@@ -1928,7 +2042,7 @@ struct neptunedataClient:
     # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def start_ml_model_training_job(self, StartMLModelTrainingJobInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltraining", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltraining", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.id.is_some():
             auto u0 = input.id.unwrap()
@@ -1993,7 +2107,7 @@ struct neptunedataClient:
     # errors: BadRequestException, ClientTimeoutException, ConstraintViolationException, IllegalArgumentException, InvalidArgumentException, InvalidParameterException, MLResourceNotFoundException, MissingParameterException, PreconditionsFailedException, TooManyRequestsException, UnsupportedOperationException
     def start_ml_model_transform_job(self, StartMLModelTransformJobInput input) -> str:
         auto host = endpoints.regional_host(neptune_db_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltransform", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ml/modeltransform", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.id.is_some():
             auto u0 = input.id.unwrap()

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 20 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 22 operations — 22 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   90 structs (57 @derive(Json)), 11 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -802,12 +802,6 @@ def synthetics_error_from_code(str code) -> syntheticsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteCanary (httpQuery `DeleteLambda` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -997,6 +991,12 @@ def vpc_config_input_to_json(VpcConfigInput v) -> str:
         parts.append("\"Ipv6AllowedForDualStack\":" + json.dumps(JsonValue.Bool(u4)))
     return synthetics_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def synthetics_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound synthetics client: credentials + region, threaded into every operation.
 struct syntheticsClient:
     core.Credentials creds
@@ -1008,7 +1008,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["groupIdentifier"] = input.GroupIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/group/{groupIdentifier}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/group/{groupIdentifier}/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateResourceDocument(ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1017,7 +1017,7 @@ struct syntheticsClient:
     # errors: InternalServerException, RequestEntityTooLargeException, ValidationException
     def create_canary(self, CreateCanaryRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/canary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canary", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + synthetics_json_str(input.Name))
         parts.append("\"Code\":" + canary_code_input_to_json(input.Code))
@@ -1077,7 +1077,7 @@ struct syntheticsClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_group(self, CreateGroupRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + synthetics_json_str(input.Name))
         if input.Tags.is_some():
@@ -1089,20 +1089,33 @@ struct syntheticsClient:
         auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
 
+    # DeleteCanary  DELETE /canary/{name}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
+    def delete_canary(self, DeleteCanaryRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] query = {}
+        if input.DeleteLambda.is_some():
+            auto qt0 = synthetics_bind_bool(input.DeleteLambda.unwrap_or(False))
+            query["deleteLambda"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/canary/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
+
     # DeleteGroup  DELETE /group/{groupIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_group(self, DeleteGroupRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["groupIdentifier"] = input.GroupIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/group/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/group/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # DescribeCanaries  POST /canaries
     # errors: InternalServerException, ValidationException
     def describe_canaries(self, DescribeCanariesRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/canaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canaries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -1123,7 +1136,7 @@ struct syntheticsClient:
     # errors: InternalServerException, ValidationException
     def describe_canaries_last_run(self, DescribeCanariesLastRunRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/canaries/last-run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canaries/last-run", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -1147,7 +1160,7 @@ struct syntheticsClient:
     # errors: InternalServerException, ValidationException
     def describe_runtime_versions(self, DescribeRuntimeVersionsRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime-versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime-versions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeRuntimeVersionsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1158,7 +1171,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["groupIdentifier"] = input.GroupIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/group/{groupIdentifier}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/group/{groupIdentifier}/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateResourceDocument(ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1172,7 +1185,7 @@ struct syntheticsClient:
         dict[str, str] query = {}
         if input.DryRunId.is_some():
             query["dryRunId"] = input.DryRunId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/canary/{name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/canary/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # GetCanaryRuns  POST /canary/{name}/runs
@@ -1181,7 +1194,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/runs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCanaryRunsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults, DryRunId=input.DryRunId, RunType=input.RunType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1192,7 +1205,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["groupIdentifier"] = input.GroupIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/group/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/group/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # ListAssociatedGroups  POST /resource/{resourceArn}/groups
@@ -1201,7 +1214,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/resource/{resourceArn}/groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource/{resourceArn}/groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAssociatedGroupsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1212,7 +1225,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["groupIdentifier"] = input.GroupIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/group/{groupIdentifier}/resources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/group/{groupIdentifier}/resources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGroupResourcesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1221,7 +1234,7 @@ struct syntheticsClient:
     # errors: InternalServerException, ValidationException
     def list_groups(self, ListGroupsRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGroupsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
@@ -1232,7 +1245,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # StartCanary  POST /canary/{name}/start
@@ -1241,7 +1254,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # StartCanaryDryRun  POST /canary/{name}/dry-run/start
@@ -1250,7 +1263,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/dry-run/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/dry-run/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Code.is_some():
             auto u0 = input.Code.unwrap()
@@ -1306,7 +1319,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/canary/{name}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1315,7 +1328,7 @@ struct syntheticsClient:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1324,13 +1337,24 @@ struct syntheticsClient:
         auto bp = restjson.rest_json_document(b, synthetics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, synthetics_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, ConflictException, InternalFailureException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(synthetics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, synthetics_service(), self.region, host)
+
     # UpdateCanary  PATCH /canary/{name}
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestEntityTooLargeException, ResourceNotFoundException, ValidationException
     def update_canary(self, UpdateCanaryRequest input) -> str:
         auto host = endpoints.regional_host(synthetics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/canary/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/canary/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Code.is_some():
             auto u0 = input.Code.unwrap()

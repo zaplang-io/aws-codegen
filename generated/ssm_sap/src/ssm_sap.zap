@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 26 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 27 operations — 27 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   82 structs (45 @derive(Json)), 19 enums, 5 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -840,11 +840,6 @@ def ssm_sap_error_from_code(str code) -> Ssm_SapError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -965,7 +960,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def delete_resource_permission(self, DeleteResourcePermissionInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-resource-permission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-resource-permission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResourcePermissionDocument(ActionType=input.ActionType, SourceResourceArn=input.SourceResourceArn, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -974,7 +969,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, UnauthorizedException, ValidationException
     def deregister_application(self, DeregisterApplicationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deregister-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deregister-application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterApplicationDocument(ApplicationId=input.ApplicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -983,7 +978,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def get_application(self, GetApplicationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetApplicationDocument(ApplicationId=input.ApplicationId, ApplicationArn=input.ApplicationArn, AppRegistryArn=input.AppRegistryArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -992,7 +987,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, UnauthorizedException, ValidationException
     def get_component(self, GetComponentInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-component", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-component", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetComponentDocument(ApplicationId=input.ApplicationId, ComponentId=input.ComponentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1001,7 +996,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def get_configuration_check_operation(self, GetConfigurationCheckOperationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-configuration-check-operation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-configuration-check-operation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetConfigurationCheckOperationDocument(OperationId=input.OperationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1010,7 +1005,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def get_database(self, GetDatabaseInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-database", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-database", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDatabaseDocument(ApplicationId=input.ApplicationId, ComponentId=input.ComponentId, DatabaseId=input.DatabaseId, DatabaseArn=input.DatabaseArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1019,7 +1014,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def get_operation(self, GetOperationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-operation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-operation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOperationDocument(OperationId=input.OperationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1028,7 +1023,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_resource_permission(self, GetResourcePermissionInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-resource-permission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-resource-permission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetResourcePermissionDocument(ActionType=input.ActionType, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1037,7 +1032,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_applications(self, ListApplicationsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -1058,7 +1053,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, UnauthorizedException, ValidationException
     def list_components(self, ListComponentsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-components", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-components", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListComponentsDocument(ApplicationId=input.ApplicationId, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1067,7 +1062,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def list_configuration_check_definitions(self, ListConfigurationCheckDefinitionsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-configuration-check-definitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-configuration-check-definitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConfigurationCheckDefinitionsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1076,7 +1071,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_configuration_check_operations(self, ListConfigurationCheckOperationsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-configuration-check-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-configuration-check-operations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
         if input.ListMode.is_some():
@@ -1101,7 +1096,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_databases(self, ListDatabasesInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-databases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-databases", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDatabasesDocument(ApplicationId=input.ApplicationId, ComponentId=input.ComponentId, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1110,7 +1105,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def list_operation_events(self, ListOperationEventsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-operation-events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-operation-events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"OperationId\":" + ssm_sap_json_str(input.OperationId))
         if input.MaxResults.is_some():
@@ -1132,7 +1127,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def list_operations(self, ListOperationsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-operations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
         if input.MaxResults.is_some():
@@ -1154,7 +1149,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def list_sub_check_results(self, ListSubCheckResultsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-sub-check-results", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-sub-check-results", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSubCheckResultsDocument(OperationId=input.OperationId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1163,7 +1158,7 @@ struct Ssm_SapClient:
     # errors: InternalServerException, ValidationException
     def list_sub_check_rule_results(self, ListSubCheckRuleResultsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-sub-check-rule-results", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-sub-check-rule-results", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSubCheckRuleResultsDocument(SubCheckResultId=input.SubCheckResultId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1174,14 +1169,14 @@ struct Ssm_SapClient:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_sap_service(), self.region, host)
 
     # PutResourcePermission  POST /put-resource-permission
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def put_resource_permission(self, PutResourcePermissionInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-resource-permission", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-resource-permission", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePermissionDocument(ActionType=input.ActionType, SourceResourceArn=input.SourceResourceArn, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1190,7 +1185,7 @@ struct Ssm_SapClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def register_application(self, RegisterApplicationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/register-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/register-application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
         parts.append("\"ApplicationType\":" + input.ApplicationType.to_json())
@@ -1232,7 +1227,7 @@ struct Ssm_SapClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def start_application(self, StartApplicationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartApplicationDocument(ApplicationId=input.ApplicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1241,7 +1236,7 @@ struct Ssm_SapClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, UnauthorizedException, ValidationException
     def start_application_refresh(self, StartApplicationRefreshInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-application-refresh", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-application-refresh", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartApplicationRefreshDocument(ApplicationId=input.ApplicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1250,7 +1245,7 @@ struct Ssm_SapClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def start_configuration_checks(self, StartConfigurationChecksInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-configuration-checks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-configuration-checks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
         if input.ConfigurationCheckIds.is_some():
@@ -1266,7 +1261,7 @@ struct Ssm_SapClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def stop_application(self, StopApplicationInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/stop-application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/stop-application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopApplicationDocument(ApplicationId=input.ApplicationId, StopConnectedEntity=input.StopConnectedEntity, IncludeEc2InstanceShutdown=input.IncludeEc2InstanceShutdown)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
@@ -1277,7 +1272,7 @@ struct Ssm_SapClient:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1286,11 +1281,22 @@ struct Ssm_SapClient:
         auto bp = restjson.rest_json_document(b, ssm_sap_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_sap_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: ConflictException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ssm_sap_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ssm_sap_service(), self.region, host)
+
     # UpdateApplicationSettings  POST /update-application-settings
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, UnauthorizedException, ValidationException
     def update_application_settings(self, UpdateApplicationSettingsInput input) -> str:
         auto host = endpoints.regional_host(ssm_sap_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-application-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-application-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationId\":" + ssm_sap_json_str(input.ApplicationId))
         if input.CredentialsToAddOrUpdate.is_some():

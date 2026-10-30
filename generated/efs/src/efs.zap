@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 30 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   90 structs (65 @derive(Json)), 12 enums, 32 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -843,11 +843,6 @@ def elasticfilesystem_error_from_code(str code) -> EFSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -936,7 +931,7 @@ struct EFSClient:
     # errors: AccessPointAlreadyExists, AccessPointLimitExceeded, BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InternalServerError, ThrottlingException
     def create_access_point(self, CreateAccessPointRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/access-points", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/access-points", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientToken\":" + elasticfilesystem_json_str(input.ClientToken))
         if input.Tags.is_some():
@@ -959,7 +954,7 @@ struct EFSClient:
     # errors: BadRequest, FileSystemAlreadyExists, FileSystemLimitExceeded, InsufficientThroughputCapacity, InternalServerError, ThroughputLimitExceeded, UnsupportedAvailabilityZone
     def create_file_system(self, CreateFileSystemRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CreationToken\":" + elasticfilesystem_json_str(input.CreationToken))
         if input.PerformanceMode.is_some():
@@ -996,7 +991,7 @@ struct EFSClient:
     # errors: AvailabilityZonesMismatch, BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InternalServerError, IpAddressInUse, MountTargetConflict, NetworkInterfaceLimitExceeded, NoFreeAddressesInSubnet, SecurityGroupLimitExceeded, SecurityGroupNotFound, SubnetNotFound, UnsupportedAvailabilityZone
     def create_mount_target(self, CreateMountTargetRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/mount-targets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/mount-targets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FileSystemId\":" + elasticfilesystem_json_str(input.FileSystemId))
         parts.append("\"SubnetId\":" + elasticfilesystem_json_str(input.SubnetId))
@@ -1024,7 +1019,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["SourceFileSystemId"] = input.SourceFileSystemId
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Destinations:
@@ -1039,7 +1034,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/create-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/create-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -1054,7 +1049,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["AccessPointId"] = input.AccessPointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/access-points/{AccessPointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/access-points/{AccessPointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DeleteFileSystem  DELETE /2015-02-01/file-systems/{FileSystemId}
@@ -1063,7 +1058,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{FileSystemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DeleteFileSystemPolicy  DELETE /2015-02-01/file-systems/{FileSystemId}/policy
@@ -1072,7 +1067,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DeleteMountTarget  DELETE /2015-02-01/mount-targets/{MountTargetId}
@@ -1081,7 +1076,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["MountTargetId"] = input.MountTargetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/mount-targets/{MountTargetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/mount-targets/{MountTargetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DeleteReplicationConfiguration  DELETE /2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration
@@ -1093,7 +1088,7 @@ struct EFSClient:
         dict[str, str] query = {}
         if input.DeletionMode.is_some():
             query["deletionMode"] = input.DeletionMode.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/file-systems/{SourceFileSystemId}/replication-configuration", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DeleteTags  POST /2015-02-01/delete-tags/{FileSystemId}
@@ -1102,7 +1097,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/delete-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/delete-tags/{FileSystemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TagKeys:
@@ -1124,14 +1119,14 @@ struct EFSClient:
             query["AccessPointId"] = input.AccessPointId.unwrap_or("")
         if input.FileSystemId.is_some():
             query["FileSystemId"] = input.FileSystemId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/access-points", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/access-points", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeAccountPreferences  GET /2015-02-01/account-preferences
     # errors: InternalServerError
     def describe_account_preferences(self, DescribeAccountPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/account-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/account-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAccountPreferencesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
@@ -1142,7 +1137,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/backup-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/backup-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeFileSystemPolicy  GET /2015-02-01/file-systems/{FileSystemId}/policy
@@ -1151,7 +1146,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeFileSystems  GET /2015-02-01/file-systems
@@ -1167,7 +1162,7 @@ struct EFSClient:
             query["CreationToken"] = input.CreationToken.unwrap_or("")
         if input.FileSystemId.is_some():
             query["FileSystemId"] = input.FileSystemId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeLifecycleConfiguration  GET /2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration
@@ -1176,7 +1171,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeMountTargetSecurityGroups  GET /2015-02-01/mount-targets/{MountTargetId}/security-groups
@@ -1185,7 +1180,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["MountTargetId"] = input.MountTargetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/mount-targets/{MountTargetId}/security-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/mount-targets/{MountTargetId}/security-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeMountTargets  GET /2015-02-01/mount-targets
@@ -1203,7 +1198,7 @@ struct EFSClient:
             query["MountTargetId"] = input.MountTargetId.unwrap_or("")
         if input.AccessPointId.is_some():
             query["AccessPointId"] = input.AccessPointId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/mount-targets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/mount-targets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeReplicationConfigurations  GET /2015-02-01/file-systems/replication-configurations
@@ -1217,7 +1212,7 @@ struct EFSClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/replication-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/file-systems/replication-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # DescribeTags  GET /2015-02-01/tags/{FileSystemId}/
@@ -1231,7 +1226,7 @@ struct EFSClient:
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
         if input.Marker.is_some():
             query["Marker"] = input.Marker.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/tags/{FileSystemId}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/tags/{FileSystemId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # ListTagsForResource  GET /2015-02-01/resource-tags/{ResourceId}
@@ -1245,7 +1240,7 @@ struct EFSClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
 
     # ModifyMountTargetSecurityGroups  PUT /2015-02-01/mount-targets/{MountTargetId}/security-groups
@@ -1254,7 +1249,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["MountTargetId"] = input.MountTargetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/mount-targets/{MountTargetId}/security-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/mount-targets/{MountTargetId}/security-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SecurityGroups.is_some():
             auto u0 = input.SecurityGroups.unwrap()
@@ -1269,7 +1264,7 @@ struct EFSClient:
     # errors: BadRequest, InternalServerError
     def put_account_preferences(self, PutAccountPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/account-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/account-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountPreferencesDocument(ResourceIdType=input.ResourceIdType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
@@ -1280,7 +1275,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/backup-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/backup-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutBackupPolicyDocument(BackupPolicy=input.BackupPolicy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
@@ -1291,7 +1286,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFileSystemPolicyDocument(Policy=input.Policy, BypassPolicyLockoutSafetyCheck=input.BypassPolicyLockoutSafetyCheck)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
@@ -1302,7 +1297,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.LifecyclePolicies:
@@ -1317,7 +1312,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceId"] = input.ResourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -1326,13 +1321,24 @@ struct EFSClient:
         auto bp = restjson.rest_json_document(b, elasticfilesystem_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
 
+    # UntagResource  DELETE /2015-02-01/resource-tags/{ResourceId}
+    # errors: AccessPointNotFound, BadRequest, FileSystemNotFound, InternalServerError
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-02-01/resource-tags/{ResourceId}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, elasticfilesystem_service(), self.region, host)
+
     # UpdateFileSystem  PUT /2015-02-01/file-systems/{FileSystemId}
     # errors: BadRequest, FileSystemNotFound, IncorrectFileSystemLifeCycleState, InsufficientThroughputCapacity, InternalServerError, ThroughputLimitExceeded, TooManyRequests
     def update_file_system(self, UpdateFileSystemRequest input) -> str:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFileSystemDocument(ThroughputMode=input.ThroughputMode, ProvisionedThroughputInMibps=input.ProvisionedThroughputInMibps)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)
@@ -1343,7 +1349,7 @@ struct EFSClient:
         auto host = endpoints.regional_host(elasticfilesystem_service(), self.region)
         dict[str, str] labels = {}
         labels["FileSystemId"] = input.FileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/protection", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-02-01/file-systems/{FileSystemId}/protection", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFileSystemProtectionDocument(ReplicationOverwriteProtection=input.ReplicationOverwriteProtection)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elasticfilesystem_service(), self.region, host)

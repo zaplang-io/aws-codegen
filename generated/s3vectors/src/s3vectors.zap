@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 20 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 21 operations — 21 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (47 @derive(Json)), 3 enums, 13 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -549,11 +549,6 @@ def s3vectors_error_from_code(str code) -> S3VectorsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -715,7 +710,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def create_index(self, CreateIndexInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vectorBucketName.is_some():
             auto u0 = input.vectorBucketName.unwrap()
@@ -746,7 +741,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def create_vector_bucket(self, CreateVectorBucketInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateVectorBucket", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateVectorBucket", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vectorBucketName\":" + s3vectors_json_str(input.vectorBucketName))
         if input.encryptionConfiguration.is_some():
@@ -765,7 +760,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def delete_index(self, DeleteIndexInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIndexDocument(vectorBucketName=input.vectorBucketName, indexName=input.indexName, indexArn=input.indexArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -774,7 +769,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def delete_vector_bucket(self, DeleteVectorBucketInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectorBucket", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectorBucket", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteVectorBucketDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -783,7 +778,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def delete_vector_bucket_policy(self, DeleteVectorBucketPolicyInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectorBucketPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectorBucketPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteVectorBucketPolicyDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -792,7 +787,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def delete_vectors(self, DeleteVectorsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vectorBucketName.is_some():
             auto u0 = input.vectorBucketName.unwrap()
@@ -814,7 +809,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def get_index(self, GetIndexInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetIndex", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetIndex", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIndexDocument(vectorBucketName=input.vectorBucketName, indexName=input.indexName, indexArn=input.indexArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -823,7 +818,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def get_vector_bucket(self, GetVectorBucketInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetVectorBucket", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetVectorBucket", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetVectorBucketDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -832,7 +827,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def get_vector_bucket_policy(self, GetVectorBucketPolicyInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetVectorBucketPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetVectorBucketPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetVectorBucketPolicyDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -841,7 +836,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def get_vectors(self, GetVectorsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetVectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vectorBucketName.is_some():
             auto u0 = input.vectorBucketName.unwrap()
@@ -869,7 +864,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def list_indexes(self, ListIndexesInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIndexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIndexesDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn, maxResults=input.maxResults, nextToken=input.nextToken, prefix=input.prefix)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -880,14 +875,14 @@ struct S3VectorsClient:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3vectors_service(), self.region, host)
 
     # ListVectorBuckets  POST /ListVectorBuckets
     # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def list_vector_buckets(self, ListVectorBucketsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListVectorBuckets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListVectorBuckets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListVectorBucketsDocument(maxResults=input.maxResults, nextToken=input.nextToken, prefix=input.prefix)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -896,7 +891,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def list_vectors(self, ListVectorsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListVectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListVectorsDocument(vectorBucketName=input.vectorBucketName, indexName=input.indexName, indexArn=input.indexArn, maxResults=input.maxResults, nextToken=input.nextToken, segmentCount=input.segmentCount, segmentIndex=input.segmentIndex, returnData=input.returnData, returnMetadata=input.returnMetadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -905,7 +900,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def put_vector_bucket_default_index_mode(self, PutVectorBucketDefaultIndexModeInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutVectorBucketDefaultIndexMode", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutVectorBucketDefaultIndexMode", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutVectorBucketDefaultIndexModeDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn, defaultIndexMode=input.defaultIndexMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -914,7 +909,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def put_vector_bucket_policy(self, PutVectorBucketPolicyInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutVectorBucketPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutVectorBucketPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutVectorBucketPolicyDocument(vectorBucketName=input.vectorBucketName, vectorBucketArn=input.vectorBucketArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
@@ -923,7 +918,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def put_vectors(self, PutVectorsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutVectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vectorBucketName.is_some():
             auto u0 = input.vectorBucketName.unwrap()
@@ -945,7 +940,7 @@ struct S3VectorsClient:
     # errors: AccessDeniedException, InternalServerException, KmsDisabledException, KmsInvalidKeyUsageException, KmsInvalidStateException, KmsNotFoundException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def query_vectors(self, QueryVectorsInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/QueryVectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/QueryVectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vectorBucketName.is_some():
             auto u0 = input.vectorBucketName.unwrap()
@@ -982,7 +977,7 @@ struct S3VectorsClient:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -991,11 +986,22 @@ struct S3VectorsClient:
         auto bp = restjson.rest_json_document(b, s3vectors_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(s3vectors_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3vectors_service(), self.region, host)
+
     # UpdateIndexMode  POST /UpdateIndexMode
     # errors: AccessDeniedException, InternalServerException, NotFoundException, RequestTimeoutException, ServiceUnavailableException, TooManyRequestsException, ValidationException
     def update_index_mode(self, UpdateIndexModeInput input) -> str:
         auto host = endpoints.regional_host(s3vectors_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexMode", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexMode", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIndexModeDocument(vectorBucketName=input.vectorBucketName, indexName=input.indexName, indexArn=input.indexArn, indexMode=input.indexMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3vectors_service(), self.region, host)

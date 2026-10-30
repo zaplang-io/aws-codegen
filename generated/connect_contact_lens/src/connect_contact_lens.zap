@@ -233,7 +233,7 @@ struct Connect_Contact_LensClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def list_realtime_contact_analysis_segments(self, ListRealtimeContactAnalysisSegmentsRequest input) -> str:
         auto host = endpoints.regional_host(contact_lens_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/realtime-contact-analysis/analysis-segments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/realtime-contact-analysis/analysis-segments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRealtimeContactAnalysisSegmentsDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, contact_lens_service(), self.region, host)

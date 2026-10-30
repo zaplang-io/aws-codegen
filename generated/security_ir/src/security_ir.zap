@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 23 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   77 structs (57 @derive(Json)), 17 enums, 9 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -812,12 +812,6 @@ def security_ir_error_from_code(str code) -> Security_IRError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetFindingMetrics (httpQuery `startDate` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -954,7 +948,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipId"] = input.membershipId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership/{membershipId}/batch-member-details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership/{membershipId}/batch-member-details", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -969,7 +963,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipId"] = input.membershipId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/membership/{membershipId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/membership/{membershipId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # CloseCase  POST /v1/cases/{caseId}/close-case
@@ -978,14 +972,14 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/close-case", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/close-case", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # CreateCase  POST /v1/create-case
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_case(self, CreateCaseRequest input) -> str:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/create-case", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/create-case", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1036,7 +1030,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/create-comment", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/create-comment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCaseCommentDocument(clientToken=input.clientToken, body=input.body)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1045,7 +1039,7 @@ struct Security_IRClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_membership(self, CreateMembershipRequest input) -> str:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/membership", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1079,7 +1073,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/get-case", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/get-case", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # GetCaseAttachmentDownloadUrl  GET /v1/cases/{caseId}/get-presigned-url/{attachmentId}
@@ -1089,7 +1083,7 @@ struct Security_IRClient:
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
         labels["attachmentId"] = input.attachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/get-presigned-url/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/get-presigned-url/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # GetCaseAttachmentUploadUrl  POST /v1/cases/{caseId}/get-presigned-url
@@ -1098,10 +1092,22 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/get-presigned-url", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/get-presigned-url", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCaseAttachmentUploadUrlDocument(fileName=input.fileName, contentLength=input.contentLength, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
+
+    # GetFindingMetrics  GET /v1/membership/{membershipId}/finding-metrics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_finding_metrics(self, GetFindingMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["membershipId"] = input.membershipId
+        dict[str, str] query = {}
+        query["startDate"] = datetime.strftime(input.startDate, "%Y-%m-%dT%H:%M:%SZ")
+        query["endDate"] = datetime.strftime(input.endDate, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/membership/{membershipId}/finding-metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # GetMembership  GET /v1/membership/{membershipId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
@@ -1109,7 +1115,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipId"] = input.membershipId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/membership/{membershipId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/membership/{membershipId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # ListCaseEdits  POST /v1/cases/{caseId}/list-case-edits
@@ -1118,7 +1124,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/list-case-edits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/list-case-edits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCaseEditsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1127,7 +1133,7 @@ struct Security_IRClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_cases(self, ListCasesRequest input) -> str:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/list-cases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/list-cases", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCasesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1138,7 +1144,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/list-comments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/list-comments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCommentsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1154,14 +1160,14 @@ struct Security_IRClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/list-investigations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/cases/{caseId}/list-investigations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # ListMemberships  POST /v1/memberships
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_memberships(self, ListMembershipsRequest input) -> str:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/memberships", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/memberships", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMembershipsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1172,7 +1178,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
 
     # SendFeedback  POST /v1/cases/{caseId}/feedback/{resultId}/send-feedback
@@ -1182,7 +1188,7 @@ struct Security_IRClient:
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
         labels["resultId"] = input.resultId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/feedback/{resultId}/send-feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/feedback/{resultId}/send-feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendFeedbackDocument(usefulness=input.usefulness, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1193,7 +1199,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1202,13 +1208,24 @@ struct Security_IRClient:
         auto bp = restjson.rest_json_document(b, security_ir_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(security_ir_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, security_ir_service(), self.region, host)
+
     # UpdateCase  POST /v1/cases/{caseId}/update-case
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidTokenException, ResourceNotFoundException, SecurityIncidentResponseNotActiveException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_case(self, UpdateCaseRequest input) -> str:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.title.is_some():
             auto u0 = input.title.unwrap()
@@ -1301,7 +1318,7 @@ struct Security_IRClient:
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
         labels["commentId"] = input.commentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/cases/{caseId}/update-case-comment/{commentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/cases/{caseId}/update-case-comment/{commentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCaseCommentDocument(body=input.body)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1312,7 +1329,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case-status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-case-status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCaseStatusDocument(caseStatus=input.caseStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)
@@ -1323,7 +1340,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipId"] = input.membershipId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/membership/{membershipId}/update-membership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/membership/{membershipId}/update-membership", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.membershipName.is_some():
             auto u0 = input.membershipName.unwrap()
@@ -1355,7 +1372,7 @@ struct Security_IRClient:
         auto host = endpoints.regional_host(security_ir_service(), self.region)
         dict[str, str] labels = {}
         labels["caseId"] = input.caseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-resolver-type", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/cases/{caseId}/update-resolver-type", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResolverTypeDocument(resolverType=input.resolverType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, security_ir_service(), self.region, host)

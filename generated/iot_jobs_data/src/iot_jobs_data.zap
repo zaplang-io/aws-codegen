@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 4 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 5 operations — 5 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   25 structs (16 @derive(Json)), 1 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -263,15 +263,32 @@ def data_jobs_iot_error_from_code(str code) -> IoT_Jobs_Data_PlaneError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DescribeJobExecution (httpQuery `includeJobDocument` has unsupported type bool)
+# Render a bool bound to a URI/query/header slot as its wire text.
+def data_jobs_iot_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound IoT_Jobs_Data_Plane client: credentials + region, threaded into every operation.
 struct IoT_Jobs_Data_PlaneClient:
     core.Credentials creds
     str region
+
+    # DescribeJobExecution  GET /things/{thingName}/jobs/{jobId}
+    # errors: CertificateValidationException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, TerminalStateException, ThrottlingException
+    def describe_job_execution(self, DescribeJobExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        labels["thingName"] = input.thingName
+        dict[str, str] query = {}
+        if input.includeJobDocument.is_some():
+            auto qt0 = data_jobs_iot_bind_bool(input.includeJobDocument.unwrap_or(False))
+            query["includeJobDocument"] = qt0
+        if input.executionNumber.is_some():
+            query["executionNumber"] = str(input.executionNumber.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, data_jobs_iot_service(), self.region, host)
 
     # GetPendingJobExecutions  GET /things/{thingName}/jobs
     # errors: CertificateValidationException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
@@ -279,14 +296,14 @@ struct IoT_Jobs_Data_PlaneClient:
         auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_jobs_iot_service(), self.region, host)
 
     # StartCommandExecution  POST /command-executions
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_command_execution(self, StartCommandExecutionRequest input) -> str:
         auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/command-executions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/command-executions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"targetArn\":" + data_jobs_iot_json_str(input.targetArn))
         parts.append("\"commandArn\":" + data_jobs_iot_json_str(input.commandArn))
@@ -311,7 +328,7 @@ struct IoT_Jobs_Data_PlaneClient:
         auto host = endpoints.regional_host(data_jobs_iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/jobs/$next", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/jobs/$next", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.statusDetails.is_some():
             auto u0 = input.statusDetails.unwrap()
@@ -332,7 +349,7 @@ struct IoT_Jobs_Data_PlaneClient:
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"status\":" + input.status.to_json())
         if input.statusDetails.is_some():

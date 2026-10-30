@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 77 operations — 76 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 77 operations — 77 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   284 structs (170 @derive(Json)), 33 enums, 20 error variants.
 #   21 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2654,11 +2654,6 @@ def imagebuilder_error_from_code(str code) -> imagebuilderError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3122,7 +3117,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def cancel_image_creation(self, CancelImageCreationRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CancelImageCreation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CancelImageCreation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelImageCreationDocument(imageBuildVersionArn=input.imageBuildVersionArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -3131,7 +3126,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def cancel_lifecycle_execution(self, CancelLifecycleExecutionRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CancelLifecycleExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CancelLifecycleExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelLifecycleExecutionDocument(lifecycleExecutionId=input.lifecycleExecutionId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -3140,7 +3135,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_component(self, CreateComponentRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateComponent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateComponent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
@@ -3183,7 +3178,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, InvalidVersionNumberException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_container_recipe(self, CreateContainerRecipeRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateContainerRecipe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateContainerRecipe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"containerType\":" + imagebuilder_json_str(input.containerType))
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
@@ -3237,7 +3232,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_distribution_configuration(self, CreateDistributionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateDistributionConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateDistributionConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         if input.description.is_some():
@@ -3264,7 +3259,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_image(self, CreateImageRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.imageRecipeArn.is_some():
             auto u0 = input.imageRecipeArn.unwrap()
@@ -3311,7 +3306,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_image_pipeline(self, CreateImagePipelineRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImagePipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImagePipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         if input.description.is_some():
@@ -3377,7 +3372,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, InvalidVersionNumberException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_image_recipe(self, CreateImageRecipeRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImageRecipe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateImageRecipe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         if input.description.is_some():
@@ -3432,7 +3427,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_infrastructure_configuration(self, CreateInfrastructureConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         if input.description.is_some():
@@ -3501,7 +3496,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceAlreadyExistsException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_lifecycle_policy(self, CreateLifecyclePolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateLifecyclePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateLifecyclePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         if input.description.is_some():
@@ -3534,7 +3529,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, DryRunOperationException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException
     def create_workflow(self, CreateWorkflowRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/CreateWorkflow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/CreateWorkflow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
@@ -3573,7 +3568,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["componentBuildVersionArn"] = input.componentBuildVersionArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteComponent", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteComponent", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteContainerRecipe  DELETE /DeleteContainerRecipe
@@ -3582,7 +3577,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["containerRecipeArn"] = input.containerRecipeArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteContainerRecipe", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteContainerRecipe", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteDistributionConfiguration  DELETE /DeleteDistributionConfiguration
@@ -3591,7 +3586,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["distributionConfigurationArn"] = input.distributionConfigurationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteDistributionConfiguration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteDistributionConfiguration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteImage  DELETE /DeleteImage
@@ -3600,7 +3595,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageBuildVersionArn"] = input.imageBuildVersionArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImage", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImage", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteImagePipeline  DELETE /DeleteImagePipeline
@@ -3609,7 +3604,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imagePipelineArn"] = input.imagePipelineArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImagePipeline", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImagePipeline", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteImageRecipe  DELETE /DeleteImageRecipe
@@ -3618,7 +3613,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageRecipeArn"] = input.imageRecipeArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImageRecipe", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteImageRecipe", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteInfrastructureConfiguration  DELETE /DeleteInfrastructureConfiguration
@@ -3627,7 +3622,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["infrastructureConfigurationArn"] = input.infrastructureConfigurationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteInfrastructureConfiguration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteInfrastructureConfiguration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteLifecyclePolicy  DELETE /DeleteLifecyclePolicy
@@ -3636,7 +3631,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["lifecyclePolicyArn"] = input.lifecyclePolicyArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteLifecyclePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteLifecyclePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DeleteWorkflow  DELETE /DeleteWorkflow
@@ -3645,14 +3640,14 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["workflowBuildVersionArn"] = input.workflowBuildVersionArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteWorkflow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteWorkflow", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # DistributeImage  PUT /DistributeImage
     # errors: AccessDeniedException, CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
     def distribute_image(self, DistributeImageRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/DistributeImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/DistributeImage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceImage\":" + imagebuilder_json_str(input.sourceImage))
         parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(input.distributionConfigurationArn))
@@ -3676,7 +3671,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["componentBuildVersionArn"] = input.componentBuildVersionArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetComponent", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetComponent", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetComponentPolicy  GET /GetComponentPolicy
@@ -3685,7 +3680,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["componentArn"] = input.componentArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetComponentPolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetComponentPolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetContainerRecipe  GET /GetContainerRecipe
@@ -3694,7 +3689,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["containerRecipeArn"] = input.containerRecipeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetContainerRecipe", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetContainerRecipe", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetContainerRecipePolicy  GET /GetContainerRecipePolicy
@@ -3703,7 +3698,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["containerRecipeArn"] = input.containerRecipeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetContainerRecipePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetContainerRecipePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetDistributionConfiguration  GET /GetDistributionConfiguration
@@ -3712,7 +3707,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["distributionConfigurationArn"] = input.distributionConfigurationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetDistributionConfiguration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetDistributionConfiguration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetImage  GET /GetImage
@@ -3721,7 +3716,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageBuildVersionArn"] = input.imageBuildVersionArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetImage", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetImage", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetImagePipeline  GET /GetImagePipeline
@@ -3730,7 +3725,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imagePipelineArn"] = input.imagePipelineArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetImagePipeline", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetImagePipeline", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetImagePolicy  GET /GetImagePolicy
@@ -3739,7 +3734,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageArn"] = input.imageArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetImagePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetImagePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetImageRecipe  GET /GetImageRecipe
@@ -3748,7 +3743,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageRecipeArn"] = input.imageRecipeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetImageRecipe", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetImageRecipe", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetImageRecipePolicy  GET /GetImageRecipePolicy
@@ -3757,7 +3752,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["imageRecipeArn"] = input.imageRecipeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetImageRecipePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetImageRecipePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetInfrastructureConfiguration  GET /GetInfrastructureConfiguration
@@ -3766,7 +3761,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["infrastructureConfigurationArn"] = input.infrastructureConfigurationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetInfrastructureConfiguration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetInfrastructureConfiguration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetLifecycleExecution  GET /GetLifecycleExecution
@@ -3775,7 +3770,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["lifecycleExecutionId"] = input.lifecycleExecutionId
-        auto b = binding.HttpBinding(method="GET", path_template="/GetLifecycleExecution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetLifecycleExecution", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetLifecyclePolicy  GET /GetLifecyclePolicy
@@ -3784,14 +3779,14 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["lifecyclePolicyArn"] = input.lifecyclePolicyArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetLifecyclePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetLifecyclePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetMarketplaceResource  POST /GetMarketplaceResource
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def get_marketplace_resource(self, GetMarketplaceResourceRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetMarketplaceResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetMarketplaceResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetMarketplaceResourceDocument(resourceType=input.resourceType, resourceArn=input.resourceArn, resourceLocation=input.resourceLocation)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -3802,7 +3797,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["workflowBuildVersionArn"] = input.workflowBuildVersionArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflow", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetWorkflowExecution  GET /GetWorkflowExecution
@@ -3811,7 +3806,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["workflowExecutionId"] = input.workflowExecutionId
-        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflowExecution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflowExecution", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # GetWorkflowStepExecution  GET /GetWorkflowStepExecution
@@ -3820,14 +3815,14 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] query = {}
         query["stepExecutionId"] = input.stepExecutionId
-        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflowStepExecution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetWorkflowStepExecution", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # ImportComponent  PUT /ImportComponent
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, InvalidVersionNumberException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def import_component(self, ImportComponentRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/ImportComponent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportComponent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
@@ -3863,7 +3858,7 @@ struct imagebuilderClient:
     # errors: AccessDeniedException, ClientException, ServiceException, ServiceUnavailableException, TooManyRequestsException
     def import_disk_image(self, ImportDiskImageRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/ImportDiskImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportDiskImage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
@@ -3900,7 +3895,7 @@ struct imagebuilderClient:
     # errors: ClientException, ServiceException, ServiceUnavailableException
     def import_vm_image(self, ImportVmImageRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/ImportVmImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/ImportVmImage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + imagebuilder_json_str(input.name))
         parts.append("\"semanticVersion\":" + imagebuilder_json_str(input.semanticVersion))
@@ -3929,7 +3924,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_component_build_versions(self, ListComponentBuildVersionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListComponentBuildVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListComponentBuildVersions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListComponentBuildVersionsDocument(componentVersionArn=input.componentVersionArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -3938,7 +3933,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_components(self, ListComponentsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListComponents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListComponents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owner.is_some():
             auto u0 = input.owner.unwrap()
@@ -3965,7 +3960,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_container_recipes(self, ListContainerRecipesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListContainerRecipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListContainerRecipes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owner.is_some():
             auto u0 = input.owner.unwrap()
@@ -3989,7 +3984,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_distribution_configurations(self, ListDistributionConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListDistributionConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListDistributionConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4010,7 +4005,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_image_build_versions(self, ListImageBuildVersionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImageBuildVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageBuildVersions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.imageVersionArn.is_some():
             auto u0 = input.imageVersionArn.unwrap()
@@ -4034,7 +4029,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def list_image_packages(self, ListImagePackagesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePackages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePackages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListImagePackagesDocument(imageBuildVersionArn=input.imageBuildVersionArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4043,7 +4038,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def list_image_pipeline_images(self, ListImagePipelineImagesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelineImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelineImages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
         if input.filters.is_some():
@@ -4065,7 +4060,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_image_pipelines(self, ListImagePipelinesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImagePipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4086,7 +4081,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_image_recipes(self, ListImageRecipesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImageRecipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageRecipes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owner.is_some():
             auto u0 = input.owner.unwrap()
@@ -4110,7 +4105,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_image_scan_finding_aggregations(self, ListImageScanFindingAggregationsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindingAggregations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindingAggregations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -4125,7 +4120,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_image_scan_findings(self, ListImageScanFindingsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImageScanFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4146,7 +4141,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_images(self, ListImagesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owner.is_some():
             auto u0 = input.owner.unwrap()
@@ -4176,7 +4171,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_infrastructure_configurations(self, ListInfrastructureConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListInfrastructureConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListInfrastructureConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4197,7 +4192,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_lifecycle_execution_resources(self, ListLifecycleExecutionResourcesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecycleExecutionResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecycleExecutionResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLifecycleExecutionResourcesDocument(lifecycleExecutionId=input.lifecycleExecutionId, parentResourceId=input.parentResourceId, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4206,7 +4201,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_lifecycle_executions(self, ListLifecycleExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecycleExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecycleExecutions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLifecycleExecutionsDocument(maxResults=input.maxResults, nextToken=input.nextToken, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4215,7 +4210,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_lifecycle_policies(self, ListLifecyclePoliciesRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecyclePolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLifecyclePolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4238,14 +4233,14 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
 
     # ListWaitingWorkflowSteps  POST /ListWaitingWorkflowSteps
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_waiting_workflow_steps(self, ListWaitingWorkflowStepsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWaitingWorkflowSteps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWaitingWorkflowSteps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWaitingWorkflowStepsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4254,7 +4249,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_workflow_build_versions(self, ListWorkflowBuildVersionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowBuildVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowBuildVersions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowBuildVersionsDocument(workflowVersionArn=input.workflowVersionArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4263,7 +4258,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_workflow_executions(self, ListWorkflowExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowExecutions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowExecutionsDocument(maxResults=input.maxResults, nextToken=input.nextToken, imageBuildVersionArn=input.imageBuildVersionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4272,7 +4267,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_workflow_step_executions(self, ListWorkflowStepExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowStepExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflowStepExecutions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowStepExecutionsDocument(maxResults=input.maxResults, nextToken=input.nextToken, workflowExecutionId=input.workflowExecutionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4281,7 +4276,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidPaginationTokenException, InvalidRequestException, ServiceException, ServiceUnavailableException
     def list_workflows(self, ListWorkflowsRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWorkflows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owner.is_some():
             auto u0 = input.owner.unwrap()
@@ -4308,7 +4303,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidParameterValueException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def put_component_policy(self, PutComponentPolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/PutComponentPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/PutComponentPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutComponentPolicyDocument(componentArn=input.componentArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4317,7 +4312,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidParameterValueException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def put_container_recipe_policy(self, PutContainerRecipePolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/PutContainerRecipePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/PutContainerRecipePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutContainerRecipePolicyDocument(containerRecipeArn=input.containerRecipeArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4326,7 +4321,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidParameterValueException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def put_image_policy(self, PutImagePolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/PutImagePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/PutImagePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutImagePolicyDocument(imageArn=input.imageArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4335,7 +4330,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, InvalidParameterValueException, InvalidRequestException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def put_image_recipe_policy(self, PutImageRecipePolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/PutImageRecipePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/PutImageRecipePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutImageRecipePolicyDocument(imageRecipeArn=input.imageRecipeArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4344,7 +4339,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def retry_image(self, RetryImageRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/RetryImage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/RetryImage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RetryImageDocument(imageBuildVersionArn=input.imageBuildVersionArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4353,7 +4348,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterValueException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def send_workflow_step_action(self, SendWorkflowStepActionRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/SendWorkflowStepAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/SendWorkflowStepAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendWorkflowStepActionDocument(stepExecutionId=input.stepExecutionId, imageBuildVersionArn=input.imageBuildVersionArn, action=input.action, reason=input.reason, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
@@ -4362,7 +4357,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def start_image_pipeline_execution(self, StartImagePipelineExecutionRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/StartImagePipelineExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/StartImagePipelineExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
         parts.append("\"clientToken\":" + imagebuilder_json_str(input.clientToken))
@@ -4379,7 +4374,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ResourceNotFoundException, ServiceException, ServiceUnavailableException
     def start_resource_state_update(self, StartResourceStateUpdateRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/StartResourceStateUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/StartResourceStateUpdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + imagebuilder_json_str(input.resourceArn))
         parts.append("\"state\":" + input.state.to_json())
@@ -4405,7 +4400,7 @@ struct imagebuilderClient:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -4414,11 +4409,22 @@ struct imagebuilderClient:
         auto bp = restjson.rest_json_document(b, imagebuilder_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, imagebuilder_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InvalidParameterException, ResourceNotFoundException, ServiceException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(imagebuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, imagebuilder_service(), self.region, host)
+
     # UpdateDistributionConfiguration  PUT /UpdateDistributionConfiguration
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def update_distribution_configuration(self, UpdateDistributionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateDistributionConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateDistributionConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"distributionConfigurationArn\":" + imagebuilder_json_str(input.distributionConfigurationArn))
         if input.description.is_some():
@@ -4436,7 +4442,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def update_image_pipeline(self, UpdateImagePipelineRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateImagePipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateImagePipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"imagePipelineArn\":" + imagebuilder_json_str(input.imagePipelineArn))
         if input.description.is_some():
@@ -4493,7 +4499,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def update_infrastructure_configuration(self, UpdateInfrastructureConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateInfrastructureConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"infrastructureConfigurationArn\":" + imagebuilder_json_str(input.infrastructureConfigurationArn))
         if input.description.is_some():
@@ -4553,7 +4559,7 @@ struct imagebuilderClient:
     # errors: CallRateLimitExceededException, ClientException, ForbiddenException, IdempotentParameterMismatchException, InvalidParameterCombinationException, InvalidRequestException, ResourceInUseException, ServiceException, ServiceUnavailableException
     def update_lifecycle_policy(self, UpdateLifecyclePolicyRequest input) -> str:
         auto host = endpoints.regional_host(imagebuilder_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateLifecyclePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/UpdateLifecyclePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"lifecyclePolicyArn\":" + imagebuilder_json_str(input.lifecyclePolicyArn))
         if input.description.is_some():

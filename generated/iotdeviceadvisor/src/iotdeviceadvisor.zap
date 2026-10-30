@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 13 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 14 operations — 14 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (25 @derive(Json)), 6 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -427,11 +427,6 @@ def api_iotdeviceadvisor_error_from_code(str code) -> IotDeviceAdvisorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -509,7 +504,7 @@ struct IotDeviceAdvisorClient:
     # errors: InternalServerException, ValidationException
     def create_suite_definition(self, CreateSuiteDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"suiteDefinitionConfiguration\":" + suite_definition_configuration_to_json(input.suiteDefinitionConfiguration))
         if input.tags.is_some():
@@ -530,7 +525,7 @@ struct IotDeviceAdvisorClient:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # GetEndpoint  GET /endpoint
@@ -546,7 +541,7 @@ struct IotDeviceAdvisorClient:
             query["deviceRoleArn"] = input.deviceRoleArn.unwrap_or("")
         if input.authenticationMethod.is_some():
             query["authenticationMethod"] = input.authenticationMethod.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/endpoint", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/endpoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # GetSuiteDefinition  GET /suiteDefinitions/{suiteDefinitionId}
@@ -558,7 +553,7 @@ struct IotDeviceAdvisorClient:
         dict[str, str] query = {}
         if input.suiteDefinitionVersion.is_some():
             query["suiteDefinitionVersion"] = input.suiteDefinitionVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # GetSuiteRun  GET /suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}
@@ -568,7 +563,7 @@ struct IotDeviceAdvisorClient:
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
         labels["suiteRunId"] = input.suiteRunId
-        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # GetSuiteRunReport  GET /suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/report
@@ -578,7 +573,7 @@ struct IotDeviceAdvisorClient:
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
         labels["suiteRunId"] = input.suiteRunId
-        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/report", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/report", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # ListSuiteDefinitions  GET /suiteDefinitions
@@ -590,7 +585,7 @@ struct IotDeviceAdvisorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/suiteDefinitions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # ListSuiteRuns  GET /suiteRuns
@@ -606,7 +601,7 @@ struct IotDeviceAdvisorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/suiteRuns", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/suiteRuns", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -615,7 +610,7 @@ struct IotDeviceAdvisorClient:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # StartSuiteRun  POST /suiteDefinitions/{suiteDefinitionId}/suiteRuns
@@ -624,7 +619,7 @@ struct IotDeviceAdvisorClient:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
-        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.suiteDefinitionVersion.is_some():
             auto u0 = input.suiteDefinitionVersion.unwrap()
@@ -646,7 +641,7 @@ struct IotDeviceAdvisorClient:
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
         labels["suiteRunId"] = input.suiteRunId
-        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/suiteDefinitions/{suiteDefinitionId}/suiteRuns/{suiteRunId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -655,7 +650,7 @@ struct IotDeviceAdvisorClient:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -664,13 +659,24 @@ struct IotDeviceAdvisorClient:
         auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_iotdeviceadvisor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, api_iotdeviceadvisor_service(), self.region, host)
+
     # UpdateSuiteDefinition  PATCH /suiteDefinitions/{suiteDefinitionId}
     # errors: InternalServerException, ValidationException
     def update_suite_definition(self, UpdateSuiteDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(api_iotdeviceadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["suiteDefinitionId"] = input.suiteDefinitionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/suiteDefinitions/{suiteDefinitionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"suiteDefinitionConfiguration\":" + suite_definition_configuration_to_json(input.suiteDefinitionConfiguration))
         auto bp = restjson.rest_json_document(b, api_iotdeviceadvisor_json_obj(parts))

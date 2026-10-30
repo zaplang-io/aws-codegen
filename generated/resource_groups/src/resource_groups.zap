@@ -792,7 +792,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException, UnauthorizedException
     def cancel_tag_sync_task(self, CancelTagSyncTaskInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cancel-tag-sync-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cancel-tag-sync-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelTagSyncTaskDocument(TaskArn=input.TaskArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -801,7 +801,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
     def create_group(self, CreateGroupInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + resource_groups_json_str(input.Name))
         if input.Description.is_some():
@@ -838,7 +838,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def delete_group(self, DeleteGroupInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteGroupDocument(GroupName=input.GroupName, Group=input.Group)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -847,14 +847,14 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
     def get_account_settings(self) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_groups_service(), self.region, host)
 
     # GetGroup  POST /get-group
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def get_group(self, GetGroupInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGroupDocument(GroupName=input.GroupName, Group=input.Group)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -863,7 +863,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def get_group_configuration(self, GetGroupConfigurationInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-group-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-group-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGroupConfigurationDocument(Group=input.Group)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -872,7 +872,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def get_group_query(self, GetGroupQueryInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-group-query", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-group-query", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGroupQueryDocument(GroupName=input.GroupName, Group=input.Group)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -881,7 +881,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def get_tag_sync_task(self, GetTagSyncTaskInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-tag-sync-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-tag-sync-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTagSyncTaskDocument(TaskArn=input.TaskArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -892,14 +892,14 @@ struct Resource_GroupsClient:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, resource_groups_service(), self.region, host)
 
     # GroupResources  POST /group-resources
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def group_resources(self, GroupResourcesInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/group-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/group-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Group\":" + resource_groups_json_str(input.Group))
         list[str] e0 = []
@@ -913,7 +913,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def list_group_resources(self, ListGroupResourcesInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-group-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-group-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GroupName.is_some():
             auto u0 = input.GroupName.unwrap()
@@ -940,7 +940,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
     def list_grouping_statuses(self, ListGroupingStatusesInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-grouping-statuses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-grouping-statuses", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Group\":" + resource_groups_json_str(input.Group))
         if input.MaxResults.is_some():
@@ -967,7 +967,7 @@ struct Resource_GroupsClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/groups-list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/groups-list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -982,7 +982,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException, UnauthorizedException
     def list_tag_sync_tasks(self, ListTagSyncTasksInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-tag-sync-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-tag-sync-tasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -1003,7 +1003,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def put_group_configuration(self, PutGroupConfigurationInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-group-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-group-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Group.is_some():
             auto u0 = input.Group.unwrap()
@@ -1021,7 +1021,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException, UnauthorizedException
     def search_resources(self, SearchResourcesInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resources/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resources/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchResourcesDocument(ResourceQuery=input.ResourceQuery, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -1030,7 +1030,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException, UnauthorizedException
     def start_tag_sync_task(self, StartTagSyncTaskInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-tag-sync-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-tag-sync-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTagSyncTaskDocument(Group=input.Group, TagKey=input.TagKey, TagValue=input.TagValue, ResourceQuery=input.ResourceQuery, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -1041,7 +1041,7 @@ struct Resource_GroupsClient:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1054,7 +1054,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def ungroup_resources(self, UngroupResourcesInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ungroup-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ungroup-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Group\":" + resource_groups_json_str(input.Group))
         list[str] e0 = []
@@ -1070,7 +1070,7 @@ struct Resource_GroupsClient:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resources/{Arn}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Keys:
@@ -1083,7 +1083,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
     def update_account_settings(self, UpdateAccountSettingsInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountSettingsDocument(GroupLifecycleEventsDesiredStatus=input.GroupLifecycleEventsDesiredStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -1092,7 +1092,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def update_group(self, UpdateGroupInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGroupDocument(GroupName=input.GroupName, Group=input.Group, Description=input.Description, Criticality=input.Criticality, Owner=input.Owner, DisplayName=input.DisplayName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)
@@ -1101,7 +1101,7 @@ struct Resource_GroupsClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, TooManyRequestsException
     def update_group_query(self, UpdateGroupQueryInput input) -> str:
         auto host = endpoints.regional_host(resource_groups_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-group-query", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-group-query", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGroupQueryDocument(GroupName=input.GroupName, Group=input.Group, ResourceQuery=input.ResourceQuery)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, resource_groups_service(), self.region, host)

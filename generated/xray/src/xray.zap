@@ -1509,7 +1509,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def batch_get_traces(self, BatchGetTracesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/Traces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Traces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TraceIds:
@@ -1525,7 +1525,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def cancel_trace_retrieval(self, CancelTraceRetrievalRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CancelTraceRetrieval", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CancelTraceRetrieval", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelTraceRetrievalDocument(RetrievalToken=input.RetrievalToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1534,7 +1534,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def create_group(self, CreateGroupRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GroupName\":" + xray_json_str(input.GroupName))
         if input.FilterExpression.is_some():
@@ -1556,7 +1556,7 @@ struct XRayClient:
     # errors: InvalidRequestException, RuleLimitExceededException, ThrottledException
     def create_sampling_rule(self, CreateSamplingRuleRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateSamplingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSamplingRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SamplingRule\":" + sampling_rule_to_json(input.SamplingRule))
         if input.Tags.is_some():
@@ -1572,7 +1572,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def delete_group(self, DeleteGroupRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteGroupDocument(GroupName=input.GroupName, GroupARN=input.GroupARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1581,7 +1581,7 @@ struct XRayClient:
     # errors: InvalidPolicyRevisionIdException, InvalidRequestException, ThrottledException
     def delete_resource_policy(self, DeleteResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResourcePolicyDocument(PolicyName=input.PolicyName, PolicyRevisionId=input.PolicyRevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1590,7 +1590,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def delete_sampling_rule(self, DeleteSamplingRuleRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSamplingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSamplingRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSamplingRuleDocument(RuleName=input.RuleName, RuleARN=input.RuleARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1599,14 +1599,14 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_encryption_config(self) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/EncryptionConfig", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/EncryptionConfig", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, xray_service(), self.region, host)
 
     # GetGroup  POST /GetGroup
     # errors: InvalidRequestException, ThrottledException
     def get_group(self, GetGroupRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGroupDocument(GroupName=input.GroupName, GroupARN=input.GroupARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1615,7 +1615,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_groups(self, GetGroupsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGroupsDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1624,7 +1624,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_indexing_rules(self, GetIndexingRulesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetIndexingRules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetIndexingRules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIndexingRulesDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1633,7 +1633,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_insight(self, GetInsightRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/Insight", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Insight", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInsightDocument(InsightId=input.InsightId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1642,7 +1642,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_insight_events(self, GetInsightEventsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InsightEvents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InsightEvents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInsightEventsDocument(InsightId=input.InsightId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1651,7 +1651,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_insight_impact_graph(self, GetInsightImpactGraphRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InsightImpactGraph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InsightImpactGraph", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInsightImpactGraphDocument(InsightId=input.InsightId, StartTime=input.StartTime, EndTime=input.EndTime, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1660,7 +1660,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_insight_summaries(self, GetInsightSummariesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InsightSummaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InsightSummaries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.States.is_some():
             auto u0 = input.States.unwrap()
@@ -1689,7 +1689,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def get_retrieved_traces_graph(self, GetRetrievedTracesGraphRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRetrievedTracesGraph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRetrievedTracesGraph", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRetrievedTracesGraphDocument(RetrievalToken=input.RetrievalToken, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1698,7 +1698,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_sampling_rules(self, GetSamplingRulesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetSamplingRules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetSamplingRules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSamplingRulesDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1707,7 +1707,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_sampling_statistic_summaries(self, GetSamplingStatisticSummariesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SamplingStatisticSummaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SamplingStatisticSummaries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSamplingStatisticSummariesDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1716,7 +1716,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_sampling_targets(self, GetSamplingTargetsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SamplingTargets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SamplingTargets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SamplingStatisticsDocuments:
@@ -1735,7 +1735,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_service_graph(self, GetServiceGraphRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ServiceGraph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ServiceGraph", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetServiceGraphDocument(StartTime=input.StartTime, EndTime=input.EndTime, GroupName=input.GroupName, GroupARN=input.GroupARN, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1744,7 +1744,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_time_series_service_statistics(self, GetTimeSeriesServiceStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TimeSeriesServiceStatistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TimeSeriesServiceStatistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTimeSeriesServiceStatisticsDocument(StartTime=input.StartTime, EndTime=input.EndTime, GroupName=input.GroupName, GroupARN=input.GroupARN, EntitySelectorExpression=input.EntitySelectorExpression, Period=input.Period, ForecastStatistics=input.ForecastStatistics, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1753,7 +1753,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_trace_graph(self, GetTraceGraphRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TraceGraph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TraceGraph", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TraceIds:
@@ -1769,14 +1769,14 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def get_trace_segment_destination(self) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTraceSegmentDestination", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTraceSegmentDestination", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, xray_service(), self.region, host)
 
     # GetTraceSummaries  POST /TraceSummaries
     # errors: InvalidRequestException, ThrottledException
     def get_trace_summaries(self, GetTraceSummariesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TraceSummaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TraceSummaries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTraceSummariesDocument(StartTime=input.StartTime, EndTime=input.EndTime, TimeRangeType=input.TimeRangeType, Sampling=input.Sampling, SamplingStrategy=input.SamplingStrategy, FilterExpression=input.FilterExpression, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1785,7 +1785,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def list_resource_policies(self, ListResourcePoliciesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListResourcePolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListResourcePolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourcePoliciesDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1794,7 +1794,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def list_retrieved_traces(self, ListRetrievedTracesRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRetrievedTraces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRetrievedTraces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRetrievedTracesDocument(RetrievalToken=input.RetrievalToken, TraceFormat=input.TraceFormat, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1803,7 +1803,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(ResourceARN=input.ResourceARN, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1812,7 +1812,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def put_encryption_config(self, PutEncryptionConfigRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutEncryptionConfig", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutEncryptionConfig", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEncryptionConfigDocument(KeyId=input.KeyId, Type=input.Type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1821,7 +1821,7 @@ struct XRayClient:
     # errors: InvalidPolicyRevisionIdException, LockoutPreventionException, MalformedPolicyDocumentException, PolicyCountLimitExceededException, PolicySizeLimitExceededException, ThrottledException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(PolicyName=input.PolicyName, PolicyDocument=input.PolicyDocument, PolicyRevisionId=input.PolicyRevisionId, BypassPolicyLockoutCheck=input.BypassPolicyLockoutCheck)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1830,7 +1830,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def put_telemetry_records(self, PutTelemetryRecordsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TelemetryRecords", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TelemetryRecords", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TelemetryRecords:
@@ -1852,7 +1852,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def put_trace_segments(self, PutTraceSegmentsRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TraceSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TraceSegments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TraceSegmentDocuments:
@@ -1865,7 +1865,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def start_trace_retrieval(self, StartTraceRetrievalRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTraceRetrieval", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTraceRetrieval", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TraceIds:
@@ -1880,7 +1880,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException, TooManyTagsException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + xray_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1894,7 +1894,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + xray_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1908,7 +1908,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def update_group(self, UpdateGroupRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGroupDocument(GroupName=input.GroupName, GroupARN=input.GroupARN, FilterExpression=input.FilterExpression, InsightsConfiguration=input.InsightsConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1917,7 +1917,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ResourceNotFoundException, ThrottledException
     def update_indexing_rule(self, UpdateIndexingRuleRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIndexingRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIndexingRuleDocument(Name=input.Name, Rule=input.Rule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)
@@ -1926,7 +1926,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def update_sampling_rule(self, UpdateSamplingRuleRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSamplingRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSamplingRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SamplingRuleUpdate\":" + sampling_rule_update_to_json(input.SamplingRuleUpdate))
         auto bp = restjson.rest_json_document(b, xray_json_obj(parts))
@@ -1936,7 +1936,7 @@ struct XRayClient:
     # errors: InvalidRequestException, ThrottledException
     def update_trace_segment_destination(self, UpdateTraceSegmentDestinationRequest input) -> str:
         auto host = endpoints.regional_host(xray_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTraceSegmentDestination", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTraceSegmentDestination", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTraceSegmentDestinationDocument(Destination=input.Destination, CloudWatchLogsConfiguration=input.CloudWatchLogsConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, xray_service(), self.region, host)

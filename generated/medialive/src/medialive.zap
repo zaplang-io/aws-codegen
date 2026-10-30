@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 123 operations — 122 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 123 operations — 123 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   734 structs (413 @derive(Json)), 343 enums, 9 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -9122,11 +9122,6 @@ def medialive_error_from_code(str code) -> MediaLiveError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteTags (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -10638,14 +10633,14 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # BatchDelete  POST /prod/batch/delete
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def batch_delete(self, BatchDeleteRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ChannelIds.is_some():
             auto u0 = input.ChannelIds.unwrap()
@@ -10678,7 +10673,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def batch_start(self, BatchStartRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ChannelIds.is_some():
             auto u0 = input.ChannelIds.unwrap()
@@ -10699,7 +10694,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def batch_stop(self, BatchStopRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/batch/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ChannelIds.is_some():
             auto u0 = input.ChannelIds.unwrap()
@@ -10722,7 +10717,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Creates.is_some():
             auto u0 = input.Creates.unwrap()
@@ -10739,14 +10734,14 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ClaimDevice  POST /prod/claimDevice
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException, UnprocessableEntityException
     def claim_device(self, ClaimDeviceRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/claimDevice", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/claimDevice", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ClaimDeviceDocument(Id=input.Id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -10755,7 +10750,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
     def create_channel(self, CreateChannelRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CdiInputSpecification.is_some():
             auto u0 = input.CdiInputSpecification.unwrap()
@@ -10838,7 +10833,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/channelplacementgroups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/channelplacementgroups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -10865,7 +10860,7 @@ struct MediaLiveClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_cloud_watch_alarm_template(self, CreateCloudWatchAlarmTemplateRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"comparisonOperator\":" + input.ComparisonOperator.to_json())
         if input.DatapointsToAlarm.is_some():
@@ -10899,7 +10894,7 @@ struct MediaLiveClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_cloud_watch_alarm_template_group(self, CreateCloudWatchAlarmTemplateGroupRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-template-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/cloudwatch-alarm-template-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -10921,7 +10916,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def create_cluster(self, CreateClusterRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClusterType.is_some():
             auto u0 = input.ClusterType.unwrap()
@@ -10951,7 +10946,7 @@ struct MediaLiveClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_event_bridge_rule_template(self, CreateEventBridgeRuleTemplateRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -10981,7 +10976,7 @@ struct MediaLiveClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_event_bridge_rule_template_group(self, CreateEventBridgeRuleTemplateGroupRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-template-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/eventbridge-rule-template-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -11003,7 +10998,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def create_input(self, CreateInputRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Destinations.is_some():
             auto u0 = input.Destinations.unwrap()
@@ -11084,7 +11079,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def create_input_security_group(self, CreateInputSecurityGroupRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputSecurityGroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputSecurityGroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -11105,7 +11100,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
     def create_multiplex(self, CreateMultiplexRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AvailabilityZones:
@@ -11129,7 +11124,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/programs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/programs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMultiplexProgramDocument(MultiplexProgramSettings=input.MultiplexProgramSettings, ProgramName=input.ProgramName, RequestId=input.RequestId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -11138,7 +11133,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def create_network(self, CreateNetworkRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/networks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.IpPools.is_some():
             auto u0 = input.IpPools.unwrap()
@@ -11173,7 +11168,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -11205,7 +11200,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodeRegistrationScript", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/clusters/{clusterId}/nodeRegistrationScript", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Id.is_some():
             auto u0 = input.Id.unwrap()
@@ -11234,7 +11229,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputId"] = input.InputId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs/{inputId}/partners", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputs/{inputId}/partners", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RequestId.is_some():
             auto u0 = input.RequestId.unwrap()
@@ -11252,7 +11247,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def create_sdi_source(self, CreateSdiSourceRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/sdiSources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/sdiSources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Mode.is_some():
             auto u0 = input.Mode.unwrap()
@@ -11279,7 +11274,7 @@ struct MediaLiveClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_signal_map(self, CreateSignalMapRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/signal-maps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/signal-maps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CloudWatchAlarmTemplateGroupIdentifiers.is_some():
             auto u0 = input.CloudWatchAlarmTemplateGroupIdentifiers.unwrap()
@@ -11316,7 +11311,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -11333,7 +11328,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteChannelPlacementGroup  DELETE /prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}
@@ -11343,7 +11338,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["channelPlacementGroupId"] = input.ChannelPlacementGroupId
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteCloudWatchAlarmTemplate  DELETE /prod/cloudwatch-alarm-templates/{identifier}
@@ -11352,7 +11347,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteCloudWatchAlarmTemplateGroup  DELETE /prod/cloudwatch-alarm-template-groups/{identifier}
@@ -11361,7 +11356,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteCluster  DELETE /prod/clusters/{clusterId}
@@ -11370,7 +11365,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteEventBridgeRuleTemplate  DELETE /prod/eventbridge-rule-templates/{identifier}
@@ -11379,7 +11374,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteEventBridgeRuleTemplateGroup  DELETE /prod/eventbridge-rule-template-groups/{identifier}
@@ -11388,7 +11383,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteInput  DELETE /prod/inputs/{inputId}
@@ -11397,7 +11392,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputId"] = input.InputId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteInputSecurityGroup  DELETE /prod/inputSecurityGroups/{inputSecurityGroupId}
@@ -11406,7 +11401,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputSecurityGroupId"] = input.InputSecurityGroupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteMultiplex  DELETE /prod/multiplexes/{multiplexId}
@@ -11415,7 +11410,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteMultiplexProgram  DELETE /prod/multiplexes/{multiplexId}/programs/{programName}
@@ -11425,7 +11420,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
         labels["programName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteNetwork  DELETE /prod/networks/{networkId}
@@ -11434,7 +11429,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteNode  DELETE /prod/clusters/{clusterId}/nodes/{nodeId}
@@ -11444,7 +11439,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
         labels["nodeId"] = input.NodeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteReservation  DELETE /prod/reservations/{reservationId}
@@ -11453,7 +11448,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["reservationId"] = input.ReservationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteSchedule  DELETE /prod/channels/{channelId}/schedule
@@ -11462,7 +11457,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteSdiSource  DELETE /prod/sdiSources/{sdiSourceId}
@@ -11471,7 +11466,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["sdiSourceId"] = input.SdiSourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DeleteSignalMap  DELETE /prod/signal-maps/{identifier}
@@ -11480,14 +11475,25 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
+
+    # DeleteTags  DELETE /prod/tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto host = endpoints.regional_host(medialive_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeAccountConfiguration  GET /prod/accountConfiguration
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException
     def describe_account_configuration(self) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/accountConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/accountConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeChannel  GET /prod/channels/{channelId}
@@ -11496,7 +11502,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeChannelPlacementGroup  GET /prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}
@@ -11506,7 +11512,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["channelPlacementGroupId"] = input.ChannelPlacementGroupId
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeCluster  GET /prod/clusters/{clusterId}
@@ -11515,7 +11521,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeInput  GET /prod/inputs/{inputId}
@@ -11524,7 +11530,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputId"] = input.InputId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeInputDevice  GET /prod/inputDevices/{inputDeviceId}
@@ -11533,7 +11539,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices/{inputDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices/{inputDeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeInputDeviceThumbnail  GET /prod/inputDevices/{inputDeviceId}/thumbnailData
@@ -11544,7 +11550,7 @@ struct MediaLiveClient:
         labels["inputDeviceId"] = input.InputDeviceId
         dict[str, str] headers = {}
         headers["accept"] = input.Accept
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices/{inputDeviceId}/thumbnailData", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices/{inputDeviceId}/thumbnailData", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeInputSecurityGroup  GET /prod/inputSecurityGroups/{inputSecurityGroupId}
@@ -11553,7 +11559,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputSecurityGroupId"] = input.InputSecurityGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeMultiplex  GET /prod/multiplexes/{multiplexId}
@@ -11562,7 +11568,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeMultiplexProgram  GET /prod/multiplexes/{multiplexId}/programs/{programName}
@@ -11572,7 +11578,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
         labels["programName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeNetwork  GET /prod/networks/{networkId}
@@ -11581,7 +11587,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeNode  GET /prod/clusters/{clusterId}/nodes/{nodeId}
@@ -11591,7 +11597,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
         labels["nodeId"] = input.NodeId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeOffering  GET /prod/offerings/{offeringId}
@@ -11600,7 +11606,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["offeringId"] = input.OfferingId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/offerings/{offeringId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/offerings/{offeringId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeReservation  GET /prod/reservations/{reservationId}
@@ -11609,7 +11615,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["reservationId"] = input.ReservationId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeSchedule  GET /prod/channels/{channelId}/schedule
@@ -11623,7 +11629,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/schedule", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeSdiSource  GET /prod/sdiSources/{sdiSourceId}
@@ -11632,7 +11638,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["sdiSourceId"] = input.SdiSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # DescribeThumbnails  GET /prod/channels/{channelId}/thumbnails
@@ -11644,7 +11650,7 @@ struct MediaLiveClient:
         dict[str, str] query = {}
         query["pipelineId"] = input.PipelineId
         query["thumbnailType"] = input.ThumbnailType
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/thumbnails", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/thumbnails", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # GetCloudWatchAlarmTemplate  GET /prod/cloudwatch-alarm-templates/{identifier}
@@ -11653,7 +11659,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # GetCloudWatchAlarmTemplateGroup  GET /prod/cloudwatch-alarm-template-groups/{identifier}
@@ -11662,7 +11668,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # GetEventBridgeRuleTemplate  GET /prod/eventbridge-rule-templates/{identifier}
@@ -11671,7 +11677,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # GetEventBridgeRuleTemplateGroup  GET /prod/eventbridge-rule-template-groups/{identifier}
@@ -11680,7 +11686,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # GetSignalMap  GET /prod/signal-maps/{identifier}
@@ -11689,7 +11695,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListAlerts  GET /prod/channels/{channelId}/alerts
@@ -11705,7 +11711,7 @@ struct MediaLiveClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.StateFilter.is_some():
             query["stateFilter"] = input.StateFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/alerts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels/{channelId}/alerts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListChannelPlacementGroups  GET /prod/clusters/{clusterId}/channelplacementgroups
@@ -11719,7 +11725,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/channelplacementgroups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/channelplacementgroups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListChannels  GET /prod/channels
@@ -11731,7 +11737,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/channels", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListCloudWatchAlarmTemplateGroups  GET /prod/cloudwatch-alarm-template-groups
@@ -11747,7 +11753,7 @@ struct MediaLiveClient:
             query["scope"] = input.Scope.unwrap_or("")
         if input.SignalMapIdentifier.is_some():
             query["signalMapIdentifier"] = input.SignalMapIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-template-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-template-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListCloudWatchAlarmTemplates  GET /prod/cloudwatch-alarm-templates
@@ -11765,7 +11771,7 @@ struct MediaLiveClient:
             query["scope"] = input.Scope.unwrap_or("")
         if input.SignalMapIdentifier.is_some():
             query["signalMapIdentifier"] = input.SignalMapIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/cloudwatch-alarm-templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListClusterAlerts  GET /prod/clusters/{clusterId}/alerts
@@ -11781,7 +11787,7 @@ struct MediaLiveClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.StateFilter.is_some():
             query["stateFilter"] = input.StateFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/alerts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/alerts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListClusters  GET /prod/clusters
@@ -11793,7 +11799,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListEventBridgeRuleTemplateGroups  GET /prod/eventbridge-rule-template-groups
@@ -11807,7 +11813,7 @@ struct MediaLiveClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.SignalMapIdentifier.is_some():
             query["signalMapIdentifier"] = input.SignalMapIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-template-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-template-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListEventBridgeRuleTemplates  GET /prod/eventbridge-rule-templates
@@ -11823,7 +11829,7 @@ struct MediaLiveClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.SignalMapIdentifier.is_some():
             query["signalMapIdentifier"] = input.SignalMapIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/eventbridge-rule-templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListInputDeviceTransfers  GET /prod/inputDeviceTransfers
@@ -11836,7 +11842,7 @@ struct MediaLiveClient:
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
         query["transferType"] = input.TransferType
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDeviceTransfers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDeviceTransfers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListInputDevices  GET /prod/inputDevices
@@ -11848,7 +11854,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputDevices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListInputSecurityGroups  GET /prod/inputSecurityGroups
@@ -11860,7 +11866,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputSecurityGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputSecurityGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListInputs  GET /prod/inputs
@@ -11872,7 +11878,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/inputs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListMultiplexAlerts  GET /prod/multiplexes/{multiplexId}/alerts
@@ -11888,7 +11894,7 @@ struct MediaLiveClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.StateFilter.is_some():
             query["stateFilter"] = input.StateFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/alerts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/alerts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListMultiplexPrograms  GET /prod/multiplexes/{multiplexId}/programs
@@ -11902,7 +11908,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/programs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes/{multiplexId}/programs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListMultiplexes  GET /prod/multiplexes
@@ -11914,7 +11920,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/multiplexes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListNetworks  GET /prod/networks
@@ -11926,7 +11932,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/networks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/networks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListNodes  GET /prod/clusters/{clusterId}/nodes
@@ -11940,7 +11946,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/nodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/clusters/{clusterId}/nodes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListOfferings  GET /prod/offerings
@@ -11972,7 +11978,7 @@ struct MediaLiveClient:
             query["specialFeature"] = input.SpecialFeature.unwrap_or("")
         if input.VideoQuality.is_some():
             query["videoQuality"] = input.VideoQuality.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/offerings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/offerings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListReservations  GET /prod/reservations
@@ -12000,7 +12006,7 @@ struct MediaLiveClient:
             query["specialFeature"] = input.SpecialFeature.unwrap_or("")
         if input.VideoQuality.is_some():
             query["videoQuality"] = input.VideoQuality.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/reservations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/reservations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListSdiSources  GET /prod/sdiSources
@@ -12012,7 +12018,7 @@ struct MediaLiveClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/sdiSources", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/sdiSources", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListSignalMaps  GET /prod/signal-maps
@@ -12021,14 +12027,16 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] query = {}
         if input.CloudWatchAlarmTemplateGroupIdentifier.is_some():
-            query["cloudWatchAlarmTemplateGroupIdentifier"] = input.CloudWatchAlarmTemplateGroupIdentifier.unwrap_or("")
+            auto qt0 = input.CloudWatchAlarmTemplateGroupIdentifier.unwrap_or("")
+            query["cloudWatchAlarmTemplateGroupIdentifier"] = qt0
         if input.EventBridgeRuleTemplateGroupIdentifier.is_some():
-            query["eventBridgeRuleTemplateGroupIdentifier"] = input.EventBridgeRuleTemplateGroupIdentifier.unwrap_or("")
+            auto qt1 = input.EventBridgeRuleTemplateGroupIdentifier.unwrap_or("")
+            query["eventBridgeRuleTemplateGroupIdentifier"] = qt1
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/signal-maps", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/signal-maps", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListTagsForResource  GET /prod/tags/{resource-arn}
@@ -12037,14 +12045,14 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # ListVersions  GET /prod/versions
     # errors: BadGatewayException, BadRequestException, ConflictException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def list_versions(self) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/prod/versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prod/versions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # PurchaseOffering  POST /prod/offerings/{offeringId}/purchase
@@ -12053,7 +12061,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["offeringId"] = input.OfferingId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/offerings/{offeringId}/purchase", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/offerings/{offeringId}/purchase", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"count\":" + str(input.Count))
         if input.Name.is_some():
@@ -12083,7 +12091,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/reboot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/reboot", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RebootInputDeviceDocument(Force=input.Force)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12094,7 +12102,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # RestartChannelPipelines  POST /prod/channels/{channelId}/restartChannelPipelines
@@ -12103,7 +12111,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/restartChannelPipelines", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/restartChannelPipelines", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.PipelineIds.is_some():
             auto u0 = input.PipelineIds.unwrap()
@@ -12120,7 +12128,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StartDeleteMonitorDeployment  DELETE /prod/signal-maps/{identifier}/monitor-deployment
@@ -12129,7 +12137,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/signal-maps/{identifier}/monitor-deployment", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prod/signal-maps/{identifier}/monitor-deployment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StartInputDevice  POST /prod/inputDevices/{inputDeviceId}/start
@@ -12138,7 +12146,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StartInputDeviceMaintenanceWindow  POST /prod/inputDevices/{inputDeviceId}/startInputDeviceMaintenanceWindow
@@ -12147,7 +12155,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/startInputDeviceMaintenanceWindow", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/startInputDeviceMaintenanceWindow", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StartMonitorDeployment  POST /prod/signal-maps/{identifier}/monitor-deployment
@@ -12156,7 +12164,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/signal-maps/{identifier}/monitor-deployment", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/signal-maps/{identifier}/monitor-deployment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMonitorDeploymentDocument(DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12167,7 +12175,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StartUpdateSignalMap  PATCH /prod/signal-maps/{identifier}
@@ -12176,7 +12184,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/signal-maps/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CloudWatchAlarmTemplateGroupIdentifiers.is_some():
             auto u0 = input.CloudWatchAlarmTemplateGroupIdentifiers.unwrap()
@@ -12211,7 +12219,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/channels/{channelId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StopInputDevice  POST /prod/inputDevices/{inputDeviceId}/stop
@@ -12220,7 +12228,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # StopMultiplex  POST /prod/multiplexes/{multiplexId}/stop
@@ -12229,7 +12237,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/multiplexes/{multiplexId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medialive_service(), self.region, host)
 
     # TransferInputDevice  POST /prod/inputDevices/{inputDeviceId}/transfer
@@ -12238,7 +12246,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/transfer", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prod/inputDevices/{inputDeviceId}/transfer", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TransferInputDeviceDocument(TargetCustomerId=input.TargetCustomerId, TargetRegion=input.TargetRegion, TransferMessage=input.TransferMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12247,7 +12255,7 @@ struct MediaLiveClient:
     # errors: BadGatewayException, BadRequestException, ForbiddenException, GatewayTimeoutException, InternalServerErrorException, TooManyRequestsException, UnprocessableEntityException
     def update_account_configuration(self, UpdateAccountConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(medialive_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/accountConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/accountConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountConfigurationDocument(AccountConfiguration=input.AccountConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12258,7 +12266,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CdiInputSpecification.is_some():
             auto u0 = input.CdiInputSpecification.unwrap()
@@ -12326,7 +12334,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["channelId"] = input.ChannelId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/channelClass", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/channels/{channelId}/channelClass", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"channelClass\":" + input.ChannelClass.to_json())
         if input.Destinations.is_some():
@@ -12345,7 +12353,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["channelPlacementGroupId"] = input.ChannelPlacementGroupId
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -12365,7 +12373,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/cloudwatch-alarm-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCloudWatchAlarmTemplateDocument(ComparisonOperator=input.ComparisonOperator, DatapointsToAlarm=input.DatapointsToAlarm, Description=input.Description, EvaluationPeriods=input.EvaluationPeriods, GroupIdentifier=input.GroupIdentifier, MetricName=input.MetricName, Name=input.Name, Period=input.Period, Statistic=input.Statistic, TargetResourceType=input.TargetResourceType, Threshold=input.Threshold, TreatMissingData=input.TreatMissingData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12376,7 +12384,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/cloudwatch-alarm-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCloudWatchAlarmTemplateGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12387,7 +12395,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -12404,7 +12412,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-templates/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -12433,7 +12441,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/prod/eventbridge-rule-template-groups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventBridgeRuleTemplateGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12444,7 +12452,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputId"] = input.InputId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputs/{inputId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Destinations.is_some():
             auto u0 = input.Destinations.unwrap()
@@ -12509,7 +12517,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputDeviceId"] = input.InputDeviceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputDevices/{inputDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputDevices/{inputDeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.HdDeviceSettings.is_some():
             auto u0 = input.HdDeviceSettings.unwrap()
@@ -12532,7 +12540,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["inputSecurityGroupId"] = input.InputSecurityGroupId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/inputSecurityGroups/{inputSecurityGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -12555,7 +12563,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MultiplexSettings.is_some():
             auto u0 = input.MultiplexSettings.unwrap()
@@ -12579,7 +12587,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["multiplexId"] = input.MultiplexId
         labels["programName"] = input.ProgramName
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/multiplexes/{multiplexId}/programs/{programName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMultiplexProgramDocument(MultiplexProgramSettings=input.MultiplexProgramSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12590,7 +12598,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.NetworkId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.IpPools.is_some():
             auto u0 = input.IpPools.unwrap()
@@ -12617,7 +12625,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
         labels["nodeId"] = input.NodeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -12641,7 +12649,7 @@ struct MediaLiveClient:
         dict[str, str] labels = {}
         labels["clusterId"] = input.ClusterId
         labels["nodeId"] = input.NodeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/clusters/{clusterId}/nodes/{nodeId}/state", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNodeStateDocument(State=input.State)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12652,7 +12660,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["reservationId"] = input.ReservationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/reservations/{reservationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateReservationDocument(Name=input.Name, RenewalSettings=input.RenewalSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)
@@ -12663,7 +12671,7 @@ struct MediaLiveClient:
         auto host = endpoints.regional_host(medialive_service(), self.region)
         dict[str, str] labels = {}
         labels["sdiSourceId"] = input.SdiSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prod/sdiSources/{sdiSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSdiSourceDocument(Mode=input.Mode, Name=input.Name, Type=input.Type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, medialive_service(), self.region, host)

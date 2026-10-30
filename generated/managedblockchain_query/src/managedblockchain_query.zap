@@ -582,7 +582,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def batch_get_token_balance(self, BatchGetTokenBalanceInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/batch-get-token-balance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-get-token-balance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.getTokenBalanceInputs.is_some():
             auto u0 = input.getTokenBalanceInputs.unwrap()
@@ -597,7 +597,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_asset_contract(self, GetAssetContractInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-asset-contract", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-asset-contract", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAssetContractDocument(contractIdentifier=input.contractIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -606,7 +606,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_token_balance(self, GetTokenBalanceInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-token-balance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-token-balance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTokenBalanceDocument(tokenIdentifier=input.tokenIdentifier, ownerIdentifier=input.ownerIdentifier, atBlockchainInstant=input.atBlockchainInstant)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -615,7 +615,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_transaction(self, GetTransactionInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-transaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-transaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTransactionDocument(transactionHash=input.transactionHash, transactionId=input.transactionId, network=input.network)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -624,7 +624,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_asset_contracts(self, ListAssetContractsInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-asset-contracts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-asset-contracts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAssetContractsDocument(contractFilter=input.contractFilter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -633,7 +633,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_filtered_transaction_events(self, ListFilteredTransactionEventsInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-filtered-transaction-events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-filtered-transaction-events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"network\":" + managedblockchain_query_json_str(input.network))
         parts.append("\"addressIdentifierFilter\":" + address_identifier_filter_to_json(input.addressIdentifierFilter))
@@ -662,7 +662,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_token_balances(self, ListTokenBalancesInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-token-balances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-token-balances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTokenBalancesDocument(ownerFilter=input.ownerFilter, tokenFilter=input.tokenFilter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -671,7 +671,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_transaction_events(self, ListTransactionEventsInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-transaction-events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-transaction-events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTransactionEventsDocument(transactionHash=input.transactionHash, transactionId=input.transactionId, network=input.network, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, managedblockchain_query_service(), self.region, host)
@@ -680,7 +680,7 @@ struct ManagedBlockchain_QueryClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_transactions(self, ListTransactionsInput input) -> str:
         auto host = endpoints.regional_host(managedblockchain_query_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-transactions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-transactions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"address\":" + managedblockchain_query_json_str(input.address))
         parts.append("\"network\":" + input.network.to_json())

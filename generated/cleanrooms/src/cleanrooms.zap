@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 103 operations — 102 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 103 operations — 103 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   448 structs (216 @derive(Json)), 58 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -4016,11 +4016,6 @@ def cleanrooms_error_from_code(str code) -> CleanRoomsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4801,7 +4796,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-analysistemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-analysistemplates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.analysisTemplateArns:
@@ -4816,7 +4811,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.names:
@@ -4831,7 +4826,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema-analysis-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/batch-schema-analysis-rule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.schemaAnalysisRuleRequests:
@@ -4846,7 +4841,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -4882,7 +4877,7 @@ struct CleanRoomsClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_collaboration(self, CreateCollaborationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/collaborations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.members:
@@ -4943,7 +4938,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/changeRequests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collaborations/{collaborationIdentifier}/changeRequests", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.changes:
@@ -4958,7 +4953,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"configuredAudienceModelArn\":" + cleanrooms_json_str(input.configuredAudienceModelArn))
         parts.append("\"configuredAudienceModelAssociationName\":" + cleanrooms_json_str(input.configuredAudienceModelAssociationName))
@@ -4979,7 +4974,7 @@ struct CleanRoomsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_configured_table(self, CreateConfiguredTableInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cleanrooms_json_str(input.name))
         if input.description.is_some():
@@ -5012,7 +5007,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRuleType\":" + input.analysisRuleType.to_json())
         parts.append("\"analysisRulePolicy\":" + configured_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
@@ -5025,7 +5020,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cleanrooms_json_str(input.name))
         if input.description.is_some():
@@ -5048,8 +5043,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRuleType\":" + input.analysisRuleType.to_json())
         parts.append("\"analysisRulePolicy\":" + configured_table_association_analysis_rule_policy_to_json(input.analysisRulePolicy))
@@ -5062,7 +5058,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idmappingtables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idmappingtables", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cleanrooms_json_str(input.name))
         if input.description.is_some():
@@ -5087,7 +5083,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"inputReferenceConfig\":" + input.inputReferenceConfig.to_json())
         if input.tags.is_some():
@@ -5112,7 +5108,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + cleanrooms_json_str(input.name))
         if input.description.is_some():
@@ -5141,7 +5137,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRuleType\":" + cleanrooms_json_str(input.analysisRuleType))
         parts.append("\"analysisRulePolicy\":" + intermediate_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
@@ -5152,7 +5148,7 @@ struct CleanRoomsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_membership(self, CreateMembershipInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"collaborationIdentifier\":" + cleanrooms_json_str(input.collaborationIdentifier))
         parts.append("\"queryLogStatus\":" + input.queryLogStatus.to_json())
@@ -5186,7 +5182,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.autoRefresh.is_some():
             auto u0 = input.autoRefresh.unwrap()
@@ -5209,7 +5205,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["analysisTemplateIdentifier"] = input.analysisTemplateIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteCollaboration  DELETE /collaborations/{collaborationIdentifier}
@@ -5218,7 +5214,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteConfiguredAudienceModelAssociation  DELETE /memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}
@@ -5226,9 +5222,10 @@ struct CleanRoomsClient:
     def delete_configured_audience_model_association(self, DeleteConfiguredAudienceModelAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredAudienceModelAssociationIdentifier"] = input.configuredAudienceModelAssociationIdentifier
+        auto qt0 = input.configuredAudienceModelAssociationIdentifier
+        labels["configuredAudienceModelAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteConfiguredTable  DELETE /configuredTables/{configuredTableIdentifier}
@@ -5237,7 +5234,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteConfiguredTableAnalysisRule  DELETE /configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}
@@ -5247,7 +5244,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteConfiguredTableAssociation  DELETE /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}
@@ -5255,9 +5252,10 @@ struct CleanRoomsClient:
     def delete_configured_table_association(self, DeleteConfiguredTableAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteConfiguredTableAssociationAnalysisRule  DELETE /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}
@@ -5266,9 +5264,10 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteIdMappingTable  DELETE /memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}
@@ -5278,7 +5277,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["idMappingTableIdentifier"] = input.idMappingTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteIdNamespaceAssociation  DELETE /memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}
@@ -5286,9 +5285,10 @@ struct CleanRoomsClient:
     def delete_id_namespace_association(self, DeleteIdNamespaceAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["idNamespaceAssociationIdentifier"] = input.idNamespaceAssociationIdentifier
+        auto qt0 = input.idNamespaceAssociationIdentifier
+        labels["idNamespaceAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteIntermediateTable  DELETE /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}
@@ -5298,7 +5298,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteIntermediateTableAnalysisRule  DELETE /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}
@@ -5309,7 +5309,7 @@ struct CleanRoomsClient:
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteMember  DELETE /collaborations/{collaborationIdentifier}/member/{accountId}
@@ -5319,7 +5319,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/collaborations/{collaborationIdentifier}/member/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/collaborations/{collaborationIdentifier}/member/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeleteMembership  DELETE /memberships/{membershipIdentifier}
@@ -5328,7 +5328,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DeletePrivacyBudgetTemplate  DELETE /memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}
@@ -5337,8 +5337,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["privacyBudgetTemplateIdentifier"] = input.privacyBudgetTemplateIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.privacyBudgetTemplateIdentifier
+        labels["privacyBudgetTemplateIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # DisallowIntermediateTable  POST /memberships/{membershipIdentifier}/disallowIntermediateTable
@@ -5347,7 +5348,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/disallowIntermediateTable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/disallowIntermediateTable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisallowIntermediateTableDocument(intermediateTableName=input.intermediateTableName, includeDescendants=input.includeDescendants)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -5359,7 +5360,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["analysisLogExportIdentifier"] = input.analysisLogExportIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysislogexports/{analysisLogExportIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysislogexports/{analysisLogExportIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetAnalysisTemplate  GET /memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}
@@ -5369,7 +5370,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["analysisTemplateIdentifier"] = input.analysisTemplateIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaboration  GET /collaborations/{collaborationIdentifier}
@@ -5378,7 +5379,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaborationAnalysisTemplate  GET /collaborations/{collaborationIdentifier}/analysistemplates/{analysisTemplateArn}
@@ -5388,7 +5389,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["analysisTemplateArn"] = input.analysisTemplateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/analysistemplates/{analysisTemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/analysistemplates/{analysisTemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaborationChangeRequest  GET /collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}
@@ -5398,7 +5399,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["changeRequestIdentifier"] = input.changeRequestIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaborationConfiguredAudienceModelAssociation  GET /collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}
@@ -5407,8 +5408,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        labels["configuredAudienceModelAssociationIdentifier"] = input.configuredAudienceModelAssociationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.configuredAudienceModelAssociationIdentifier
+        labels["configuredAudienceModelAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaborationIdNamespaceAssociation  GET /collaborations/{collaborationIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}
@@ -5417,8 +5419,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        labels["idNamespaceAssociationIdentifier"] = input.idNamespaceAssociationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.idNamespaceAssociationIdentifier
+        labels["idNamespaceAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetCollaborationPrivacyBudgetTemplate  GET /collaborations/{collaborationIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}
@@ -5427,8 +5430,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        labels["privacyBudgetTemplateIdentifier"] = input.privacyBudgetTemplateIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.privacyBudgetTemplateIdentifier
+        labels["privacyBudgetTemplateIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetConfiguredAudienceModelAssociation  GET /memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}
@@ -5436,9 +5440,10 @@ struct CleanRoomsClient:
     def get_configured_audience_model_association(self, GetConfiguredAudienceModelAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredAudienceModelAssociationIdentifier"] = input.configuredAudienceModelAssociationIdentifier
+        auto qt0 = input.configuredAudienceModelAssociationIdentifier
+        labels["configuredAudienceModelAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetConfiguredTable  GET /configuredTables/{configuredTableIdentifier}
@@ -5447,7 +5452,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetConfiguredTableAnalysisRule  GET /configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}
@@ -5457,7 +5462,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetConfiguredTableAssociation  GET /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}
@@ -5465,9 +5470,10 @@ struct CleanRoomsClient:
     def get_configured_table_association(self, GetConfiguredTableAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetConfiguredTableAssociationAnalysisRule  GET /memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}
@@ -5476,9 +5482,10 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetIdMappingTable  GET /memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}
@@ -5488,7 +5495,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["idMappingTableIdentifier"] = input.idMappingTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetIdNamespaceAssociation  GET /memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}
@@ -5496,9 +5503,10 @@ struct CleanRoomsClient:
     def get_id_namespace_association(self, GetIdNamespaceAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["idNamespaceAssociationIdentifier"] = input.idNamespaceAssociationIdentifier
+        auto qt0 = input.idNamespaceAssociationIdentifier
+        labels["idNamespaceAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetIntermediateTable  GET /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}
@@ -5508,7 +5516,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetIntermediateTableAnalysisRule  GET /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}
@@ -5519,7 +5527,7 @@ struct CleanRoomsClient:
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetMembership  GET /memberships/{membershipIdentifier}
@@ -5528,7 +5536,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetPrivacyBudgetTemplate  GET /memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}
@@ -5537,8 +5545,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["privacyBudgetTemplateIdentifier"] = input.privacyBudgetTemplateIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.privacyBudgetTemplateIdentifier
+        labels["privacyBudgetTemplateIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetProtectedJob  GET /memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}
@@ -5548,7 +5557,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["protectedJobIdentifier"] = input.protectedJobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetProtectedQuery  GET /memberships/{membershipIdentifier}/protectedQueries/{protectedQueryIdentifier}
@@ -5558,7 +5567,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["protectedQueryIdentifier"] = input.protectedQueryIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedQueries/{protectedQueryIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedQueries/{protectedQueryIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetSchema  GET /collaborations/{collaborationIdentifier}/schemas/{name}
@@ -5568,7 +5577,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # GetSchemaAnalysisRule  GET /collaborations/{collaborationIdentifier}/schemas/{name}/analysisRule/{type}
@@ -5579,7 +5588,7 @@ struct CleanRoomsClient:
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["name"] = input.name
         labels["type"] = input.type
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas/{name}/analysisRule/{type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas/{name}/analysisRule/{type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListAnalysisLogExports  GET /memberships/{membershipIdentifier}/analysislogexports
@@ -5597,7 +5606,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysislogexports", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysislogexports", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListAnalysisTemplates  GET /memberships/{membershipIdentifier}/analysistemplates
@@ -5611,7 +5620,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationAnalysisTemplates  GET /collaborations/{collaborationIdentifier}/analysistemplates
@@ -5625,7 +5634,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/analysistemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationChangeRequests  GET /collaborations/{collaborationIdentifier}/changeRequests
@@ -5641,7 +5650,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/changeRequests", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/changeRequests", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationConfiguredAudienceModelAssociations  GET /collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations
@@ -5655,7 +5664,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationIdNamespaceAssociations  GET /collaborations/{collaborationIdentifier}/idnamespaceassociations
@@ -5669,7 +5678,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationPrivacyBudgetTemplates  GET /collaborations/{collaborationIdentifier}/privacybudgettemplates
@@ -5683,7 +5692,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborationPrivacyBudgets  GET /collaborations/{collaborationIdentifier}/privacybudgets
@@ -5699,8 +5708,9 @@ struct CleanRoomsClient:
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.accessBudgetResourceArn.is_some():
-            query["accessBudgetResourceArn"] = input.accessBudgetResourceArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.accessBudgetResourceArn.unwrap_or("")
+            query["accessBudgetResourceArn"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/privacybudgets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListCollaborations  GET /collaborations
@@ -5714,7 +5724,7 @@ struct CleanRoomsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.memberStatus.is_some():
             query["memberStatus"] = input.memberStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListConfiguredAudienceModelAssociations  GET /memberships/{membershipIdentifier}/configuredaudiencemodelassociations
@@ -5728,7 +5738,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListConfiguredTableAssociations  GET /memberships/{membershipIdentifier}/configuredTableAssociations
@@ -5742,7 +5752,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListConfiguredTables  GET /configuredTables
@@ -5754,7 +5764,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuredTables", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListIdMappingTables  GET /memberships/{membershipIdentifier}/idmappingtables
@@ -5768,7 +5778,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idmappingtables", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idmappingtables", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListIdNamespaceAssociations  GET /memberships/{membershipIdentifier}/idnamespaceassociations
@@ -5782,7 +5792,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListIntermediateTableVersions  GET /memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/versions
@@ -5797,7 +5807,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListIntermediateTables  GET /memberships/{membershipIdentifier}/intermediateTables
@@ -5811,7 +5821,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/intermediateTables", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListMembers  GET /collaborations/{collaborationIdentifier}/members
@@ -5825,7 +5835,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListMemberships  GET /memberships
@@ -5839,7 +5849,7 @@ struct CleanRoomsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListPrivacyBudgetTemplates  GET /memberships/{membershipIdentifier}/privacybudgettemplates
@@ -5853,7 +5863,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListPrivacyBudgets  GET /memberships/{membershipIdentifier}/privacybudgets
@@ -5869,8 +5879,9 @@ struct CleanRoomsClient:
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.accessBudgetResourceArn.is_some():
-            query["accessBudgetResourceArn"] = input.accessBudgetResourceArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.accessBudgetResourceArn.unwrap_or("")
+            query["accessBudgetResourceArn"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/privacybudgets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListProtectedJobs  GET /memberships/{membershipIdentifier}/protectedJobs
@@ -5886,7 +5897,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedJobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedJobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListProtectedQueries  GET /memberships/{membershipIdentifier}/protectedQueries
@@ -5902,7 +5913,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedQueries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memberships/{membershipIdentifier}/protectedQueries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListSchemas  GET /collaborations/{collaborationIdentifier}/schemas
@@ -5918,7 +5929,7 @@ struct CleanRoomsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collaborations/{collaborationIdentifier}/schemas", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -5927,7 +5938,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
 
     # PopulateIdMappingTable  POST /memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}/populate
@@ -5937,7 +5948,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["idMappingTableIdentifier"] = input.idMappingTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}/populate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}/populate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PopulateIdMappingTableDocument(jobType=input.jobType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -5949,7 +5960,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/populate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/populate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.parameters.is_some():
             auto u0 = input.parameters.unwrap()
@@ -5972,7 +5983,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/previewprivacyimpact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/previewprivacyimpact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PreviewPrivacyImpactDocument(parameters=input.parameters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -5983,7 +5994,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysislogexports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/analysislogexports", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAnalysisLogExportDocument(analysisId=input.analysisId, analysisType=input.analysisType, resultConfiguration=input.resultConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -5994,7 +6005,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedJobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + cleanrooms_json_str(input.type))
         parts.append("\"jobParameters\":" + protected_job_parameters_to_json(input.jobParameters))
@@ -6016,7 +6027,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedQueries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memberships/{membershipIdentifier}/protectedQueries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + cleanrooms_json_str(input.type))
         parts.append("\"sqlParameters\":" + protected_query_sql_parameters_to_json(input.sqlParameters))
@@ -6038,7 +6049,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -6047,6 +6058,17 @@ struct CleanRoomsClient:
         auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(cleanrooms_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, cleanrooms_service(), self.region, host)
+
     # UpdateAnalysisTemplate  PATCH /memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_analysis_template(self, UpdateAnalysisTemplateInput input) -> str:
@@ -6054,7 +6076,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["analysisTemplateIdentifier"] = input.analysisTemplateIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/analysistemplates/{analysisTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAnalysisTemplateDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6065,7 +6087,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/collaborations/{collaborationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCollaborationDocument(name=input.name, description=input.description, analyticsEngine=input.analyticsEngine)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6077,7 +6099,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["collaborationIdentifier"] = input.collaborationIdentifier
         labels["changeRequestIdentifier"] = input.changeRequestIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCollaborationChangeRequestDocument(action=input.action)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6087,9 +6109,10 @@ struct CleanRoomsClient:
     def update_configured_audience_model_association(self, UpdateConfiguredAudienceModelAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredAudienceModelAssociationIdentifier"] = input.configuredAudienceModelAssociationIdentifier
+        auto qt0 = input.configuredAudienceModelAssociationIdentifier
+        labels["configuredAudienceModelAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfiguredAudienceModelAssociationDocument(description=input.description, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6100,7 +6123,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -6136,7 +6159,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["configuredTableIdentifier"] = input.configuredTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuredTables/{configuredTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRulePolicy\":" + configured_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
         auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
@@ -6147,9 +6170,10 @@ struct CleanRoomsClient:
     def update_configured_table_association(self, UpdateConfiguredTableAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfiguredTableAssociationDocument(description=input.description, roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6160,9 +6184,10 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["configuredTableAssociationIdentifier"] = input.configuredTableAssociationIdentifier
+        auto qt0 = input.configuredTableAssociationIdentifier
+        labels["configuredTableAssociationIdentifier"] = qt0
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRulePolicy\":" + configured_table_association_analysis_rule_policy_to_json(input.analysisRulePolicy))
         auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
@@ -6175,7 +6200,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["idMappingTableIdentifier"] = input.idMappingTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIdMappingTableDocument(description=input.description, kmsKeyArn=input.kmsKeyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6185,9 +6210,10 @@ struct CleanRoomsClient:
     def update_id_namespace_association(self, UpdateIdNamespaceAssociationInput input) -> str:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
-        labels["idNamespaceAssociationIdentifier"] = input.idNamespaceAssociationIdentifier
+        auto qt0 = input.idNamespaceAssociationIdentifier
+        labels["idNamespaceAssociationIdentifier"] = qt0
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIdNamespaceAssociationDocument(name=input.name, description=input.description, idMappingConfig=input.idMappingConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6199,7 +6225,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -6224,7 +6250,7 @@ struct CleanRoomsClient:
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["intermediateTableIdentifier"] = input.intermediateTableIdentifier
         labels["analysisRuleType"] = input.analysisRuleType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/intermediateTables/{intermediateTableIdentifier}/analysisRule/{analysisRuleType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analysisRulePolicy\":" + intermediate_table_analysis_rule_policy_to_json(input.analysisRulePolicy))
         auto bp = restjson.rest_json_document(b, cleanrooms_json_obj(parts))
@@ -6236,7 +6262,7 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMembershipDocument(queryLogStatus=input.queryLogStatus, jobLogStatus=input.jobLogStatus, defaultResultConfiguration=input.defaultResultConfiguration, defaultJobResultConfiguration=input.defaultJobResultConfiguration, membershipPaymentConfiguration=input.membershipPaymentConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6247,8 +6273,9 @@ struct CleanRoomsClient:
         auto host = endpoints.regional_host(cleanrooms_service(), self.region)
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
-        labels["privacyBudgetTemplateIdentifier"] = input.privacyBudgetTemplateIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.privacyBudgetTemplateIdentifier
+        labels["privacyBudgetTemplateIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"privacyBudgetType\":" + input.privacyBudgetType.to_json())
         if input.parameters.is_some():
@@ -6264,7 +6291,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["protectedJobIdentifier"] = input.protectedJobIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/protectedJobs/{protectedJobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProtectedJobDocument(targetStatus=input.targetStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)
@@ -6276,7 +6303,7 @@ struct CleanRoomsClient:
         dict[str, str] labels = {}
         labels["membershipIdentifier"] = input.membershipIdentifier
         labels["protectedQueryIdentifier"] = input.protectedQueryIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/protectedQueries/{protectedQueryIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/memberships/{membershipIdentifier}/protectedQueries/{protectedQueryIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProtectedQueryDocument(targetStatus=input.targetStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cleanrooms_service(), self.region, host)

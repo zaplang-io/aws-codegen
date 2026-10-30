@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 81 operations — 79 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 81 operations — 81 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   313 structs (206 @derive(Json)), 56 enums, 8 error variants.
-#   16 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -2682,16 +2682,6 @@ def macie2_error_from_code(str code) -> Macie2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListAutomatedDiscoveryAccounts (httpQuery `accountIds` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAutomatedDiscoveryAccounts (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3230,7 +3220,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def accept_invitation(self, AcceptInvitationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/accept", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/accept", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptInvitationDocument(administratorAccountId=input.administratorAccountId, invitationId=input.invitationId, masterAccount=input.masterAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3239,7 +3229,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def batch_get_custom_data_identifiers(self, BatchGetCustomDataIdentifiersRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ids.is_some():
             auto u0 = input.ids.unwrap()
@@ -3254,7 +3244,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def batch_update_automated_discovery_accounts(self, BatchUpdateAutomatedDiscoveryAccountsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-discovery/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-discovery/accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accounts.is_some():
             auto u0 = input.accounts.unwrap()
@@ -3269,7 +3259,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_allow_list(self, CreateAllowListRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/allow-lists", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/allow-lists", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + macie2_json_str(input.clientToken))
         parts.append("\"criteria\":" + input.criteria.to_json())
@@ -3290,7 +3280,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_classification_job(self, CreateClassificationJobRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.allowListIds.is_some():
             auto u0 = input.allowListIds.unwrap()
@@ -3342,7 +3332,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_custom_data_identifier(self, CreateCustomDataIdentifierRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3386,7 +3376,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_findings_filter(self, CreateFindingsFilterRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingsfilters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsfilters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"action\":" + input.action.to_json())
         if input.clientToken.is_some():
@@ -3413,7 +3403,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_invitations(self, CreateInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -3432,7 +3422,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_member(self, CreateMemberRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"account\":" + input.account.to_json())
         if input.tags.is_some():
@@ -3448,7 +3438,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_sample_findings(self, CreateSampleFindingsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/sample", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/sample", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.findingTypes.is_some():
             auto u0 = input.findingTypes.unwrap()
@@ -3463,7 +3453,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def decline_invitations(self, DeclineInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -3481,7 +3471,7 @@ struct Macie2Client:
         dict[str, str] query = {}
         if input.ignoreJobChecks.is_some():
             query["ignoreJobChecks"] = input.ignoreJobChecks.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DeleteCustomDataIdentifier  DELETE /custom-data-identifiers/{id}
@@ -3490,7 +3480,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-data-identifiers/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-data-identifiers/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DeleteFindingsFilter  DELETE /findingsfilters/{id}
@@ -3499,14 +3489,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DeleteInvitations  POST /invitations/delete
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_invitations(self, DeleteInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -3521,14 +3511,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/members/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/members/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DescribeBuckets  POST /datasources/s3
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def describe_buckets(self, DescribeBucketsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasources/s3", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasources/s3", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.criteria.is_some():
             auto u0 = input.criteria.unwrap()
@@ -3554,21 +3544,21 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DescribeOrganizationConfiguration  GET /admin/configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def describe_organization_configuration(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/admin/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/admin/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DisableMacie  DELETE /macie
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disable_macie(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/macie", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/macie", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DisableOrganizationAdminAccount  DELETE /admin
@@ -3577,21 +3567,21 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] query = {}
         query["adminAccountId"] = input.adminAccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/admin", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/admin", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DisassociateFromAdministratorAccount  POST /administrator/disassociate
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disassociate_from_administrator_account(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/administrator/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/administrator/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DisassociateFromMasterAccount  POST /master/disassociate
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disassociate_from_master_account(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/master/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/master/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # DisassociateMember  POST /members/disassociate/{id}
@@ -3600,14 +3590,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # EnableMacie  POST /macie
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def enable_macie(self, EnableMacieRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/macie", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/macie", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableMacieDocument(clientToken=input.clientToken, findingPublishingFrequency=input.findingPublishingFrequency, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3616,7 +3606,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def enable_organization_admin_account(self, EnableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/admin", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/admin", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableOrganizationAdminAccountDocument(adminAccountId=input.adminAccountId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3625,7 +3615,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_administrator_account(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/administrator", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/administrator", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetAllowList  GET /allow-lists/{id}
@@ -3634,21 +3624,21 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetAutomatedDiscoveryConfiguration  GET /automated-discovery/configuration
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_automated_discovery_configuration(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-discovery/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-discovery/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetBucketStatistics  POST /datasources/s3/statistics
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_bucket_statistics(self, GetBucketStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasources/s3/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasources/s3/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBucketStatisticsDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3657,7 +3647,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_classification_export_configuration(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/classification-export-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/classification-export-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetClassificationScope  GET /classification-scopes/{id}
@@ -3666,7 +3656,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/classification-scopes/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/classification-scopes/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetCustomDataIdentifier  GET /custom-data-identifiers/{id}
@@ -3675,14 +3665,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-data-identifiers/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-data-identifiers/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetFindingStatistics  POST /findings/statistics
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_finding_statistics(self, GetFindingStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.findingCriteria.is_some():
             auto u0 = input.findingCriteria.unwrap()
@@ -3701,7 +3691,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_findings(self, GetFindingsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingIds:
@@ -3719,35 +3709,35 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetFindingsPublicationConfiguration  GET /findings-publication-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_findings_publication_configuration(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/findings-publication-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findings-publication-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetInvitationsCount  GET /invitations/count
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_invitations_count(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/invitations/count", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitations/count", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetMacieSession  GET /macie
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_macie_session(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/macie", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/macie", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetMasterAccount  GET /master
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_master_account(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/master", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/master", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetMember  GET /members/{id}
@@ -3756,7 +3746,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/members/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/members/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetResourceProfile  GET /resource-profiles
@@ -3765,14 +3755,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetRevealConfiguration  GET /reveal-configuration
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_reveal_configuration(self) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/reveal-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reveal-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetSensitiveDataOccurrences  GET /findings/{findingId}/reveal
@@ -3781,7 +3771,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["findingId"] = input.findingId
-        auto b = binding.HttpBinding(method="GET", path_template="/findings/{findingId}/reveal", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findings/{findingId}/reveal", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetSensitiveDataOccurrencesAvailability  GET /findings/{findingId}/reveal/availability
@@ -3790,7 +3780,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["findingId"] = input.findingId
-        auto b = binding.HttpBinding(method="GET", path_template="/findings/{findingId}/reveal/availability", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findings/{findingId}/reveal/availability", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetSensitivityInspectionTemplate  GET /templates/sensitivity-inspections/{id}
@@ -3799,14 +3789,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # GetUsageStatistics  POST /usage/statistics
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_usage_statistics(self, GetUsageStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/usage/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/usage/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterBy.is_some():
             auto u0 = input.filterBy.unwrap()
@@ -3836,7 +3826,7 @@ struct Macie2Client:
         dict[str, str] query = {}
         if input.timeRange.is_some():
             query["timeRange"] = input.timeRange.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/usage", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usage", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListAllowLists  GET /allow-lists
@@ -3848,14 +3838,29 @@ struct Macie2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/allow-lists", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/allow-lists", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
+
+    # ListAutomatedDiscoveryAccounts  GET /automated-discovery/accounts
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_automated_discovery_accounts(self, ListAutomatedDiscoveryAccountsRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.accountIds.is_some():
+            multi_query["accountIds"] = input.accountIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-discovery/accounts", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListClassificationJobs  POST /jobs/list
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_classification_jobs(self, ListClassificationJobsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterCriteria.is_some():
             auto u0 = input.filterCriteria.unwrap()
@@ -3881,14 +3886,14 @@ struct Macie2Client:
             query["name"] = input.name.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/classification-scopes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/classification-scopes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListCustomDataIdentifiers  POST /custom-data-identifiers/list
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_custom_data_identifiers(self, ListCustomDataIdentifiersRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCustomDataIdentifiersDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3897,7 +3902,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_findings(self, ListFindingsRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.findingCriteria.is_some():
             auto u0 = input.findingCriteria.unwrap()
@@ -3923,7 +3928,7 @@ struct Macie2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/findingsfilters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findingsfilters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListInvitations  GET /invitations
@@ -3935,13 +3940,13 @@ struct Macie2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListManagedDataIdentifiers  POST /managed-data-identifiers/list
     def list_managed_data_identifiers(self, ListManagedDataIdentifiersRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/managed-data-identifiers/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-data-identifiers/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListManagedDataIdentifiersDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -3957,7 +3962,7 @@ struct Macie2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.onlyAssociated.is_some():
             query["onlyAssociated"] = input.onlyAssociated.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/members", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/members", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListOrganizationAdminAccounts  GET /admin
@@ -3969,7 +3974,7 @@ struct Macie2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/admin", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/admin", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListResourceProfileArtifacts  GET /resource-profiles/artifacts
@@ -3980,7 +3985,7 @@ struct Macie2Client:
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles/artifacts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles/artifacts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListResourceProfileDetections  GET /resource-profiles/detections
@@ -3993,7 +3998,7 @@ struct Macie2Client:
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles/detections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-profiles/detections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListSensitivityInspectionTemplates  GET /templates/sensitivity-inspections
@@ -4005,7 +4010,7 @@ struct Macie2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/sensitivity-inspections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/sensitivity-inspections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -4013,14 +4018,14 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
 
     # PutClassificationExportConfiguration  PUT /classification-export-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_classification_export_configuration(self, PutClassificationExportConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/classification-export-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/classification-export-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutClassificationExportConfigurationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4029,7 +4034,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_findings_publication_configuration(self, PutFindingsPublicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/findings-publication-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/findings-publication-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFindingsPublicationConfigurationDocument(clientToken=input.clientToken, securityHubConfiguration=input.securityHubConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4038,7 +4043,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def search_resources(self, SearchResourcesRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasources/search-resources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasources/search-resources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.bucketCriteria.is_some():
             auto u0 = input.bucketCriteria.unwrap()
@@ -4060,7 +4065,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -4073,7 +4078,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def test_custom_data_identifier(self, TestCustomDataIdentifierRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-data-identifiers/test", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ignoreWords.is_some():
             auto u0 = input.ignoreWords.unwrap()
@@ -4095,13 +4100,23 @@ struct Macie2Client:
         auto bp = restjson.rest_json_document(b, macie2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, macie2_service(), self.region, host)
+
     # UpdateAllowList  PUT /allow-lists/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_allow_list(self, UpdateAllowListRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/allow-lists/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAllowListDocument(criteria=input.criteria, description=input.description, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4110,7 +4125,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_automated_discovery_configuration(self, UpdateAutomatedDiscoveryConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/automated-discovery/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/automated-discovery/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAutomatedDiscoveryConfigurationDocument(autoEnableOrganizationMembers=input.autoEnableOrganizationMembers, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4121,7 +4136,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClassificationJobDocument(jobStatus=input.jobStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4132,7 +4147,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/classification-scopes/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/classification-scopes/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.s3.is_some():
             auto u0 = input.s3.unwrap()
@@ -4146,7 +4161,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsfilters/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.action.is_some():
             auto u0 = input.action.unwrap()
@@ -4173,7 +4188,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_macie_session(self, UpdateMacieSessionRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/macie", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/macie", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMacieSessionDocument(findingPublishingFrequency=input.findingPublishingFrequency, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4184,7 +4199,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/macie/members/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/macie/members/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMemberSessionDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4193,7 +4208,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/admin/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/admin/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationConfigurationDocument(autoEnable=input.autoEnable)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4204,7 +4219,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourceProfileDocument(sensitivityScoreOverride=input.sensitivityScoreOverride)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4215,7 +4230,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-profiles/detections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-profiles/detections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.suppressDataIdentifiers.is_some():
             auto u0 = input.suppressDataIdentifiers.unwrap()
@@ -4230,7 +4245,7 @@ struct Macie2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_reveal_configuration(self, UpdateRevealConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(macie2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/reveal-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/reveal-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRevealConfigurationDocument(configuration=input.configuration, retrievalConfiguration=input.retrievalConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, macie2_service(), self.region, host)
@@ -4241,7 +4256,7 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/templates/sensitivity-inspections/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -4287,6 +4302,19 @@ struct Macie2Client:
         auto host = endpoints.regional_host(macie2_service(), self.region)
         while True:
             auto raw = self.list_allow_lists(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAutomatedDiscoveryAccounts — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_automated_discovery_accounts(self, ListAutomatedDiscoveryAccountsRequest input):
+        auto host = endpoints.regional_host(macie2_service(), self.region)
+        while True:
+            auto raw = self.list_automated_discovery_accounts(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

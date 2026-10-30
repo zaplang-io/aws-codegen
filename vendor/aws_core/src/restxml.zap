@@ -100,7 +100,7 @@ def rest_xml_sign(
     str date_stamp,
 ) -> str:
     auto req = binding.binding_request(b, service, region, host, amz_date)
-    return binding.binding_sign(creds, req, amz_date, date_stamp)
+    return binding.binding_sign(creds, req, amz_date, date_stamp, b.multi_query)
 
 # Build + sign a rest-xml request using the current UTC time (the live path).
 def rest_xml_request(

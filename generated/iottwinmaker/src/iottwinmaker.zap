@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 38 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 40 operations — 40 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   164 structs (89 @derive(Json)), 20 enums, 11 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1485,12 +1485,6 @@ def iottwinmaker_error_from_code(str code) -> IoTTwinMakerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteEntity (httpQuery `isRecursive` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1939,6 +1933,12 @@ def tabular_conditions_to_json(TabularConditions v) -> str:
         parts.append("\"propertyFilters\":" + iottwinmaker_json_arr(e3))
     return iottwinmaker_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def iottwinmaker_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound IoTTwinMaker client: credentials + region, threaded into every operation.
 struct IoTTwinMakerClient:
     core.Credentials creds
@@ -1950,7 +1950,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.entries:
@@ -1965,7 +1965,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["metadataTransferJobId"] = input.metadataTransferJobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/metadata-transfer-jobs/{metadataTransferJobId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/metadata-transfer-jobs/{metadataTransferJobId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # CreateComponentType  POST /workspaces/{workspaceId}/component-types/{componentTypeId}
@@ -1975,7 +1975,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["componentTypeId"] = input.componentTypeId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.isSingleton.is_some():
             auto u0 = input.isSingleton.unwrap()
@@ -2031,7 +2031,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.entityId.is_some():
             auto u0 = input.entityId.unwrap()
@@ -2068,7 +2068,7 @@ struct IoTTwinMakerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_metadata_transfer_job(self, CreateMetadataTransferJobRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.metadataTransferJobId.is_some():
             auto u0 = input.metadataTransferJobId.unwrap()
@@ -2090,7 +2090,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/scenes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/scenes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sceneId\":" + iottwinmaker_json_str(input.sceneId))
         parts.append("\"contentLocation\":" + iottwinmaker_json_str(input.contentLocation))
@@ -2125,7 +2125,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["syncSource"] = input.syncSource
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"syncRole\":" + iottwinmaker_json_str(input.syncRole))
         if input.tags.is_some():
@@ -2143,7 +2143,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -2170,7 +2170,21 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["componentTypeId"] = input.componentTypeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
+
+    # DeleteEntity  DELETE /workspaces/{workspaceId}/entities/{entityId}
+    # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def delete_entity(self, DeleteEntityRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceId"] = input.workspaceId
+        labels["entityId"] = input.entityId
+        dict[str, str] query = {}
+        if input.isRecursive.is_some():
+            auto qt0 = iottwinmaker_bind_bool(input.isRecursive.unwrap_or(False))
+            query["isRecursive"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # DeleteScene  DELETE /workspaces/{workspaceId}/scenes/{sceneId}
@@ -2180,7 +2194,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["sceneId"] = input.sceneId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # DeleteSyncJob  DELETE /workspaces/{workspaceId}/sync-jobs/{syncSource}
@@ -2190,7 +2204,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["syncSource"] = input.syncSource
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # DeleteWorkspace  DELETE /workspaces/{workspaceId}
@@ -2199,14 +2213,14 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # ExecuteQuery  POST /queries/execution
     # errors: AccessDeniedException, InternalServerException, QueryTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def execute_query(self, ExecuteQueryRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/queries/execution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queries/execution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteQueryDocument(workspaceId=input.workspaceId, queryStatement=input.queryStatement, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2218,7 +2232,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["componentTypeId"] = input.componentTypeId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetEntity  GET /workspaces/{workspaceId}/entities/{entityId}
@@ -2228,7 +2242,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["entityId"] = input.entityId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetMetadataTransferJob  GET /metadata-transfer-jobs/{metadataTransferJobId}
@@ -2237,14 +2251,14 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["metadataTransferJobId"] = input.metadataTransferJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/metadata-transfer-jobs/{metadataTransferJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metadata-transfer-jobs/{metadataTransferJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetPricingPlan  GET /pricingplan
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_pricing_plan(self) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetPropertyValue  POST /workspaces/{workspaceId}/entity-properties/value
@@ -2253,7 +2267,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/value", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/value", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.componentName.is_some():
             auto u0 = input.componentName.unwrap()
@@ -2292,7 +2306,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/history", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entity-properties/history", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.entityId.is_some():
             auto u0 = input.entityId.unwrap()
@@ -2350,7 +2364,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["sceneId"] = input.sceneId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetSyncJob  GET /sync-jobs/{syncSource}
@@ -2362,7 +2376,7 @@ struct IoTTwinMakerClient:
         dict[str, str] query = {}
         if input.workspaceId.is_some():
             query["workspace"] = input.workspaceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sync-jobs/{syncSource}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # GetWorkspace  GET /workspaces/{workspaceId}
@@ -2371,7 +2385,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
 
     # ListComponentTypes  POST /workspaces/{workspaceId}/component-types-list
@@ -2380,7 +2394,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/component-types-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2404,7 +2418,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["entityId"] = input.entityId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities/{entityId}/components-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities/{entityId}/components-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListComponentsDocument(componentPath=input.componentPath, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2415,7 +2429,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/entities-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2436,7 +2450,7 @@ struct IoTTwinMakerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_metadata_transfer_jobs(self, ListMetadataTransferJobsRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata-transfer-jobs-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceType\":" + input.sourceType.to_json())
         parts.append("\"destinationType\":" + input.destinationType.to_json())
@@ -2461,7 +2475,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/properties-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/properties-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPropertiesDocument(componentName=input.componentName, componentPath=input.componentPath, entityId=input.entityId, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2472,7 +2486,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/scenes-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/scenes-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListScenesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2483,7 +2497,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSyncJobsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2495,7 +2509,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["syncSource"] = input.syncSource
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}/resources-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/sync-jobs/{syncSource}/resources-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2516,7 +2530,7 @@ struct IoTTwinMakerClient:
     # errors: AccessDeniedException, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(resourceARN=input.resourceARN, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2525,7 +2539,7 @@ struct IoTTwinMakerClient:
     # errors: InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_workspaces(self, ListWorkspacesRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkspacesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
@@ -2534,7 +2548,7 @@ struct IoTTwinMakerClient:
     # errors: AccessDeniedException, ResourceNotFoundException, TooManyTagsException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceARN\":" + iottwinmaker_json_str(input.resourceARN))
         list[str] m0 = []
@@ -2544,6 +2558,17 @@ struct IoTTwinMakerClient:
         auto bp = restjson.rest_json_document(b, iottwinmaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)
 
+    # UntagResource  DELETE /tags
+    # errors: AccessDeniedException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceARN"] = input.resourceARN
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iottwinmaker_service(), self.region, host)
+
     # UpdateComponentType  PUT /workspaces/{workspaceId}/component-types/{componentTypeId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_component_type(self, UpdateComponentTypeRequest input) -> str:
@@ -2551,7 +2576,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["componentTypeId"] = input.componentTypeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/component-types/{componentTypeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.isSingleton.is_some():
             auto u0 = input.isSingleton.unwrap()
@@ -2602,7 +2627,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["entityId"] = input.entityId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.entityName.is_some():
             auto u0 = input.entityName.unwrap()
@@ -2632,7 +2657,7 @@ struct IoTTwinMakerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_pricing_plan(self, UpdatePricingPlanRequest input) -> str:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/pricingplan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"pricingMode\":" + input.pricingMode.to_json())
         if input.bundleNames.is_some():
@@ -2651,7 +2676,7 @@ struct IoTTwinMakerClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["sceneId"] = input.sceneId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/scenes/{sceneId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.contentLocation.is_some():
             auto u0 = input.contentLocation.unwrap()
@@ -2680,7 +2705,7 @@ struct IoTTwinMakerClient:
         auto host = endpoints.regional_host(iottwinmaker_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceDocument(description=input.description, role=input.role, s3Location=input.s3Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iottwinmaker_service(), self.region, host)

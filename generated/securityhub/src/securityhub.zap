@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 123 operations — 119 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 123 operations — 121 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1059 structs (646 @derive(Json)), 93 enums, 15 error variants.
-#   25 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   26 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -9506,14 +9506,11 @@ def securityhub_error_from_code(str code) -> SecurityHubError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   DescribeStandards (httpQuery `Providers` has unsupported type list[StandardsProvider])
-#   ListMembers (httpQuery `OnlyAssociated` has unsupported type bool)
 #   ListSecurityControlDefinitions (httpQuery `Providers` has unsupported type list[SecurityControlsProvider])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   DescribeStandards (operation not generated)
-#   ListMembers (operation not generated)
 #   ListSecurityControlDefinitions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -18241,6 +18238,12 @@ def vulnerability_code_vulnerabilities_to_json(VulnerabilityCodeVulnerabilities 
         parts.append("\"SourceArn\":" + securityhub_json_str(u3))
     return securityhub_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def securityhub_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound SecurityHub client: credentials + region, threaded into every operation.
 struct SecurityHubClient:
     core.Credentials creds
@@ -18250,7 +18253,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def accept_administrator_invitation(self, AcceptAdministratorInvitationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/administrator", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/administrator", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptAdministratorInvitationDocument(AdministratorId=input.AdministratorId, InvitationId=input.InvitationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18259,7 +18262,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def accept_invitation(self, AcceptInvitationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/master", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/master", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptInvitationDocument(MasterId=input.MasterId, InvitationId=input.InvitationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18268,7 +18271,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def batch_delete_automation_rules(self, BatchDeleteAutomationRulesRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AutomationRulesArns:
@@ -18281,7 +18284,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_disable_standards(self, BatchDisableStandardsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/standards/deregister", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/deregister", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.StandardsSubscriptionArns:
@@ -18294,7 +18297,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_enable_standards(self, BatchEnableStandardsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/standards/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/register", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.StandardsSubscriptionRequests:
@@ -18307,7 +18310,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def batch_get_automation_rules(self, BatchGetAutomationRulesRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AutomationRulesArns:
@@ -18320,7 +18323,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def batch_get_configuration_policy_associations(self, BatchGetConfigurationPolicyAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/batchget", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ConfigurationPolicyAssociationIdentifiers:
@@ -18333,7 +18336,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_get_security_controls(self, BatchGetSecurityControlsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/securityControls/batchGet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/securityControls/batchGet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecurityControlIds:
@@ -18346,7 +18349,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_get_standards_control_associations(self, BatchGetStandardsControlAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associations/batchGet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associations/batchGet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.StandardsControlAssociationIds:
@@ -18359,7 +18362,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_import_findings(self, BatchImportFindingsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/import", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/import", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Findings:
@@ -18372,7 +18375,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def batch_update_automation_rules(self, BatchUpdateAutomationRulesRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrules/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrules/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UpdateAutomationRulesRequestItems:
@@ -18385,7 +18388,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_update_findings(self, BatchUpdateFindingsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/findings/batchupdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findings/batchupdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FindingIdentifiers:
@@ -18434,7 +18437,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def batch_update_findings_v2(self, BatchUpdateFindingsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsv2/batchupdatev2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingsv2/batchupdatev2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MetadataUids.is_some():
             auto u0 = input.MetadataUids.unwrap()
@@ -18464,7 +18467,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def batch_update_standards_control_associations(self, BatchUpdateStandardsControlAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/associations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.StandardsControlAssociationUpdates:
@@ -18479,14 +18482,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["ExportJobId"] = input.ExportJobId
-        auto b = binding.HttpBinding(method="POST", path_template="/exportjobsv2/{ExportJobId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/exportjobsv2/{ExportJobId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # CreateActionTarget  POST /actionTargets
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def create_action_target(self, CreateActionTargetRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/actionTargets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/actionTargets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateActionTargetDocument(Name=input.Name, Description=input.Description, Id=input.Id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18495,7 +18498,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_aggregator_v2(self, CreateAggregatorV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/aggregatorv2/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/aggregatorv2/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
         if input.LinkedRegions.is_some():
@@ -18520,7 +18523,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def create_automation_rule(self, CreateAutomationRuleRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrules/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -18549,7 +18552,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_automation_rule_v2(self, CreateAutomationRuleV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/automationrulesv2/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automationrulesv2/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleName\":" + securityhub_json_str(input.RuleName))
         if input.RuleStatus.is_some():
@@ -18578,7 +18581,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def create_configuration_policy(self, CreateConfigurationPolicyRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicy/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicy/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + securityhub_json_str(input.Name))
         if input.Description.is_some():
@@ -18598,7 +18601,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, InvalidAccessException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + securityhub_json_str(input.Name))
         if input.Description.is_some():
@@ -18621,7 +18624,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_connector_v2(self, CreateConnectorV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectorsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + securityhub_json_str(input.Name))
         if input.Description.is_some():
@@ -18647,7 +18650,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def create_finding_aggregator(self, CreateFindingAggregatorRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingAggregator/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingAggregator/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
         if input.Regions.is_some():
@@ -18663,7 +18666,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def create_insight(self, CreateInsightRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + securityhub_json_str(input.Name))
         parts.append("\"Filters\":" + aws_security_finding_filters_to_json(input.Filters))
@@ -18675,7 +18678,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def create_members(self, CreateMembersRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountDetails:
@@ -18688,7 +18691,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_ticket_v2(self, CreateTicketV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ticketsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ticketsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTicketV2Document(ConnectorId=input.ConnectorId, FindingMetadataUid=input.FindingMetadataUid, ClientToken=input.ClientToken, Mode=input.Mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18697,7 +18700,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException
     def decline_invitations(self, DeclineInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/decline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -18712,7 +18715,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ActionTargetArn"] = input.ActionTargetArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/actionTargets/{ActionTargetArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/actionTargets/{ActionTargetArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteAggregatorV2  DELETE /aggregatorv2/delete/{AggregatorV2Arn+}
@@ -18721,7 +18724,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["AggregatorV2Arn"] = input.AggregatorV2Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/aggregatorv2/delete/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/aggregatorv2/delete/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteAutomationRuleV2  DELETE /automationrulesv2/{Identifier}
@@ -18730,7 +18733,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteConfigurationPolicy  DELETE /configurationPolicy/{Identifier}
@@ -18739,7 +18742,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configurationPolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configurationPolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteConnector  DELETE /connectors/{ConnectorId+}
@@ -18748,7 +18751,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteConnectorV2  DELETE /connectorsv2/{ConnectorId+}
@@ -18757,7 +18760,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteFindingAggregator  DELETE /findingAggregator/delete/{FindingAggregatorArn+}
@@ -18766,7 +18769,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["FindingAggregatorArn"] = input.FindingAggregatorArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/findingAggregator/delete/{FindingAggregatorArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/findingAggregator/delete/{FindingAggregatorArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteInsight  DELETE /insights/{InsightArn+}
@@ -18775,14 +18778,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["InsightArn"] = input.InsightArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DeleteInvitations  POST /invitations/delete
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def delete_invitations(self, DeleteInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -18795,7 +18798,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def delete_members(self, DeleteMembersRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -18808,7 +18811,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException
     def describe_action_targets(self, DescribeActionTargetsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/actionTargets/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/actionTargets/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ActionTargetArns.is_some():
             auto u0 = input.ActionTargetArns.unwrap()
@@ -18832,14 +18835,14 @@ struct SecurityHubClient:
         dict[str, str] query = {}
         if input.HubArn.is_some():
             query["HubArn"] = input.HubArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DescribeOrganizationConfiguration  GET /organization/configuration
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def describe_organization_configuration(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organization/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DescribeProducts  GET /products
@@ -18853,7 +18856,7 @@ struct SecurityHubClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.ProductArn.is_some():
             query["ProductArn"] = input.ProductArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/products", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/products", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DescribeProductsV2  GET /productsV2
@@ -18865,14 +18868,14 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/productsV2", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/productsV2", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DescribeSecurityHubV2  GET /hubv2
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_security_hub_v2(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/hubv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hubv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DescribeStandardsControls  GET /standards/controls/{StandardsSubscriptionArn+}
@@ -18886,7 +18889,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/standards/controls/{StandardsSubscriptionArn+}", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/standards/controls/{StandardsSubscriptionArn+}", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisableImportFindingsForProduct  DELETE /productSubscriptions/{ProductSubscriptionArn+}
@@ -18895,14 +18898,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ProductSubscriptionArn"] = input.ProductSubscriptionArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/productSubscriptions/{ProductSubscriptionArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/productSubscriptions/{ProductSubscriptionArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisableOrganizationAdminAccount  POST /organization/admin/disable
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def disable_organization_admin_account(self, DisableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/admin/disable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/admin/disable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableOrganizationAdminAccountDocument(AdminAccountId=input.AdminAccountId, Feature=input.Feature)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18911,7 +18914,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, LimitExceededException, ResourceNotFoundException
     def disable_security_hub(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisableSecurityHubFeatureV2  DELETE /hubv2/feature/{FeatureName}
@@ -18920,35 +18923,35 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["FeatureName"] = input.FeatureName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/hubv2/feature/{FeatureName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/hubv2/feature/{FeatureName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisableSecurityHubV2  DELETE /hubv2
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def disable_security_hub_v2(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/hubv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/hubv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisassociateFromAdministratorAccount  POST /administrator/disassociate
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def disassociate_from_administrator_account(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/administrator/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/administrator/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisassociateFromMasterAccount  POST /master/disassociate
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def disassociate_from_master_account(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/master/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/master/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # DisassociateMembers  POST /members/disassociate
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def disassociate_members(self, DisassociateMembersRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -18961,7 +18964,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException
     def enable_import_findings_for_product(self, EnableImportFindingsForProductRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/productSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/productSubscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableImportFindingsForProductDocument(ProductArn=input.ProductArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18970,7 +18973,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def enable_organization_admin_account(self, EnableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/admin/enable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/admin/enable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableOrganizationAdminAccountDocument(AdminAccountId=input.AdminAccountId, Feature=input.Feature)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -18979,7 +18982,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, LimitExceededException, ResourceConflictException
     def enable_security_hub(self, EnableSecurityHubRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -19002,14 +19005,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["FeatureName"] = input.FeatureName
-        auto b = binding.HttpBinding(method="POST", path_template="/hubv2/feature/{FeatureName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hubv2/feature/{FeatureName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # EnableSecurityHubV2  POST /hubv2
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def enable_security_hub_v2(self, EnableSecurityHubV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/hubv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hubv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -19026,14 +19029,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["MetadataUid"] = input.MetadataUid
-        auto b = binding.HttpBinding(method="POST", path_template="/recommendedPolicyV2/{MetadataUid}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendedPolicyV2/{MetadataUid}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetAdministratorAccount  GET /administrator
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_administrator_account(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/administrator", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/administrator", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetAggregatorV2  GET /aggregatorv2/get/{AggregatorV2Arn+}
@@ -19042,7 +19045,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["AggregatorV2Arn"] = input.AggregatorV2Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/aggregatorv2/get/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/aggregatorv2/get/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetAutomationRuleV2  GET /automationrulesv2/{Identifier}
@@ -19051,7 +19054,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetConfigurationPolicy  GET /configurationPolicy/get/{Identifier}
@@ -19060,14 +19063,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/configurationPolicy/get/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configurationPolicy/get/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetConfigurationPolicyAssociation  POST /configurationPolicyAssociation/get
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_configuration_policy_association(self, GetConfigurationPolicyAssociationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetConfigurationPolicyAssociationDocument(Target=input.Target)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19078,7 +19081,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetConnectorV2  GET /connectorsv2/{ConnectorId+}
@@ -19087,14 +19090,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetEnabledStandards  POST /standards/get
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def get_enabled_standards(self, GetEnabledStandardsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/standards/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/standards/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StandardsSubscriptionArns.is_some():
             auto u0 = input.StandardsSubscriptionArns.unwrap()
@@ -19123,7 +19126,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["ExportJobId"] = input.ExportJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/exportjobsv2/{ExportJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/exportjobsv2/{ExportJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetFindingAggregator  GET /findingAggregator/get/{FindingAggregatorArn+}
@@ -19132,14 +19135,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["FindingAggregatorArn"] = input.FindingAggregatorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/findingAggregator/get/{FindingAggregatorArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findingAggregator/get/{FindingAggregatorArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetFindingHistory  POST /findingHistory/get
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def get_finding_history(self, GetFindingHistoryRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingHistory/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingHistory/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFindingHistoryDocument(FindingIdentifier=input.FindingIdentifier, StartTime=input.StartTime, EndTime=input.EndTime, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19148,7 +19151,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ThrottlingException, ValidationException
     def get_finding_statistics_v2(self, GetFindingStatisticsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GroupByRules:
@@ -19170,7 +19173,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def get_findings(self, GetFindingsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -19194,7 +19197,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_findings_trends_v2(self, GetFindingsTrendsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingsTrendsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsTrendsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -19214,7 +19217,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ThrottlingException, ValidationException
     def get_findings_v2(self, GetFindingsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -19243,14 +19246,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["InsightArn"] = input.InsightArn
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/results/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/results/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetInsights  POST /insights/get
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_insights(self, GetInsightsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/insights/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/insights/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.InsightArns.is_some():
             auto u0 = input.InsightArns.unwrap()
@@ -19271,21 +19274,21 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def get_invitations_count(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/invitations/count", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitations/count", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetMasterAccount  GET /master
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_master_account(self) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/master", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/master", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetMembers  POST /members/get
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def get_members(self, GetMembersRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -19305,14 +19308,14 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/recommendedPolicyV2/{MetadataUid}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recommendedPolicyV2/{MetadataUid}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # GetRemediationsV2  POST /GetRemediationsV2
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_remediations_v2(self, GetRemediationsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRemediationsV2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRemediationsV2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TargetUid.is_some():
             auto u0 = input.TargetUid.unwrap()
@@ -19342,7 +19345,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_resources_statistics_v2(self, GetResourcesStatisticsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GroupByRules:
@@ -19364,7 +19367,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_resources_trends_v2(self, GetResourcesTrendsV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourcesTrendsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesTrendsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -19384,7 +19387,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_resources_v2(self, GetResourcesV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -19413,14 +19416,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] query = {}
         query["SecurityControlId"] = input.SecurityControlId
-        auto b = binding.HttpBinding(method="GET", path_template="/securityControl/definition", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/securityControl/definition", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # InviteMembers  POST /members/invite
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def invite_members(self, InviteMembersRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/invite", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/invite", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -19438,7 +19441,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/aggregatorv2/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/aggregatorv2/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListAutomationRules  GET /automationrules/list
@@ -19450,7 +19453,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automationrules/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automationrules/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListAutomationRulesV2  GET /automationrulesv2/list
@@ -19462,7 +19465,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automationrulesv2/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automationrulesv2/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListConfigurationPolicies  GET /configurationPolicy/list
@@ -19474,14 +19477,14 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/configurationPolicy/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configurationPolicy/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListConfigurationPolicyAssociations  POST /configurationPolicyAssociation/list
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
     def list_configuration_policy_associations(self, ListConfigurationPolicyAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConfigurationPolicyAssociationsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults, Filters=input.Filters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19501,7 +19504,7 @@ struct SecurityHubClient:
             query["ConnectorStatus"] = input.ConnectorStatus.unwrap_or("")
         if input.EnablementStatus.is_some():
             query["EnablementStatus"] = input.EnablementStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListConnectorsV2  GET /connectorsv2
@@ -19519,7 +19522,7 @@ struct SecurityHubClient:
             query["ConnectorStatus"] = input.ConnectorStatus.unwrap_or("")
         if input.EnablementStatus.is_some():
             query["EnablementStatus"] = input.EnablementStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/connectorsv2", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectorsv2", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListEnabledProductsForImport  GET /productSubscriptions
@@ -19531,7 +19534,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/productSubscriptions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/productSubscriptions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListExportJobsV2  GET /exportjobsv2
@@ -19547,14 +19550,14 @@ struct SecurityHubClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/exportjobsv2", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/exportjobsv2", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListExposuresByRemediationV2  POST /ListExposuresByRemediationV2
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_exposures_by_remediation_v2(self, ListExposuresByRemediationV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListExposuresByRemediationV2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListExposuresByRemediationV2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExposuresByRemediationV2Document(TargetUid=input.TargetUid, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19568,14 +19571,14 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/findingAggregator/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findingAggregator/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListFreeTrialStatusesV2  POST /freetrial/statusv2/list
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_free_trial_statuses_v2(self, ListFreeTrialStatusesV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/freetrial/statusv2/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/freetrial/statusv2/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccountIds.is_some():
             auto u0 = input.AccountIds.unwrap()
@@ -19607,7 +19610,22 @@ struct SecurityHubClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
+    # ListMembers  GET /members
+    # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException
+    def list_members(self, ListMembersRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] query = {}
+        if input.OnlyAssociated.is_some():
+            auto qt0 = securityhub_bind_bool(input.OnlyAssociated.unwrap_or(False))
+            query["OnlyAssociated"] = qt0
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/members", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListOrganizationAdminAccounts  GET /organization/admin
@@ -19621,7 +19639,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.Feature.is_some():
             query["Feature"] = input.Feature.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/organization/admin", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organization/admin", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListStandardsControlAssociations  GET /associations
@@ -19634,7 +19652,7 @@ struct SecurityHubClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/associations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/associations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -19643,14 +19661,14 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
 
     # RegisterConnectorV2  POST /connectorsv2/register
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def register_connector_v2(self, RegisterConnectorV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectorsv2/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorsv2/register", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterConnectorV2Document(AuthCode=input.AuthCode, AuthState=input.AuthState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19659,7 +19677,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def start_configuration_policy_association(self, StartConfigurationPolicyAssociationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/associate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/associate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartConfigurationPolicyAssociationDocument(ConfigurationPolicyIdentifier=input.ConfigurationPolicyIdentifier, Target=input.Target)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19668,7 +19686,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def start_configuration_policy_disassociation(self, StartConfigurationPolicyDisassociationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationPolicyAssociation/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartConfigurationPolicyDisassociationDocument(Target=input.Target, ConfigurationPolicyIdentifier=input.ConfigurationPolicyIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19677,7 +19695,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OrganizationNotFoundException, OrganizationalUnitNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_export_job_v2(self, StartExportJobV2Request input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/exportjobsv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/exportjobsv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -19699,7 +19717,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -19708,13 +19726,24 @@ struct SecurityHubClient:
         auto bp = restjson.rest_json_document(b, securityhub_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalException, InvalidInputException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, securityhub_service(), self.region, host)
+
     # UpdateActionTarget  PATCH /actionTargets/{ActionTargetArn+}
     # errors: InternalException, InvalidAccessException, InvalidInputException, ResourceNotFoundException, ResourceNotFoundException
     def update_action_target(self, UpdateActionTargetRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ActionTargetArn"] = input.ActionTargetArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/actionTargets/{ActionTargetArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/actionTargets/{ActionTargetArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateActionTargetDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19725,7 +19754,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["AggregatorV2Arn"] = input.AggregatorV2Arn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/aggregatorv2/update/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/aggregatorv2/update/{AggregatorV2Arn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
         if input.LinkedRegions.is_some():
@@ -19743,7 +19772,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automationrulesv2/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RuleStatus.is_some():
             auto u0 = input.RuleStatus.unwrap()
@@ -19775,7 +19804,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/configurationPolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configurationPolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -19798,7 +19827,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/connectors/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -19815,7 +19844,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ConnectorId"] = input.ConnectorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/connectorsv2/{ConnectorId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -19830,7 +19859,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def update_finding_aggregator(self, UpdateFindingAggregatorRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/findingAggregator/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findingAggregator/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FindingAggregatorArn\":" + securityhub_json_str(input.FindingAggregatorArn))
         parts.append("\"RegionLinkingMode\":" + securityhub_json_str(input.RegionLinkingMode))
@@ -19847,7 +19876,7 @@ struct SecurityHubClient:
     # errors: InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def update_findings(self, UpdateFindingsRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/findings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Filters\":" + aws_security_finding_filters_to_json(input.Filters))
         if input.Note.is_some():
@@ -19865,7 +19894,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["InsightArn"] = input.InsightArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/insights/{InsightArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -19883,7 +19912,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceConflictException, ResourceNotFoundException
     def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationConfigurationDocument(AutoEnable=input.AutoEnable, AutoEnableStandards=input.AutoEnableStandards, OrganizationConfiguration=input.OrganizationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19892,7 +19921,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceInUseException, ResourceInUseException, ResourceNotFoundException, ResourceNotFoundException
     def update_security_control(self, UpdateSecurityControlRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/securityControl/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/securityControl/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SecurityControlId\":" + securityhub_json_str(input.SecurityControlId))
         list[str] m0 = []
@@ -19909,7 +19938,7 @@ struct SecurityHubClient:
     # errors: AccessDeniedException, InternalException, InvalidAccessException, InvalidInputException, LimitExceededException, ResourceNotFoundException
     def update_security_hub_configuration(self, UpdateSecurityHubConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSecurityHubConfigurationDocument(AutoEnableControls=input.AutoEnableControls, ControlFindingGenerator=input.ControlFindingGenerator)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -19920,7 +19949,7 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["StandardsControlArn"] = input.StandardsControlArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/standards/control/{StandardsControlArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/standards/control/{StandardsControlArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateStandardsControlDocument(ControlStatus=input.ControlStatus, DisabledReason=input.DisabledReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityhub_service(), self.region, host)
@@ -20217,6 +20246,19 @@ struct SecurityHubClient:
         auto host = endpoints.regional_host(securityhub_service(), self.region)
         while True:
             auto raw = self.list_invitations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListMembers — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Members).
+    def paginate_list_members(self, ListMembersRequest input):
+        auto host = endpoints.regional_host(securityhub_service(), self.region)
+        while True:
+            auto raw = self.list_members(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 17 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 19 operations — 19 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   103 structs (63 @derive(Json)), 20 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -990,12 +990,6 @@ def sagemaker_geospatial_error_from_code(str code) -> SageMaker_GeospatialError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetTile (httpQuery `ImageAssets` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1336,6 +1330,12 @@ def zonal_statistics_config_input_to_json(ZonalStatisticsConfigInput v) -> str:
         parts.append("\"ZoneS3PathKmsKeyId\":" + sagemaker_geospatial_json_str(u3))
     return sagemaker_geospatial_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def sagemaker_geospatial_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound SageMaker_Geospatial client: credentials + region, threaded into every operation.
 struct SageMaker_GeospatialClient:
     core.Credentials creds
@@ -1347,7 +1347,7 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/earth-observation-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/earth-observation-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # DeleteVectorEnrichmentJob  DELETE /vector-enrichment-jobs/{Arn}
@@ -1356,14 +1356,14 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/vector-enrichment-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/vector-enrichment-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # ExportEarthObservationJob  POST /export-earth-observation-job
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def export_earth_observation_job(self, ExportEarthObservationJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/export-earth-observation-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/export-earth-observation-job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExportEarthObservationJobDocument(Arn=input.Arn, ClientToken=input.ClientToken, ExecutionRoleArn=input.ExecutionRoleArn, ExportSourceImages=input.ExportSourceImages, OutputConfig=input.OutputConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1372,7 +1372,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def export_vector_enrichment_job(self, ExportVectorEnrichmentJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/export-vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/export-vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExportVectorEnrichmentJobDocument(Arn=input.Arn, ClientToken=input.ClientToken, ExecutionRoleArn=input.ExecutionRoleArn, OutputConfig=input.OutputConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1383,7 +1383,7 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/earth-observation-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/earth-observation-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # GetRasterDataCollection  GET /raster-data-collection/{Arn}
@@ -1392,7 +1392,36 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/raster-data-collection/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/raster-data-collection/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
+
+    # GetTile  GET /tile/{z}/{x}/{y}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_tile(self, GetTileInput input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        dict[str, str] labels = {}
+        labels["x"] = str(input.x)
+        labels["y"] = str(input.y)
+        labels["z"] = str(input.z)
+        dict[str, str] query = {}
+        query["Arn"] = input.Arn
+        if input.ExecutionRoleArn.is_some():
+            query["ExecutionRoleArn"] = input.ExecutionRoleArn.unwrap_or("")
+        if input.ImageMask.is_some():
+            auto qt0 = sagemaker_geospatial_bind_bool(input.ImageMask.unwrap_or(False))
+            query["ImageMask"] = qt0
+        if input.OutputDataType.is_some():
+            query["OutputDataType"] = input.OutputDataType.unwrap_or("")
+        if input.OutputFormat.is_some():
+            query["OutputFormat"] = input.OutputFormat.unwrap_or("")
+        if input.PropertyFilters.is_some():
+            query["PropertyFilters"] = input.PropertyFilters.unwrap_or("")
+        query["Target"] = input.Target
+        if input.TimeRangeFilter.is_some():
+            query["TimeRangeFilter"] = input.TimeRangeFilter.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        multi_query["ImageAssets"] = input.ImageAssets
+        auto b = binding.HttpBinding(method="GET", path_template="/tile/{z}/{x}/{y}", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # GetVectorEnrichmentJob  GET /vector-enrichment-jobs/{Arn}
@@ -1401,14 +1430,14 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/vector-enrichment-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/vector-enrichment-jobs/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # ListEarthObservationJobs  POST /list-earth-observation-jobs
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_earth_observation_jobs(self, ListEarthObservationJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-earth-observation-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-earth-observation-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEarthObservationJobsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, SortBy=input.SortBy, SortOrder=input.SortOrder, StatusEquals=input.StatusEquals)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1422,7 +1451,7 @@ struct SageMaker_GeospatialClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/raster-data-collections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/raster-data-collections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -1431,14 +1460,14 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # ListVectorEnrichmentJobs  POST /list-vector-enrichment-jobs
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_vector_enrichment_jobs(self, ListVectorEnrichmentJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListVectorEnrichmentJobsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, SortBy=input.SortBy, SortOrder=input.SortOrder, StatusEquals=input.StatusEquals)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1447,7 +1476,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def search_raster_data_collection(self, SearchRasterDataCollectionInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-raster-data-collection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-raster-data-collection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + sagemaker_geospatial_json_str(input.Arn))
         if input.NextToken.is_some():
@@ -1461,7 +1490,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_earth_observation_job(self, StartEarthObservationJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/earth-observation-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/earth-observation-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1486,7 +1515,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_vector_enrichment_job(self, StartVectorEnrichmentJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1511,7 +1540,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_earth_observation_job(self, StopEarthObservationJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/earth-observation-jobs/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/earth-observation-jobs/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopEarthObservationJobDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1520,7 +1549,7 @@ struct SageMaker_GeospatialClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_vector_enrichment_job(self, StopVectorEnrichmentJobInput input) -> str:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vector-enrichment-jobs/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopVectorEnrichmentJobDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
@@ -1531,7 +1560,7 @@ struct SageMaker_GeospatialClient:
         auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1539,6 +1568,17 @@ struct SageMaker_GeospatialClient:
         parts.append("\"Tags\":" + sagemaker_geospatial_json_obj(m0))
         auto bp = restjson.rest_json_document(b, sagemaker_geospatial_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, sagemaker_geospatial_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(sagemaker_geospatial_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, sagemaker_geospatial_service(), self.region, host)
 
     # Paginator for ListEarthObservationJobs — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: EarthObservationJobSummaries).

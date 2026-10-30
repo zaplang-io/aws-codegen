@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 4 operations — 3 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 4 operations — 4 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   16 structs (11 @derive(Json)), 0 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -164,11 +164,6 @@ def deployment_marketplace_error_from_code(str code) -> Marketplace_DeploymentEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # A bound Marketplace_Deployment client: credentials + region, threaded into every operation.
 struct Marketplace_DeploymentClient:
     core.Credentials creds
@@ -180,7 +175,7 @@ struct Marketplace_DeploymentClient:
         auto host = endpoints.regional_host(deployment_marketplace_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deployment_marketplace_service(), self.region, host)
 
     # PutDeploymentParameter  POST /catalogs/{catalog}/products/{productId}/deployment-parameters
@@ -190,7 +185,7 @@ struct Marketplace_DeploymentClient:
         dict[str, str] labels = {}
         labels["catalog"] = input.catalog
         labels["productId"] = input.productId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalogs/{catalog}/products/{productId}/deployment-parameters", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalogs/{catalog}/products/{productId}/deployment-parameters", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agreementId\":" + deployment_marketplace_json_str(input.agreementId))
         if input.clientToken.is_some():
@@ -215,7 +210,7 @@ struct Marketplace_DeploymentClient:
         auto host = endpoints.regional_host(deployment_marketplace_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.tags.is_some():
             auto u0 = input.tags.unwrap()
@@ -225,6 +220,17 @@ struct Marketplace_DeploymentClient:
             parts.append("\"tags\":" + deployment_marketplace_json_obj(m1))
         auto bp = restjson.rest_json_document(b, deployment_marketplace_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, deployment_marketplace_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(deployment_marketplace_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, deployment_marketplace_service(), self.region, host)
 
 # Construct a Marketplace_DeploymentClient bound to credentials + region.
 def deployment_marketplace_client(core.Credentials creds, str region) -> Marketplace_DeploymentClient:

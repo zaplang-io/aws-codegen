@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 13 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 14 operations — 14 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   36 structs (17 @derive(Json)), 2 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -347,11 +347,6 @@ def ssm_quicksetup_error_from_code(str code) -> SSM_QuickSetupError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -434,7 +429,7 @@ struct SSM_QuickSetupClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_configuration_manager(self, CreateConfigurationManagerInput input) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configurationManager", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configurationManager", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ConfigurationDefinitions:
@@ -461,7 +456,7 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ManagerArn"] = input.ManagerArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # GetConfiguration  GET /getConfiguration/{ConfigurationId}
@@ -470,7 +465,7 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationId"] = input.ConfigurationId
-        auto b = binding.HttpBinding(method="GET", path_template="/getConfiguration/{ConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getConfiguration/{ConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # GetConfigurationManager  GET /configurationManager/{ManagerArn}
@@ -479,21 +474,21 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ManagerArn"] = input.ManagerArn
-        auto b = binding.HttpBinding(method="GET", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # GetServiceSettings  GET /serviceSettings
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException
     def get_service_settings(self) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/serviceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/serviceSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # ListConfigurationManagers  POST /listConfigurationManagers
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def list_configuration_managers(self, ListConfigurationManagersInput input) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurationManagers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurationManagers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -514,7 +509,7 @@ struct SSM_QuickSetupClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_configurations(self, ListConfigurationsInput input) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConfigurationDefinitionId.is_some():
             auto u0 = input.ConfigurationDefinitionId.unwrap()
@@ -541,7 +536,7 @@ struct SSM_QuickSetupClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException
     def list_quick_setup_types(self) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/listQuickSetupTypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/listQuickSetupTypes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -550,7 +545,7 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
 
     # TagResource  PUT /tags/{ResourceArn}
@@ -559,7 +554,7 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -568,6 +563,17 @@ struct SSM_QuickSetupClient:
         auto bp = restjson.rest_json_document(b, ssm_quicksetup_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ssm_quicksetup_service(), self.region, host)
+
     # UpdateConfigurationDefinition  PUT /configurationDefinition/{ManagerArn}/{Id}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_configuration_definition(self, UpdateConfigurationDefinitionInput input) -> str:
@@ -575,7 +581,7 @@ struct SSM_QuickSetupClient:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["ManagerArn"] = input.ManagerArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/configurationDefinition/{ManagerArn}/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configurationDefinition/{ManagerArn}/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.LocalDeploymentAdministrationRoleArn.is_some():
             auto u0 = input.LocalDeploymentAdministrationRoleArn.unwrap()
@@ -601,7 +607,7 @@ struct SSM_QuickSetupClient:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
         dict[str, str] labels = {}
         labels["ManagerArn"] = input.ManagerArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configurationManager/{ManagerArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfigurationManagerDocument(Description=input.Description, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)
@@ -610,7 +616,7 @@ struct SSM_QuickSetupClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def update_service_settings(self, UpdateServiceSettingsInput input) -> str:
         auto host = endpoints.regional_host(ssm_quicksetup_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/serviceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/serviceSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceSettingsDocument(ExplorerEnablingRoleArn=input.ExplorerEnablingRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_quicksetup_service(), self.region, host)

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 42 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 44 operations — 43 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (81 @derive(Json)), 12 enums, 7 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1081,7 +1081,6 @@ def aps_error_from_code(str code) -> ampError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListScrapers (httpQuery `filters` has unsupported type dict[str, list[str]])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1244,7 +1243,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAlertManagerDefinitionDocument(data=input.data, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1255,7 +1254,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/anomalydetectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/anomalydetectors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"alias\":" + aps_json_str(input.alias))
         if input.evaluationIntervalInSeconds.is_some():
@@ -1289,7 +1288,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateLoggingConfigurationDocument(logGroupArn=input.logGroupArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1300,7 +1299,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.destinations:
@@ -1318,7 +1317,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + aps_json_str(input.name))
         parts.append("\"data\":" + aps_json_str(base64.encode(input.data)))
@@ -1338,7 +1337,7 @@ struct ampClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_scraper(self, CreateScraperRequest input) -> str:
         auto host = endpoints.regional_host(aps_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/scrapers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/scrapers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.alias.is_some():
             auto u0 = input.alias.unwrap()
@@ -1371,7 +1370,7 @@ struct ampClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_workspace(self, CreateWorkspaceRequest input) -> str:
         auto host = endpoints.regional_host(aps_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.alias.is_some():
             auto u0 = input.alias.unwrap()
@@ -1400,7 +1399,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteAnomalyDetector  DELETE /workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}
@@ -1413,7 +1412,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteLoggingConfiguration  DELETE /workspaces/{workspaceId}/logging
@@ -1425,7 +1424,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteQueryLoggingConfiguration  DELETE /workspaces/{workspaceId}/logging/query
@@ -1437,7 +1436,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /workspaces/{workspaceId}/policy
@@ -1451,7 +1450,7 @@ struct ampClient:
             query["clientToken"] = input.clientToken.unwrap_or("")
         if input.revisionId.is_some():
             query["revisionId"] = input.revisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteRuleGroupsNamespace  DELETE /workspaces/{workspaceId}/rulegroupsnamespaces/{name}
@@ -1464,7 +1463,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteScraper  DELETE /scrapers/{scraperId}
@@ -1476,7 +1475,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteScraperLoggingConfiguration  DELETE /scrapers/{scraperId}/logging-configuration
@@ -1488,7 +1487,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DeleteWorkspace  DELETE /workspaces/{workspaceId}
@@ -1500,7 +1499,7 @@ struct ampClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeAlertManagerDefinition  GET /workspaces/{workspaceId}/alertmanager/definition
@@ -1509,7 +1508,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeAnomalyDetector  GET /workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}
@@ -1519,7 +1518,7 @@ struct ampClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["anomalyDetectorId"] = input.anomalyDetectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeLoggingConfiguration  GET /workspaces/{workspaceId}/logging
@@ -1528,7 +1527,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeQueryLoggingConfiguration  GET /workspaces/{workspaceId}/logging/query
@@ -1537,7 +1536,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeResourcePolicy  GET /workspaces/{workspaceId}/policy
@@ -1546,7 +1545,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeRuleGroupsNamespace  GET /workspaces/{workspaceId}/rulegroupsnamespaces/{name}
@@ -1556,7 +1555,7 @@ struct ampClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeScraper  GET /scrapers/{scraperId}
@@ -1565,7 +1564,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["scraperId"] = input.scraperId
-        auto b = binding.HttpBinding(method="GET", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeScraperLoggingConfiguration  GET /scrapers/{scraperId}/logging-configuration
@@ -1574,7 +1573,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["scraperId"] = input.scraperId
-        auto b = binding.HttpBinding(method="GET", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeWorkspace  GET /workspaces/{workspaceId}
@@ -1583,7 +1582,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # DescribeWorkspaceConfiguration  GET /workspaces/{workspaceId}/configuration
@@ -1592,14 +1591,14 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # GetDefaultScraperConfiguration  GET /scraperconfiguration
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_default_scraper_configuration(self) -> str:
         auto host = endpoints.regional_host(aps_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/scraperconfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scraperconfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # ListAnomalyDetectors  GET /workspaces/{workspaceId}/anomalydetectors
@@ -1615,7 +1614,7 @@ struct ampClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/anomalydetectors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/anomalydetectors", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # ListRuleGroupsNamespaces  GET /workspaces/{workspaceId}/rulegroupsnamespaces
@@ -1631,7 +1630,7 @@ struct ampClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1640,7 +1639,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # ListWorkspaces  GET /workspaces
@@ -1654,7 +1653,7 @@ struct ampClient:
             query["alias"] = input.alias.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
 
     # PutAlertManagerDefinition  PUT /workspaces/{workspaceId}/alertmanager/definition
@@ -1663,7 +1662,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/alertmanager/definition", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAlertManagerDefinitionDocument(data=input.data, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1675,7 +1674,7 @@ struct ampClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["anomalyDetectorId"] = input.anomalyDetectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.evaluationIntervalInSeconds.is_some():
             auto u0 = input.evaluationIntervalInSeconds.unwrap()
@@ -1702,7 +1701,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policyDocument=input.policyDocument, clientToken=input.clientToken, revisionId=input.revisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1714,7 +1713,7 @@ struct ampClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/rulegroupsnamespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRuleGroupsNamespaceDocument(data=input.data, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1725,7 +1724,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1734,13 +1733,24 @@ struct ampClient:
         auto bp = restjson.rest_json_document(b, aps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, aps_service(), self.region, host)
+
     # UpdateLoggingConfiguration  PUT /workspaces/{workspaceId}/logging
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/logging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLoggingConfigurationDocument(logGroupArn=input.logGroupArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1751,7 +1761,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/logging/query", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.destinations:
@@ -1769,7 +1779,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["scraperId"] = input.scraperId
-        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.alias.is_some():
             auto u0 = input.alias.unwrap()
@@ -1801,7 +1811,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["scraperId"] = input.scraperId
-        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/scrapers/{scraperId}/logging-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"loggingDestination\":" + input.loggingDestination.to_json())
         if input.scraperComponents.is_some():
@@ -1819,7 +1829,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/alias", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceAliasDocument(alias=input.alias, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aps_service(), self.region, host)
@@ -1830,7 +1840,7 @@ struct ampClient:
         auto host = endpoints.regional_host(aps_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()

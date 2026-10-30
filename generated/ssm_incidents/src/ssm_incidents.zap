@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 30 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   109 structs (72 @derive(Json)), 8 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -869,11 +869,6 @@ def ssm_incidents_error_from_code(str code) -> SSM_IncidentsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1103,7 +1098,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_incident_findings(self, BatchGetIncidentFindingsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/batchGetIncidentFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/batchGetIncidentFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingIds:
@@ -1117,7 +1112,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_replication_set(self, CreateReplicationSetInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createReplicationSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createReplicationSet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1139,7 +1134,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_response_plan(self, CreateResponsePlanInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createResponsePlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createResponsePlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.actions.is_some():
             auto u0 = input.actions.unwrap()
@@ -1183,7 +1178,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_timeline_event(self, CreateTimelineEventInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createTimelineEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createTimelineEvent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1205,7 +1200,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def delete_incident_record(self, DeleteIncidentRecordInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteIncidentRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteIncidentRecord", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIncidentRecordDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1216,14 +1211,14 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteReplicationSet", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteReplicationSet", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # DeleteResourcePolicy  POST /deleteResourcePolicy
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_resource_policy(self, DeleteResourcePolicyInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResourcePolicyDocument(policyId=input.policyId, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1232,7 +1227,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def delete_response_plan(self, DeleteResponsePlanInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteResponsePlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteResponsePlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResponsePlanDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1241,7 +1236,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def delete_timeline_event(self, DeleteTimelineEventInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteTimelineEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteTimelineEvent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTimelineEventDocument(eventId=input.eventId, incidentRecordArn=input.incidentRecordArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1252,7 +1247,7 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/getIncidentRecord", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getIncidentRecord", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # GetReplicationSet  GET /getReplicationSet
@@ -1261,7 +1256,7 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/getReplicationSet", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getReplicationSet", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # GetResourcePolicies  POST /getResourcePolicies
@@ -1270,7 +1265,7 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/getResourcePolicies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getResourcePolicies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetResourcePoliciesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1281,7 +1276,7 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/getResponsePlan", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getResponsePlan", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # GetTimelineEvent  GET /getTimelineEvent
@@ -1291,14 +1286,14 @@ struct SSM_IncidentsClient:
         dict[str, str] query = {}
         query["eventId"] = input.eventId
         query["incidentRecordArn"] = input.incidentRecordArn
-        auto b = binding.HttpBinding(method="GET", path_template="/getTimelineEvent", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getTimelineEvent", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # ListIncidentFindings  POST /listIncidentFindings
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_incident_findings(self, ListIncidentFindingsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listIncidentFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listIncidentFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIncidentFindingsDocument(incidentRecordArn=input.incidentRecordArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1307,7 +1302,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_incident_records(self, ListIncidentRecordsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listIncidentRecords", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listIncidentRecords", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -1328,7 +1323,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_related_items(self, ListRelatedItemsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listRelatedItems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listRelatedItems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRelatedItemsDocument(incidentRecordArn=input.incidentRecordArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1337,7 +1332,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_replication_sets(self, ListReplicationSetsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listReplicationSets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listReplicationSets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReplicationSetsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1346,7 +1341,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_response_plans(self, ListResponsePlansInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listResponsePlans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listResponsePlans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResponsePlansDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1357,14 +1352,14 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
 
     # ListTimelineEvents  POST /listTimelineEvents
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_timeline_events(self, ListTimelineEventsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTimelineEvents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTimelineEvents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -1392,7 +1387,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/putResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/putResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1401,7 +1396,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_incident(self, StartIncidentInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/startIncident", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/startIncident", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1431,7 +1426,7 @@ struct SSM_IncidentsClient:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1440,11 +1435,22 @@ struct SSM_IncidentsClient:
         auto bp = restjson.rest_json_document(b, ssm_incidents_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ssm_incidents_service(), self.region, host)
+
     # UpdateDeletionProtection  POST /updateDeletionProtection
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_deletion_protection(self, UpdateDeletionProtectionInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateDeletionProtection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateDeletionProtection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeletionProtectionDocument(arn=input.arn, clientToken=input.clientToken, deletionProtected=input.deletionProtected)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1453,7 +1459,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_incident_record(self, UpdateIncidentRecordInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateIncidentRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateIncidentRecord", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + ssm_incidents_json_str(input.arn))
         if input.chatChannel.is_some():
@@ -1487,7 +1493,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_related_items(self, UpdateRelatedItemsInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateRelatedItems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateRelatedItems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRelatedItemsDocument(clientToken=input.clientToken, incidentRecordArn=input.incidentRecordArn, relatedItemsUpdate=input.relatedItemsUpdate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_incidents_service(), self.region, host)
@@ -1496,7 +1502,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_replication_set(self, UpdateReplicationSetInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateReplicationSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateReplicationSet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.actions:
@@ -1513,7 +1519,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_response_plan(self, UpdateResponsePlanInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateResponsePlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateResponsePlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.actions.is_some():
             auto u0 = input.actions.unwrap()
@@ -1574,7 +1580,7 @@ struct SSM_IncidentsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_timeline_event(self, UpdateTimelineEventInput input) -> str:
         auto host = endpoints.regional_host(ssm_incidents_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateTimelineEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateTimelineEvent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()

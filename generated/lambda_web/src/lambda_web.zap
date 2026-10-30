@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 20 operations — 19 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 20 operations — 20 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   61 structs (36 @derive(Json)), 9 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -659,11 +659,6 @@ def lambda__error_from_code(str code) -> Lambda_WebError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -785,7 +780,7 @@ struct Lambda_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_web_function(self, CreateWebFunctionRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"functionName\":" + lambda__json_str(input.functionName))
         if input.revisionConfig.is_some():
@@ -809,7 +804,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions/{functionName}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/web-functions/{functionName}/endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"endpointName\":" + lambda__json_str(input.endpointName))
         if input.description.is_some():
@@ -847,7 +842,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/revisions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -869,7 +864,7 @@ struct Lambda_WebClient:
         dict[str, str] query = {}
         if input.revisionId.is_some():
             query["RevisionId"] = input.revisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteWebFunction  DELETE /2025-03-07/web-functions/{functionName}
@@ -878,7 +873,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteWebFunctionEndpoint  DELETE /2025-03-07/web-functions/{functionName}/endpoints/{endpointName}
@@ -888,7 +883,7 @@ struct Lambda_WebClient:
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteWebFunctionRevision  DELETE /2025-03-07/web-functions/{functionName}/revisions/{revisionId}
@@ -898,7 +893,7 @@ struct Lambda_WebClient:
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
         labels["revisionId"] = input.revisionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}/revisions/{revisionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/web-functions/{functionName}/revisions/{revisionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetResourcePolicy  GET /2025-03-07/resource-policy/{resourceArn}
@@ -907,14 +902,14 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetWebAccountSettings  GET /2025-03-07/web-account-settings
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_web_account_settings(self) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetWebFunction  GET /2025-03-07/web-functions/{functionName}
@@ -923,7 +918,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetWebFunctionEndpoint  GET /2025-03-07/web-functions/{functionName}/endpoints/{endpointName}
@@ -933,7 +928,7 @@ struct Lambda_WebClient:
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetWebFunctionRevision  GET /2025-03-07/web-functions/{functionName}/revisions/{revisionId}
@@ -943,7 +938,7 @@ struct Lambda_WebClient:
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
         labels["revisionId"] = input.revisionId
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}/revisions/{revisionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/web-functions/{functionName}/revisions/{revisionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListTags  GET /2025-03-07/tags/{resource}
@@ -952,7 +947,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["resource"] = input.resource
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListWebFunctionEndpoints  POST /2025-03-07/web-functions/{functionName}/list-endpoints
@@ -961,7 +956,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -984,7 +979,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions/{functionName}/list-revisions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -1005,7 +1000,7 @@ struct Lambda_WebClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_web_functions(self, ListWebFunctionsRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/web-functions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -1028,7 +1023,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-03-07/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy, revisionId=input.revisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -1039,7 +1034,7 @@ struct Lambda_WebClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["resource"] = input.resource
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1048,6 +1043,17 @@ struct Lambda_WebClient:
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
+    # UntagResource  DELETE /2025-03-07/tags/{resource}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource"] = input.resource
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-03-07/tags/{resource}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
     # UpdateWebFunctionEndpoint  PATCH /2025-03-07/web-functions/{functionName}/endpoints/{endpointName}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_web_function_endpoint(self, UpdateWebFunctionEndpointRequest input) -> str:
@@ -1055,7 +1061,7 @@ struct Lambda_WebClient:
         dict[str, str] labels = {}
         labels["functionName"] = input.functionName
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()

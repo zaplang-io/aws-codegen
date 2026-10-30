@@ -157,7 +157,7 @@ struct Kinesis_Video_SignalingClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidClientException, NotAuthorizedException, ResourceNotFoundException, SessionExpiredException
     def get_ice_server_config(self, GetIceServerConfigRequest input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/get-ice-server-config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/get-ice-server-config", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIceServerConfigDocument(ChannelARN=input.ChannelARN, ClientId=input.ClientId, Service=input.Service, Username=input.Username)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -166,7 +166,7 @@ struct Kinesis_Video_SignalingClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def send_alexa_offer_to_master(self, SendAlexaOfferToMasterRequest input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/send-alexa-offer-to-master", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/send-alexa-offer-to-master", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendAlexaOfferToMasterDocument(ChannelARN=input.ChannelARN, SenderClientId=input.SenderClientId, MessagePayload=input.MessagePayload)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)

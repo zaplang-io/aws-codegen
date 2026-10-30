@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 12 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 13 operations — 13 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   41 structs (28 @derive(Json)), 6 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -367,11 +367,6 @@ def codestar_notifications_error_from_code(str code) -> codestar_notificationsEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -418,7 +413,7 @@ struct codestar_notificationsClient:
     # errors: AccessDeniedException, ConcurrentModificationException, ConfigurationException, LimitExceededException, ResourceAlreadyExistsException, ValidationException
     def create_notification_rule(self, CreateNotificationRuleRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createNotificationRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + codestar_notifications_json_str(input.Name))
         list[str] e0 = []
@@ -450,7 +445,7 @@ struct codestar_notificationsClient:
     # errors: ConcurrentModificationException, LimitExceededException, ValidationException
     def delete_notification_rule(self, DeleteNotificationRuleRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteNotificationRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteNotificationRuleDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
@@ -459,7 +454,7 @@ struct codestar_notificationsClient:
     # errors: ValidationException
     def delete_target(self, DeleteTargetRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteTarget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteTarget", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTargetDocument(TargetAddress=input.TargetAddress, ForceUnsubscribeAll=input.ForceUnsubscribeAll)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
@@ -468,7 +463,7 @@ struct codestar_notificationsClient:
     # errors: ResourceNotFoundException, ValidationException
     def describe_notification_rule(self, DescribeNotificationRuleRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeNotificationRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeNotificationRuleDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
@@ -477,7 +472,7 @@ struct codestar_notificationsClient:
     # errors: InvalidNextTokenException, ValidationException
     def list_event_types(self, ListEventTypesRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listEventTypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listEventTypes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -498,7 +493,7 @@ struct codestar_notificationsClient:
     # errors: InvalidNextTokenException, ValidationException
     def list_notification_rules(self, ListNotificationRulesRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listNotificationRules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listNotificationRules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -519,7 +514,7 @@ struct codestar_notificationsClient:
     # errors: ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
@@ -528,7 +523,7 @@ struct codestar_notificationsClient:
     # errors: InvalidNextTokenException, ValidationException
     def list_targets(self, ListTargetsRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTargets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTargets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -549,7 +544,7 @@ struct codestar_notificationsClient:
     # errors: ConfigurationException, ResourceNotFoundException, ValidationException
     def subscribe(self, SubscribeRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscribe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscribe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SubscribeDocument(Arn=input.Arn, Target=input.Target, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
@@ -558,7 +553,7 @@ struct codestar_notificationsClient:
     # errors: ConcurrentModificationException, LimitExceededException, ResourceNotFoundException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + codestar_notifications_json_str(input.Arn))
         list[str] m0 = []
@@ -572,16 +567,27 @@ struct codestar_notificationsClient:
     # errors: ValidationException
     def unsubscribe(self, UnsubscribeRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/unsubscribe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/unsubscribe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnsubscribeDocument(Arn=input.Arn, TargetAddress=input.TargetAddress)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codestar_notifications_service(), self.region, host)
+
+    # UntagResource  POST /untagResource/{resourceArn}
+    # errors: ConcurrentModificationException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.Arn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="POST", path_template="/untagResource/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codestar_notifications_service(), self.region, host)
 
     # UpdateNotificationRule  POST /updateNotificationRule
     # errors: ConfigurationException, ResourceNotFoundException, ValidationException
     def update_notification_rule(self, UpdateNotificationRuleRequest input) -> str:
         auto host = endpoints.regional_host(codestar_notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateNotificationRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateNotificationRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + codestar_notifications_json_str(input.Arn))
         if input.Name.is_some():

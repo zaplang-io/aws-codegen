@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 23 operations — 21 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 23 operations — 23 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   75 structs (51 @derive(Json)), 5 enums, 9 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -640,12 +640,6 @@ def app_integrations_error_from_code(str code) -> AppIntegrationsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteApplication (httpQuery `Force` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -750,6 +744,12 @@ def iframe_config_to_json(IframeConfig v) -> str:
         parts.append("\"Sandbox\":" + app_integrations_json_arr(e3))
     return app_integrations_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def app_integrations_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound AppIntegrations client: credentials + region, threaded into every operation.
 struct AppIntegrationsClient:
     core.Credentials creds
@@ -759,7 +759,7 @@ struct AppIntegrationsClient:
     # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException, UnsupportedOperationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + app_integrations_json_str(input.Name))
         parts.append("\"Namespace\":" + app_integrations_json_str(input.Namespace))
@@ -819,7 +819,7 @@ struct AppIntegrationsClient:
     # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException
     def create_data_integration(self, CreateDataIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + app_integrations_json_str(input.Name))
         if input.Description.is_some():
@@ -865,7 +865,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.DataIntegrationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dataIntegrations/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientId.is_some():
             auto u0 = input.ClientId.unwrap()
@@ -904,7 +904,7 @@ struct AppIntegrationsClient:
     # errors: AccessDeniedException, DuplicateResourceException, InternalServiceError, InvalidRequestException, ResourceQuotaExceededException, ThrottlingException
     def create_event_integration(self, CreateEventIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/eventIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/eventIntegrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + app_integrations_json_str(input.Name))
         if input.Description.is_some():
@@ -924,13 +924,25 @@ struct AppIntegrationsClient:
         auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
 
+    # DeleteApplication  DELETE /applications/{ApplicationIdentifier}
+    # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def delete_application(self, DeleteApplicationRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationIdentifier"] = input.Arn
+        dict[str, str] query = {}
+        if input.Force.is_some():
+            query["force"] = app_integrations_bind_bool(input.Force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
+
     # DeleteDataIntegration  DELETE /dataIntegrations/{Identifier}
     # errors: AccessDeniedException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def delete_data_integration(self, DeleteDataIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.DataIntegrationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # DeleteEventIntegration  DELETE /eventIntegrations/{Name}
@@ -939,7 +951,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # GetApplication  GET /applications/{ApplicationIdentifier}
@@ -948,7 +960,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # GetDataIntegration  GET /dataIntegrations/{Identifier}
@@ -957,7 +969,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # GetEventIntegration  GET /eventIntegrations/{Name}
@@ -966,7 +978,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListApplicationAssociations  GET /applications/{ApplicationIdentifier}/associations
@@ -980,7 +992,7 @@ struct AppIntegrationsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -994,7 +1006,7 @@ struct AppIntegrationsClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.ApplicationType.is_some():
             query["applicationType"] = input.ApplicationType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListDataIntegrationAssociations  GET /dataIntegrations/{Identifier}/associations
@@ -1008,7 +1020,7 @@ struct AppIntegrationsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations/{Identifier}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations/{Identifier}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListDataIntegrations  GET /dataIntegrations
@@ -1020,7 +1032,7 @@ struct AppIntegrationsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataIntegrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListEventIntegrationAssociations  GET /eventIntegrations/{Name}/associations
@@ -1034,7 +1046,7 @@ struct AppIntegrationsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations/{Name}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations/{Name}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListEventIntegrations  GET /eventIntegrations
@@ -1046,7 +1058,7 @@ struct AppIntegrationsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/eventIntegrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1055,7 +1067,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1064,7 +1076,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1073,13 +1085,24 @@ struct AppIntegrationsClient:
         auto bp = restjson.rest_json_document(b, app_integrations_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(app_integrations_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, app_integrations_service(), self.region, host)
+
     # UpdateApplication  PATCH /applications/{ApplicationIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServiceError, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnsupportedOperationException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.Arn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -1135,7 +1158,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dataIntegrations/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataIntegrationDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
@@ -1146,8 +1169,9 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.DataIntegrationIdentifier
-        labels["DataIntegrationAssociationIdentifier"] = input.DataIntegrationAssociationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dataIntegrations/{Identifier}/associations/{DataIntegrationAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.DataIntegrationAssociationIdentifier
+        labels["DataIntegrationAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dataIntegrations/{Identifier}/associations/{DataIntegrationAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataIntegrationAssociationDocument(ExecutionConfiguration=input.ExecutionConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)
@@ -1158,7 +1182,7 @@ struct AppIntegrationsClient:
         auto host = endpoints.regional_host(app_integrations_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/eventIntegrations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventIntegrationDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, app_integrations_service(), self.region, host)

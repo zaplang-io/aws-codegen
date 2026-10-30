@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 74 operations — 71 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 74 operations — 74 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   218 structs (157 @derive(Json)), 30 enums, 13 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1837,13 +1837,6 @@ def appsync_error_from_code(str code) -> AppSyncError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetDataSourceIntrospection (httpQuery `includeModelsSDL` has unsupported type bool)
-#   GetIntrospectionSchema (httpQuery `includeDirectives` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2079,6 +2072,12 @@ def pipeline_config_to_json(PipelineConfig v) -> str:
         parts.append("\"functions\":" + appsync_json_arr(e1))
     return appsync_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def appsync_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound AppSync client: credentials + region, threaded into every operation.
 struct AppSyncClient:
     core.Credentials creds
@@ -2090,7 +2089,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateApiDocument(apiId=input.apiId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2101,7 +2100,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["sourceApiIdentifier"] = input.sourceApiIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMergedGraphqlApiDocument(mergedApiIdentifier=input.mergedApiIdentifier, description=input.description, sourceApiAssociationConfig=input.sourceApiAssociationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2112,7 +2111,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["mergedApiIdentifier"] = input.mergedApiIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateSourceGraphqlApiDocument(sourceApiIdentifier=input.sourceApiIdentifier, description=input.description, sourceApiAssociationConfig=input.sourceApiAssociationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2121,7 +2120,7 @@ struct AppSyncClient:
     # errors: BadRequestException, ConcurrentModificationException, InternalFailureException, ServiceQuotaExceededException, UnauthorizedException
     def create_api(self, CreateApiRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + appsync_json_str(input.name))
         if input.ownerContact.is_some():
@@ -2143,7 +2142,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApiCacheDocument(ttl=input.ttl, transitEncryptionEnabled=input.transitEncryptionEnabled, atRestEncryptionEnabled=input.atRestEncryptionEnabled, apiCachingBehavior=input.apiCachingBehavior, type=input.type, healthMetricsConfig=input.healthMetricsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2154,7 +2153,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/apikeys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/apikeys", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApiKeyDocument(description=input.description, expires=input.expires)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2165,7 +2164,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + appsync_json_str(input.name))
         if input.subscribeAuthModes.is_some():
@@ -2201,7 +2200,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/datasources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/datasources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDataSourceDocument(name=input.name, description=input.description, type=input.type, serviceRoleArn=input.serviceRoleArn, dynamodbConfig=input.dynamodbConfig, lambdaConfig=input.lambdaConfig, elasticsearchConfig=input.elasticsearchConfig, openSearchServiceConfig=input.openSearchServiceConfig, httpConfig=input.httpConfig, relationalDatabaseConfig=input.relationalDatabaseConfig, eventBridgeConfig=input.eventBridgeConfig, metricsConfig=input.metricsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2210,7 +2209,7 @@ struct AppSyncClient:
     # errors: AccessDeniedException, BadRequestException, InternalFailureException
     def create_domain_name(self, CreateDomainNameRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"domainName\":" + appsync_json_str(input.domainName))
         parts.append("\"certificateArn\":" + appsync_json_str(input.certificateArn))
@@ -2232,7 +2231,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFunctionDocument(name=input.name, description=input.description, dataSourceName=input.dataSourceName, requestMappingTemplate=input.requestMappingTemplate, responseMappingTemplate=input.responseMappingTemplate, functionVersion=input.functionVersion, syncConfig=input.syncConfig, maxBatchSize=input.maxBatchSize, runtime=input.runtime, code=input.code)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2241,7 +2240,7 @@ struct AppSyncClient:
     # errors: ApiLimitExceededException, BadRequestException, ConcurrentModificationException, InternalFailureException, LimitExceededException, UnauthorizedException
     def create_graphql_api(self, CreateGraphqlApiRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + appsync_json_str(input.name))
         if input.logConfig.is_some():
@@ -2306,7 +2305,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"fieldName\":" + appsync_json_str(input.fieldName))
         if input.dataSourceName.is_some():
@@ -2351,7 +2350,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTypeDocument(definition=input.definition, format=input.format)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2362,7 +2361,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteApiCache  DELETE /v1/apis/{apiId}/ApiCaches
@@ -2371,7 +2370,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteApiKey  DELETE /v1/apis/{apiId}/apikeys/{id}
@@ -2381,7 +2380,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/apikeys/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/apikeys/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteChannelNamespace  DELETE /v2/apis/{apiId}/channelNamespaces/{name}
@@ -2391,7 +2390,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteDataSource  DELETE /v1/apis/{apiId}/datasources/{name}
@@ -2401,7 +2400,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteDomainName  DELETE /v1/domainnames/{domainName}
@@ -2410,7 +2409,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteFunction  DELETE /v1/apis/{apiId}/functions/{functionId}
@@ -2420,7 +2419,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["functionId"] = input.functionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteGraphqlApi  DELETE /v1/apis/{apiId}
@@ -2429,7 +2428,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteResolver  DELETE /v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}
@@ -2440,7 +2439,7 @@ struct AppSyncClient:
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
         labels["fieldName"] = input.fieldName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DeleteType  DELETE /v1/apis/{apiId}/types/{typeName}
@@ -2450,7 +2449,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DisassociateApi  DELETE /v1/domainnames/{domainName}/apiassociation
@@ -2459,7 +2458,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DisassociateMergedGraphqlApi  DELETE /v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations/{associationId}
@@ -2469,7 +2468,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["sourceApiIdentifier"] = input.sourceApiIdentifier
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sourceApis/{sourceApiIdentifier}/mergedApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # DisassociateSourceGraphqlApi  DELETE /v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}
@@ -2479,14 +2478,14 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["mergedApiIdentifier"] = input.mergedApiIdentifier
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # EvaluateCode  POST /v1/dataplane-evaluatecode
     # errors: AccessDeniedException, BadRequestException, InternalFailureException
     def evaluate_code(self, EvaluateCodeRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/dataplane-evaluatecode", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/dataplane-evaluatecode", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EvaluateCodeDocument(runtime=input.runtime, code=input.code, context=input.context, function=input.function)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2495,7 +2494,7 @@ struct AppSyncClient:
     # errors: AccessDeniedException, BadRequestException, InternalFailureException
     def evaluate_mapping_template(self, EvaluateMappingTemplateRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/dataplane-evaluatetemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/dataplane-evaluatetemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EvaluateMappingTemplateDocument(template=input.template, context=input.context)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2506,7 +2505,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/FlushCache", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apis/{apiId}/FlushCache", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetApi  GET /v2/apis/{apiId}
@@ -2515,7 +2514,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetApiAssociation  GET /v1/domainnames/{domainName}/apiassociation
@@ -2524,7 +2523,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames/{domainName}/apiassociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetApiCache  GET /v1/apis/{apiId}/ApiCaches
@@ -2533,7 +2532,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/ApiCaches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetChannelNamespace  GET /v2/apis/{apiId}/channelNamespaces/{name}
@@ -2543,7 +2542,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetDataSource  GET /v1/apis/{apiId}/datasources/{name}
@@ -2553,7 +2552,24 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
+
+    # GetDataSourceIntrospection  GET /v1/datasources/introspections/{introspectionId}
+    # errors: BadRequestException, InternalFailureException, NotFoundException
+    def get_data_source_introspection(self, GetDataSourceIntrospectionRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["introspectionId"] = input.introspectionId
+        dict[str, str] query = {}
+        if input.includeModelsSDL.is_some():
+            auto qt0 = appsync_bind_bool(input.includeModelsSDL.unwrap_or(False))
+            query["includeModelsSDL"] = qt0
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/datasources/introspections/{introspectionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetDomainName  GET /v1/domainnames/{domainName}
@@ -2562,7 +2578,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetFunction  GET /v1/apis/{apiId}/functions/{functionId}
@@ -2572,7 +2588,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["functionId"] = input.functionId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetGraphqlApi  GET /v1/apis/{apiId}
@@ -2581,7 +2597,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetGraphqlApiEnvironmentVariables  GET /v1/apis/{apiId}/environmentVariables
@@ -2590,7 +2606,21 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/environmentVariables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/environmentVariables", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
+
+    # GetIntrospectionSchema  GET /v1/apis/{apiId}/schema
+    # errors: GraphQLSchemaException, InternalFailureException, NotFoundException, UnauthorizedException
+    def get_introspection_schema(self, GetIntrospectionSchemaRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.apiId
+        dict[str, str] query = {}
+        query["format"] = input.format
+        if input.includeDirectives.is_some():
+            auto qt0 = appsync_bind_bool(input.includeDirectives.unwrap_or(False))
+            query["includeDirectives"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/schema", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetResolver  GET /v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}
@@ -2601,7 +2631,7 @@ struct AppSyncClient:
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
         labels["fieldName"] = input.fieldName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetSchemaCreationStatus  GET /v1/apis/{apiId}/schemacreation
@@ -2610,7 +2640,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/schemacreation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/schemacreation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetSourceApiAssociation  GET /v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}
@@ -2620,7 +2650,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["mergedApiIdentifier"] = input.mergedApiIdentifier
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # GetType  GET /v1/apis/{apiId}/types/{typeName}
@@ -2632,7 +2662,7 @@ struct AppSyncClient:
         labels["typeName"] = input.typeName
         dict[str, str] query = {}
         query["format"] = input.format
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListApiKeys  GET /v1/apis/{apiId}/apikeys
@@ -2646,7 +2676,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/apikeys", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/apikeys", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListApis  GET /v2/apis
@@ -2658,7 +2688,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListChannelNamespaces  GET /v2/apis/{apiId}/channelNamespaces
@@ -2672,7 +2702,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/channelNamespaces", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/channelNamespaces", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListDataSources  GET /v1/apis/{apiId}/datasources
@@ -2686,7 +2716,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/datasources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/datasources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListDomainNames  GET /v1/domainnames
@@ -2698,7 +2728,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/domainnames", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListFunctions  GET /v1/apis/{apiId}/functions
@@ -2712,7 +2742,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListGraphqlApis  GET /v1/apis
@@ -2728,7 +2758,7 @@ struct AppSyncClient:
             query["apiType"] = input.apiType.unwrap_or("")
         if input.owner.is_some():
             query["owner"] = input.owner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListResolvers  GET /v1/apis/{apiId}/types/{typeName}/resolvers
@@ -2743,7 +2773,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListResolversByFunction  GET /v1/apis/{apiId}/functions/{functionId}/resolvers
@@ -2758,7 +2788,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions/{functionId}/resolvers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/functions/{functionId}/resolvers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListSourceApiAssociations  GET /v1/apis/{apiId}/sourceApiAssociations
@@ -2772,7 +2802,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/sourceApiAssociations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/sourceApiAssociations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -2781,7 +2811,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListTypes  GET /v1/apis/{apiId}/types
@@ -2796,7 +2826,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apis/{apiId}/types", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # ListTypesByAssociation  GET /v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/types
@@ -2812,7 +2842,7 @@ struct AppSyncClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/types", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # PutGraphqlApiEnvironmentVariables  PUT /v1/apis/{apiId}/environmentVariables
@@ -2821,7 +2851,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apis/{apiId}/environmentVariables", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apis/{apiId}/environmentVariables", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.environmentVariables.keys()):
@@ -2834,7 +2864,7 @@ struct AppSyncClient:
     # errors: BadRequestException, InternalFailureException, NotFoundException, UnauthorizedException
     def start_data_source_introspection(self, StartDataSourceIntrospectionRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/datasources/introspections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/datasources/introspections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDataSourceIntrospectionDocument(rdsDataApiConfig=input.rdsDataApiConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2845,7 +2875,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/schemacreation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/schemacreation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSchemaCreationDocument(definition=input.definition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2857,7 +2887,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["associationId"] = input.associationId
         labels["mergedApiIdentifier"] = input.mergedApiIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/merge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}/merge", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
 
     # TagResource  POST /v1/tags/{resourceArn}
@@ -2866,7 +2896,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2875,13 +2905,24 @@ struct AppSyncClient:
         auto bp = restjson.rest_json_document(b, appsync_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalFailureException, LimitExceededException, NotFoundException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appsync_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appsync_service(), self.region, host)
+
     # UpdateApi  POST /v2/apis/{apiId}
     # errors: AccessDeniedException, BadRequestException, ConcurrentModificationException, InternalFailureException, NotFoundException, UnauthorizedException
     def update_api(self, UpdateApiRequest input) -> str:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + appsync_json_str(input.name))
         if input.ownerContact.is_some():
@@ -2897,7 +2938,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/ApiCaches/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/ApiCaches/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiCacheDocument(ttl=input.ttl, apiCachingBehavior=input.apiCachingBehavior, type=input.type, healthMetricsConfig=input.healthMetricsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2909,7 +2950,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/apikeys/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/apikeys/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiKeyDocument(description=input.description, expires=input.expires)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2921,7 +2962,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/channelNamespaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.subscribeAuthModes.is_some():
             auto u0 = input.subscribeAuthModes.unwrap()
@@ -2951,7 +2992,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/datasources/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataSourceDocument(description=input.description, type=input.type, serviceRoleArn=input.serviceRoleArn, dynamodbConfig=input.dynamodbConfig, lambdaConfig=input.lambdaConfig, elasticsearchConfig=input.elasticsearchConfig, openSearchServiceConfig=input.openSearchServiceConfig, httpConfig=input.httpConfig, relationalDatabaseConfig=input.relationalDatabaseConfig, eventBridgeConfig=input.eventBridgeConfig, metricsConfig=input.metricsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2962,7 +3003,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainNameDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2974,7 +3015,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["functionId"] = input.functionId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/functions/{functionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFunctionDocument(name=input.name, description=input.description, dataSourceName=input.dataSourceName, requestMappingTemplate=input.requestMappingTemplate, responseMappingTemplate=input.responseMappingTemplate, functionVersion=input.functionVersion, syncConfig=input.syncConfig, maxBatchSize=input.maxBatchSize, runtime=input.runtime, code=input.code)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -2985,7 +3026,7 @@ struct AppSyncClient:
         auto host = endpoints.regional_host(appsync_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + appsync_json_str(input.name))
         if input.logConfig.is_some():
@@ -3039,7 +3080,7 @@ struct AppSyncClient:
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
         labels["fieldName"] = input.fieldName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}/resolvers/{fieldName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.dataSourceName.is_some():
             auto u0 = input.dataSourceName.unwrap()
@@ -3084,7 +3125,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["associationId"] = input.associationId
         labels["mergedApiIdentifier"] = input.mergedApiIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/mergedApis/{mergedApiIdentifier}/sourceApiAssociations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSourceApiAssociationDocument(description=input.description, sourceApiAssociationConfig=input.sourceApiAssociationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)
@@ -3096,7 +3137,7 @@ struct AppSyncClient:
         dict[str, str] labels = {}
         labels["apiId"] = input.apiId
         labels["typeName"] = input.typeName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apis/{apiId}/types/{typeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTypeDocument(definition=input.definition, format=input.format)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appsync_service(), self.region, host)

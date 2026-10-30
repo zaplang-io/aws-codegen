@@ -1401,7 +1401,7 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationComponentId"] = input.applicationComponentId
-        auto b = binding.HttpBinding(method="GET", path_template="/get-applicationcomponent-details/{applicationComponentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-applicationcomponent-details/{applicationComponentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetApplicationComponentStrategies  GET /get-applicationcomponent-strategies/{applicationComponentId}
@@ -1410,7 +1410,7 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationComponentId"] = input.applicationComponentId
-        auto b = binding.HttpBinding(method="GET", path_template="/get-applicationcomponent-strategies/{applicationComponentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-applicationcomponent-strategies/{applicationComponentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetAssessment  GET /get-assessment/{id}
@@ -1419,7 +1419,7 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/get-assessment/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-assessment/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetImportFileTask  GET /get-import-file-task/{id}
@@ -1428,28 +1428,28 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/get-import-file-task/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-import-file-task/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetLatestAssessmentId  GET /get-latest-assessment-id
     # errors: AccessDeniedException, DependencyException, InternalServerException, ValidationException
     def get_latest_assessment_id(self) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/get-latest-assessment-id", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-latest-assessment-id", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetPortfolioPreferences  GET /get-portfolio-preferences
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_portfolio_preferences(self) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/get-portfolio-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-portfolio-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetPortfolioSummary  GET /get-portfolio-summary
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_portfolio_summary(self) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/get-portfolio-summary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-portfolio-summary", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetRecommendationReportDetails  GET /get-recommendation-report-details/{id}
@@ -1458,7 +1458,7 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/get-recommendation-report-details/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-recommendation-report-details/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetServerDetails  GET /get-server-details/{serverId}
@@ -1472,7 +1472,7 @@ struct MigrationHubStrategyClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/get-server-details/{serverId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-server-details/{serverId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # GetServerStrategies  GET /get-server-strategies/{serverId}
@@ -1481,14 +1481,14 @@ struct MigrationHubStrategyClient:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
         dict[str, str] labels = {}
         labels["serverId"] = input.serverId
-        auto b = binding.HttpBinding(method="GET", path_template="/get-server-strategies/{serverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-server-strategies/{serverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # ListAnalyzableServers  POST /list-analyzable-servers
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_analyzable_servers(self, ListAnalyzableServersRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-analyzable-servers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-analyzable-servers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnalyzableServersDocument(maxResults=input.maxResults, nextToken=input.nextToken, sort=input.sort)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
@@ -1497,7 +1497,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, InternalServerException, ServiceLinkedRoleLockClientException, ValidationException
     def list_application_components(self, ListApplicationComponentsRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-applicationcomponents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-applicationcomponents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.applicationComponentCriteria.is_some():
             auto u0 = input.applicationComponentCriteria.unwrap()
@@ -1532,7 +1532,7 @@ struct MigrationHubStrategyClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-collectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-collectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # ListImportFileTask  GET /list-import-file-task
@@ -1544,14 +1544,14 @@ struct MigrationHubStrategyClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-import-file-task", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-import-file-task", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_strategy_service(), self.region, host)
 
     # ListServers  POST /list-servers
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_servers(self, ListServersRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-servers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-servers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterValue.is_some():
             auto u0 = input.filterValue.unwrap()
@@ -1581,7 +1581,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def put_portfolio_preferences(self, PutPortfolioPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-portfolio-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-portfolio-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.applicationMode.is_some():
             auto u0 = input.applicationMode.unwrap()
@@ -1602,7 +1602,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException
     def start_assessment(self, StartAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assessmentDataSourceType.is_some():
             auto u0 = input.assessmentDataSourceType.unwrap()
@@ -1626,7 +1626,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_import_file_task(self, StartImportFileTaskRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-import-file-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-import-file-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"S3Bucket\":" + migrationhub_strategy_json_str(input.S3Bucket))
         if input.dataSourceType.is_some():
@@ -1650,7 +1650,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def start_recommendation_report_generation(self, StartRecommendationReportGenerationRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-recommendation-report-generation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-recommendation-report-generation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.groupIdFilter.is_some():
             auto u0 = input.groupIdFilter.unwrap()
@@ -1668,7 +1668,7 @@ struct MigrationHubStrategyClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def stop_assessment(self, StopAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/stop-assessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/stop-assessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopAssessmentDocument(assessmentId=input.assessmentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)
@@ -1677,7 +1677,7 @@ struct MigrationHubStrategyClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application_component_config(self, UpdateApplicationComponentConfigRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-applicationcomponent-config/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-applicationcomponent-config/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.appType.is_some():
             auto u0 = input.appType.unwrap()
@@ -1708,7 +1708,7 @@ struct MigrationHubStrategyClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_server_config(self, UpdateServerConfigRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_strategy_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-server-config/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-server-config/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServerConfigDocument(serverId=input.serverId, strategyOption=input.strategyOption)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, migrationhub_strategy_service(), self.region, host)

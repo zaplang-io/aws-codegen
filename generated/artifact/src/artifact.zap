@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 16 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   53 structs (34 @derive(Json)), 15 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -594,11 +594,6 @@ def artifact_error_from_code(str code) -> ArtifactError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -669,7 +664,7 @@ struct ArtifactClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_compliance_inquiry(self, CreateComplianceInquiryRequest input) -> str:
         auto host = endpoints.regional_host(artifact_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + artifact_json_str(input.name))
         parts.append("\"inquiryContent\":" + inquiry_content_to_json(input.inquiryContent))
@@ -692,7 +687,7 @@ struct ArtifactClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def export_compliance_inquiry(self, ExportComplianceInquiryRequest input) -> str:
         auto host = endpoints.regional_host(artifact_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/export", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/compliance-inquiry/export", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"complianceInquiryId\":" + artifact_json_str(input.complianceInquiryId))
         if input.queryIdentifiers.is_some():
@@ -711,7 +706,7 @@ struct ArtifactClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_account_settings(self) -> str:
         auto host = endpoints.regional_host(artifact_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/account-settings/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/account-settings/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # GetComplianceInquiryMetadata  GET /v1/compliance-inquiry/getMetadata
@@ -720,7 +715,7 @@ struct ArtifactClient:
         auto host = endpoints.regional_host(artifact_service(), self.region)
         dict[str, str] query = {}
         query["complianceInquiryId"] = input.complianceInquiryId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/getMetadata", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/getMetadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # GetReport  GET /v1/report/get
@@ -732,7 +727,7 @@ struct ArtifactClient:
         if input.reportVersion.is_some():
             query["reportVersion"] = str(input.reportVersion.unwrap_or(0))
         query["termToken"] = input.termToken
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/get", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/get", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # GetReportMetadata  GET /v1/report/getMetadata
@@ -743,7 +738,7 @@ struct ArtifactClient:
         query["reportId"] = input.reportId
         if input.reportVersion.is_some():
             query["reportVersion"] = str(input.reportVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/getMetadata", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/getMetadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # GetTermForReport  GET /v1/report/getTermForReport
@@ -754,7 +749,7 @@ struct ArtifactClient:
         query["reportId"] = input.reportId
         if input.reportVersion.is_some():
             query["reportVersion"] = str(input.reportVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/getTermForReport", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/getTermForReport", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListComplianceInquiries  GET /v1/compliance-inquiry/list
@@ -766,7 +761,7 @@ struct ArtifactClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListComplianceInquiryQueries  GET /v1/compliance-inquiry/listQueries
@@ -779,7 +774,7 @@ struct ArtifactClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/listQueries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/compliance-inquiry/listQueries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListCustomerAgreements  GET /v1/customer-agreement/list
@@ -791,7 +786,7 @@ struct ArtifactClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/customer-agreement/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/customer-agreement/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListReportVersions  GET /v1/report/listVersions
@@ -804,7 +799,7 @@ struct ArtifactClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/listVersions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/listVersions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListReports  GET /v1/report/list
@@ -816,7 +811,7 @@ struct ArtifactClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/report/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -825,14 +820,14 @@ struct ArtifactClient:
         auto host = endpoints.regional_host(artifact_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # PutAccountSettings  PUT /v1/account-settings/put
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_account_settings(self, PutAccountSettingsRequest input) -> str:
         auto host = endpoints.regional_host(artifact_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/account-settings/put", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/account-settings/put", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountSettingsDocument(notificationSubscriptionStatus=input.notificationSubscriptionStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
@@ -841,7 +836,7 @@ struct ArtifactClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_compliance_inquiry_feedback(self, PutComplianceInquiryFeedbackRequest input) -> str:
         auto host = endpoints.regional_host(artifact_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/compliance-inquiry/putFeedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/compliance-inquiry/putFeedback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"complianceInquiryId\":" + artifact_json_str(input.complianceInquiryId))
         if input.queryIdentifier.is_some():
@@ -872,7 +867,7 @@ struct ArtifactClient:
         auto host = endpoints.regional_host(artifact_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -880,6 +875,17 @@ struct ArtifactClient:
         parts.append("\"tags\":" + artifact_json_obj(m0))
         auto bp = restjson.rest_json_document(b, artifact_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, artifact_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(artifact_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, artifact_service(), self.region, host)
 
     # Paginator for ListComplianceInquiries — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: complianceInquiries).

@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 63 operations — 59 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 63 operations — 61 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   290 structs (201 @derive(Json)), 34 enums, 10 error variants.
-#   11 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -2478,13 +2478,7 @@ def aidevops_error_from_code(str code) -> DevOps_AgentError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   AssociateService (document member `capabilities: dict[CapabilityType, CapabilityConfiguration]` is not serializable)
-#   ListAssets (httpQuery `updatedAfter` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateAssociation (document member `capabilities: dict[CapabilityType, CapabilityConfiguration]` is not serializable)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAssets (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3137,7 +3131,7 @@ struct DevOps_AgentClient:
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_agent_space(self, CreateAgentSpaceInput input) -> str:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + aidevops_json_str(input.name))
         if input.description.is_some():
@@ -3173,7 +3167,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/asset/agent-space/{agentSpaceId}/assets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/asset/agent-space/{agentSpaceId}/assets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAssetDocument(assetType=input.assetType, metadata=input.metadata, content=input.content, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3187,7 +3181,7 @@ struct DevOps_AgentClient:
         labels["assetId"] = input.assetId
         dict[str, str] greedy_labels = {}
         greedy_labels["path"] = input.path
-        auto b = binding.HttpBinding(method="POST", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAssetFileDocument(content=input.content, metadata=input.metadata, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3198,7 +3192,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBacklogTaskDocument(reference=input.reference, taskType=input.taskType, title=input.title, description=input.description, priority=input.priority, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3214,14 +3208,14 @@ struct DevOps_AgentClient:
             query["userId"] = input.userId.unwrap_or("")
         if input.userType.is_some():
             query["userType"] = input.userType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/create", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/create", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # CreatePrivateConnection  POST /v1/private-connections
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_private_connection(self, CreatePrivateConnectionInput input) -> str:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/private-connections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/private-connections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + aidevops_json_str(input.name))
         parts.append("\"mode\":" + private_connection_mode_to_json(input.mode))
@@ -3240,7 +3234,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/trigger/agent-space/{agentSpaceId}/triggers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/trigger/agent-space/{agentSpaceId}/triggers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTriggerDocument(type=input.type, condition=input.condition, action=input.action, status=input.status, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3251,7 +3245,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DeleteAsset  DELETE /asset/agent-space/{agentSpaceId}/assets/{assetId}
@@ -3261,7 +3255,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["assetId"] = input.assetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DeleteAssetFile  DELETE /asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}
@@ -3273,7 +3267,7 @@ struct DevOps_AgentClient:
         labels["assetId"] = input.assetId
         dict[str, str] greedy_labels = {}
         greedy_labels["path"] = input.path
-        auto b = binding.HttpBinding(method="DELETE", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DeletePrivateConnection  DELETE /v1/private-connections/{name}
@@ -3282,7 +3276,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/private-connections/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/private-connections/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DeleteTrigger  DELETE /trigger/agent-space/{agentSpaceId}/triggers/{triggerId}
@@ -3292,7 +3286,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["triggerId"] = input.triggerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DeregisterService  DELETE /v1/services/{serviceId}
@@ -3301,7 +3295,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceId"] = input.serviceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/services/{serviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/services/{serviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DescribePrivateConnection  GET /v1/private-connections/{name}
@@ -3310,7 +3304,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/private-connections/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/private-connections/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DisableOperatorApp  DELETE /v1/agentspaces/{agentSpaceId}/operator
@@ -3322,7 +3316,7 @@ struct DevOps_AgentClient:
         dict[str, str] headers = {}
         if input.authFlow.is_some():
             headers["x-amzn-app-auth-flow"] = input.authFlow.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # DisassociateService  DELETE /v1/agentspaces/{agentSpaceId}/associations/{associationId}
@@ -3332,7 +3326,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # EnableOperatorApp  POST /v1/agentspaces/{agentSpaceId}/operator
@@ -3341,7 +3335,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableOperatorAppDocument(authFlow=input.authFlow, operatorAppRoleArn=input.operatorAppRoleArn, idcInstanceArn=input.idcInstanceArn, issuerUrl=input.issuerUrl, idpClientId=input.idpClientId, idpClientSecret=input.idpClientSecret, provider=input.provider)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3350,7 +3344,7 @@ struct DevOps_AgentClient:
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_account_usage(self) -> str:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/usage/account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/usage/account", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetAgentSpace  GET /v1/agentspaces/{agentSpaceId}
@@ -3362,7 +3356,7 @@ struct DevOps_AgentClient:
         dict[str, str] query = {}
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetAsset  GET /asset/agent-space/{agentSpaceId}/assets/{assetId}
@@ -3375,7 +3369,7 @@ struct DevOps_AgentClient:
         dict[str, str] query = {}
         if input.assetVersion.is_some():
             query["assetVersion"] = str(input.assetVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetAssetContent  GET /asset/agent-space/{agentSpaceId}/assets/{assetId}/content
@@ -3388,7 +3382,7 @@ struct DevOps_AgentClient:
         dict[str, str] query = {}
         if input.assetVersion.is_some():
             query["assetVersion"] = str(input.assetVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/content", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/content", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetAssetFile  GET /asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}
@@ -3403,7 +3397,7 @@ struct DevOps_AgentClient:
         dict[str, str] query = {}
         if input.assetVersion.is_some():
             query["assetVersion"] = str(input.assetVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetAssociation  GET /v1/agentspaces/{agentSpaceId}/associations/{associationId}
@@ -3413,7 +3407,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetBacklogTask  GET /backlog/agent-space/{agentSpaceId}/tasks/{taskId}
@@ -3423,7 +3417,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/backlog/agent-space/{agentSpaceId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backlog/agent-space/{agentSpaceId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetOperatorApp  GET /v2/agentspaces/{agentSpaceId}/operator
@@ -3432,7 +3426,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/agentspaces/{agentSpaceId}/operator", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetRecommendation  GET /backlog/agent-space/{agentSpaceId}/recommendations/{recommendationId}
@@ -3444,8 +3438,9 @@ struct DevOps_AgentClient:
         labels["recommendationId"] = input.recommendationId
         dict[str, str] query = {}
         if input.recommendationVersion.is_some():
-            query["recommendationVersion"] = str(input.recommendationVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/{recommendationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = str(input.recommendationVersion.unwrap_or(0))
+            query["recommendationVersion"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/{recommendationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetService  GET /v1/services/{serviceId}
@@ -3454,7 +3449,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceId"] = input.serviceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/services/{serviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/services/{serviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # GetTrigger  GET /trigger/agent-space/{agentSpaceId}/triggers/{triggerId}
@@ -3464,7 +3459,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["triggerId"] = input.triggerId
-        auto b = binding.HttpBinding(method="GET", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListAgentSpaces  POST /v1/agentspaces/list
@@ -3478,7 +3473,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListAssetFiles  GET /asset/agent-space/{agentSpaceId}/assets/{assetId}/files
@@ -3495,7 +3490,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListAssetTypes  GET /asset/types
@@ -3507,7 +3502,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/types", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/types", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListAssetVersions  GET /asset/agent-space/{agentSpaceId}/assets/{assetId}/versions
@@ -3522,7 +3517,29 @@ struct DevOps_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
+
+    # ListAssets  GET /asset/agent-space/{agentSpaceId}/assets
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def list_assets(self, ListAssetsRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentSpaceId"] = input.agentSpaceId
+        dict[str, str] query = {}
+        if input.assetType.is_some():
+            query["assetType"] = input.assetType.unwrap_or("")
+        if input.updatedAfter.is_some():
+            auto qt0 = datetime.strftime(input.updatedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["updatedAfter"] = qt0
+        if input.updatedBefore.is_some():
+            auto qt1 = datetime.strftime(input.updatedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["updatedBefore"] = qt1
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/asset/agent-space/{agentSpaceId}/assets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListAssociations  POST /v1/agentspaces/{agentSpaceId}/associations/list
@@ -3538,7 +3555,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.filterServiceTypes.is_some():
             query["filterServiceTypes"] = input.filterServiceTypes.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListBacklogTasks  POST /backlog/agent-space/{agentSpaceId}/tasks/list
@@ -3547,7 +3564,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/tasks/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/tasks/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -3580,7 +3597,7 @@ struct DevOps_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/agent-space/{agentSpaceId}/chat/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/agent-space/{agentSpaceId}/chat/list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListExecutions  POST /journal/agent-space/{agentSpaceId}/executions
@@ -3589,7 +3606,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/journal/agent-space/{agentSpaceId}/executions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/journal/agent-space/{agentSpaceId}/executions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExecutionsDocument(taskId=input.taskId, limit=input.limit, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3600,7 +3617,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/goals/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/goals/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGoalsDocument(status=input.status, goalType=input.goalType, limit=input.limit, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3611,7 +3628,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/journal/agent-space/{agentSpaceId}/journalRecords", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/journal/agent-space/{agentSpaceId}/journalRecords", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListJournalRecordsDocument(executionId=input.executionId, limit=input.limit, nextToken=input.nextToken, recordType=input.recordType, order=input.order)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3622,7 +3639,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/pendingMessages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/pendingMessages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPendingMessagesDocument(executionId=input.executionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3631,7 +3648,7 @@ struct DevOps_AgentClient:
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_private_connections(self) -> str:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/private-connections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/private-connections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListRecommendations  POST /backlog/agent-space/{agentSpaceId}/recommendations/list
@@ -3640,7 +3657,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecommendationsDocument(taskId=input.taskId, goalId=input.goalId, status=input.status, priority=input.priority, limit=input.limit, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3656,7 +3673,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.filterServiceType.is_some():
             query["filterServiceType"] = input.filterServiceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/services/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/services/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -3665,7 +3682,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListTriggers  GET /trigger/agent-space/{agentSpaceId}/triggers
@@ -3681,7 +3698,7 @@ struct DevOps_AgentClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/trigger/agent-space/{agentSpaceId}/triggers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trigger/agent-space/{agentSpaceId}/triggers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # ListWebhooks  POST /v1/agentspaces/{agentSpaceId}/associations/{associationId}/webhooks/list
@@ -3691,7 +3708,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}/webhooks/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/{associationId}/webhooks/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # RegisterService  POST /v1/register/{service}
@@ -3700,7 +3717,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["service"] = input.service
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/register/{service}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/register/{service}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceDetails\":" + service_details_to_json(input.serviceDetails))
         if input.kmsKeyArn.is_some():
@@ -3733,7 +3750,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/sendMessage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/chat/sendMessage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"executionId\":" + aidevops_json_str(input.executionId))
         parts.append("\"content\":" + aidevops_json_str(input.content))
@@ -3761,7 +3778,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -3770,13 +3787,24 @@ struct DevOps_AgentClient:
         auto bp = restjson.rest_json_document(b, aidevops_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
+
     # UpdateAgentSpace  PATCH /v1/agentspaces/{agentSpaceId}
     # errors: AccessDeniedException, ConflictException, ContentSizeExceededException, InternalServerException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_agent_space(self, UpdateAgentSpaceInput input) -> str:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/agentspaces/{agentSpaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -3803,7 +3831,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["approvalId"] = input.approvalId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/approvals/{approvalId}/update-action", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/agent-space/{agentSpaceId}/approvals/{approvalId}/update-action", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"action\":" + input.action.to_json())
         if input.finalPattern.is_some():
@@ -3828,7 +3856,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["assetId"] = input.assetId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssetDocument(metadata=input.metadata, content=input.content, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3842,7 +3870,7 @@ struct DevOps_AgentClient:
         labels["assetId"] = input.assetId
         dict[str, str] greedy_labels = {}
         greedy_labels["path"] = input.path
-        auto b = binding.HttpBinding(method="PATCH", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/asset/agent-space/{agentSpaceId}/assets/{assetId}/files/{path+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssetFileDocument(content=input.content, metadata=input.metadata, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3854,7 +3882,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBacklogTaskDocument(taskStatus=input.taskStatus, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3866,7 +3894,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["goalId"] = input.goalId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/goals/{goalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/goals/{goalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGoalDocument(evaluationSchedule=input.evaluationSchedule, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3877,7 +3905,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/agentspaces/{agentSpaceId}/operator/idp", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/agentspaces/{agentSpaceId}/operator/idp", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOperatorAppIdpConfigDocument(idpClientSecret=input.idpClientSecret)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3888,7 +3916,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/private-connections/{name}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/private-connections/{name}/certificate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePrivateConnectionCertificateDocument(certificate=input.certificate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3900,7 +3928,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["recommendationId"] = input.recommendationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/{recommendationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/backlog/agent-space/{agentSpaceId}/recommendations/{recommendationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecommendationDocument(status=input.status, additionalContext=input.additionalContext, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3912,7 +3940,7 @@ struct DevOps_AgentClient:
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
         labels["triggerId"] = input.triggerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/trigger/agent-space/{agentSpaceId}/triggers/{triggerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTriggerDocument(status=input.status, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aidevops_service(), self.region, host)
@@ -3923,7 +3951,7 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         dict[str, str] labels = {}
         labels["agentSpaceId"] = input.agentSpaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/validate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/agentspaces/{agentSpaceId}/associations/validate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aidevops_service(), self.region, host)
 
     # Paginator for ListAgentSpaces — yields each Response page, threading the
@@ -3971,6 +3999,19 @@ struct DevOps_AgentClient:
         auto host = endpoints.regional_host(aidevops_service(), self.region)
         while True:
             auto raw = self.list_asset_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAssets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_assets(self, ListAssetsRequest input):
+        auto host = endpoints.regional_host(aidevops_service(), self.region)
+        while True:
+            auto raw = self.list_assets(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

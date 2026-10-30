@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 97 operations — 87 with a generated method,
-#   10 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 97 operations — 97 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   284 structs (130 @derive(Json)), 39 enums, 8 error variants.
-#   17 paginators generated (9 paginated ops skipped) from paginators-1.json.
+#   26 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -2592,32 +2592,6 @@ def networkmanager_error_from_code(str code) -> NetworkManagerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DescribeGlobalNetworks (httpQuery `GlobalNetworkIds` has unsupported type list[str])
-#   GetConnectPeerAssociations (httpQuery `ConnectPeerIds` has unsupported type list[str])
-#   GetConnections (httpQuery `ConnectionIds` has unsupported type list[str])
-#   GetCustomerGatewayAssociations (httpQuery `CustomerGatewayArns` has unsupported type list[str])
-#   GetDevices (httpQuery `DeviceIds` has unsupported type list[str])
-#   GetLinks (httpQuery `LinkIds` has unsupported type list[str])
-#   GetSites (httpQuery `SiteIds` has unsupported type list[str])
-#   GetTransitGatewayConnectPeerAssociations (httpQuery `TransitGatewayConnectPeerArns` has unsupported type list[str])
-#   GetTransitGatewayRegistrations (httpQuery `TransitGatewayArns` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeGlobalNetworks (operation not generated)
-#   GetConnectPeerAssociations (operation not generated)
-#   GetConnections (operation not generated)
-#   GetCustomerGatewayAssociations (operation not generated)
-#   GetDevices (operation not generated)
-#   GetLinks (operation not generated)
-#   GetSites (operation not generated)
-#   GetTransitGatewayConnectPeerAssociations (operation not generated)
-#   GetTransitGatewayRegistrations (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2749,7 +2723,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/attachments/{attachmentId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attachments/{attachmentId}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # AssociateConnectPeer  POST /global-networks/{globalNetworkId}/connect-peer-associations
@@ -2758,7 +2732,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/connect-peer-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/connect-peer-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateConnectPeerDocument(ConnectPeerId=input.ConnectPeerId, DeviceId=input.DeviceId, LinkId=input.LinkId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -2769,7 +2743,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/customer-gateway-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/customer-gateway-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateCustomerGatewayDocument(CustomerGatewayArn=input.CustomerGatewayArn, DeviceId=input.DeviceId, LinkId=input.LinkId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -2780,7 +2754,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateLinkDocument(DeviceId=input.DeviceId, LinkId=input.LinkId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -2791,7 +2765,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTransitGatewayConnectPeerDocument(TransitGatewayConnectPeerArn=input.TransitGatewayConnectPeerArn, DeviceId=input.DeviceId, LinkId=input.LinkId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -2800,7 +2774,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_connect_attachment(self, CreateConnectAttachmentRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connect-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connect-attachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
         parts.append("\"EdgeLocation\":" + networkmanager_json_str(input.EdgeLocation))
@@ -2834,7 +2808,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_connect_peer(self, CreateConnectPeerRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connect-peers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connect-peers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ConnectAttachmentId\":" + networkmanager_json_str(input.ConnectAttachmentId))
         if input.CoreNetworkAddress.is_some():
@@ -2871,7 +2845,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/connections", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DeviceId\":" + networkmanager_json_str(input.DeviceId))
         parts.append("\"ConnectedDeviceId\":" + networkmanager_json_str(input.ConnectedDeviceId))
@@ -2897,7 +2871,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, CoreNetworkPolicyException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_core_network(self, CreateCoreNetworkRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/core-networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GlobalNetworkId\":" + networkmanager_json_str(input.GlobalNetworkId))
         if input.Description.is_some():
@@ -2922,7 +2896,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_core_network_prefix_list_association(self, CreateCoreNetworkPrefixListAssociationRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prefix-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prefix-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCoreNetworkPrefixListAssociationDocument(CoreNetworkId=input.CoreNetworkId, PrefixListArn=input.PrefixListArn, PrefixListAlias=input.PrefixListAlias, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -2933,7 +2907,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/devices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/devices", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AWSLocation.is_some():
             auto u0 = input.AWSLocation.unwrap()
@@ -2972,7 +2946,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_direct_connect_gateway_attachment(self, CreateDirectConnectGatewayAttachmentRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/direct-connect-gateway-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/direct-connect-gateway-attachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
         parts.append("\"DirectConnectGatewayArn\":" + networkmanager_json_str(input.DirectConnectGatewayArn))
@@ -3011,7 +2985,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_global_network(self, CreateGlobalNetworkRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3031,7 +3005,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/links", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/links", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3059,7 +3033,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/sites", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/sites", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3080,7 +3054,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_site_to_site_vpn_attachment(self, CreateSiteToSiteVpnAttachmentRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/site-to-site-vpn-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/site-to-site-vpn-attachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
         parts.append("\"VpnConnectionArn\":" + networkmanager_json_str(input.VpnConnectionArn))
@@ -3115,7 +3089,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_transit_gateway_peering(self, CreateTransitGatewayPeeringRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-peerings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-peerings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
         parts.append("\"TransitGatewayArn\":" + networkmanager_json_str(input.TransitGatewayArn))
@@ -3135,7 +3109,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_transit_gateway_route_table_attachment(self, CreateTransitGatewayRouteTableAttachmentRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-route-table-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/transit-gateway-route-table-attachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PeeringId\":" + networkmanager_json_str(input.PeeringId))
         parts.append("\"TransitGatewayRouteTableArn\":" + networkmanager_json_str(input.TransitGatewayRouteTableArn))
@@ -3158,7 +3132,7 @@ struct NetworkManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_vpc_attachment(self, CreateVpcAttachmentRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/vpc-attachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vpc-attachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CoreNetworkId\":" + networkmanager_json_str(input.CoreNetworkId))
         parts.append("\"VpcArn\":" + networkmanager_json_str(input.VpcArn))
@@ -3199,7 +3173,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteConnectPeer  DELETE /connect-peers/{connectPeerId}
@@ -3208,7 +3182,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["connectPeerId"] = input.ConnectPeerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/connect-peers/{connectPeerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connect-peers/{connectPeerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteConnection  DELETE /global-networks/{globalNetworkId}/connections/{connectionId}
@@ -3218,7 +3192,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["connectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/connections/{connectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/connections/{connectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteCoreNetwork  DELETE /core-networks/{coreNetworkId}
@@ -3227,7 +3201,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteCoreNetworkPolicyVersion  DELETE /core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}
@@ -3237,7 +3211,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
         labels["policyVersionId"] = str(input.PolicyVersionId)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteCoreNetworkPrefixListAssociation  DELETE /prefix-list/{prefixListArn}/core-network/{coreNetworkId}
@@ -3247,7 +3221,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
         labels["prefixListArn"] = input.PrefixListArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prefix-list/{prefixListArn}/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prefix-list/{prefixListArn}/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteDevice  DELETE /global-networks/{globalNetworkId}/devices/{deviceId}
@@ -3257,7 +3231,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["deviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/devices/{deviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/devices/{deviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteGlobalNetwork  DELETE /global-networks/{globalNetworkId}
@@ -3266,7 +3240,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteLink  DELETE /global-networks/{globalNetworkId}/links/{linkId}
@@ -3276,7 +3250,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["linkId"] = input.LinkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/links/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/links/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeletePeering  DELETE /peerings/{peeringId}
@@ -3285,7 +3259,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["peeringId"] = input.PeeringId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/peerings/{peeringId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/peerings/{peeringId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resource-policy/{resourceArn}
@@ -3294,7 +3268,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeleteSite  DELETE /global-networks/{globalNetworkId}/sites/{siteId}
@@ -3304,7 +3278,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["siteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/sites/{siteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/sites/{siteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DeregisterTransitGateway  DELETE /global-networks/{globalNetworkId}/transit-gateway-registrations/{transitGatewayArn}
@@ -3314,7 +3288,22 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["transitGatewayArn"] = input.TransitGatewayArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/transit-gateway-registrations/{transitGatewayArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/transit-gateway-registrations/{transitGatewayArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # DescribeGlobalNetworks  GET /global-networks
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def describe_global_networks(self, DescribeGlobalNetworksRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.GlobalNetworkIds.is_some():
+            multi_query["globalNetworkIds"] = input.GlobalNetworkIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DisassociateConnectPeer  DELETE /global-networks/{globalNetworkId}/connect-peer-associations/{connectPeerId}
@@ -3324,7 +3313,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["connectPeerId"] = input.ConnectPeerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/connect-peer-associations/{connectPeerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/connect-peer-associations/{connectPeerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DisassociateCustomerGateway  DELETE /global-networks/{globalNetworkId}/customer-gateway-associations/{customerGatewayArn}
@@ -3334,7 +3323,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["customerGatewayArn"] = input.CustomerGatewayArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/customer-gateway-associations/{customerGatewayArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/customer-gateway-associations/{customerGatewayArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DisassociateLink  DELETE /global-networks/{globalNetworkId}/link-associations
@@ -3346,7 +3335,7 @@ struct NetworkManagerClient:
         dict[str, str] query = {}
         query["deviceId"] = input.DeviceId
         query["linkId"] = input.LinkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # DisassociateTransitGatewayConnectPeer  DELETE /global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations/{transitGatewayConnectPeerArn}
@@ -3356,7 +3345,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["transitGatewayConnectPeerArn"] = input.TransitGatewayConnectPeerArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations/{transitGatewayConnectPeerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations/{transitGatewayConnectPeerArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ExecuteCoreNetworkChangeSet  POST /core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}/execute
@@ -3366,7 +3355,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
         labels["policyVersionId"] = str(input.PolicyVersionId)
-        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}/execute", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}/execute", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetConnectAttachment  GET /connect-attachments/{attachmentId}
@@ -3375,7 +3364,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/connect-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connect-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetConnectPeer  GET /connect-peers/{connectPeerId}
@@ -3384,7 +3373,43 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["connectPeerId"] = input.ConnectPeerId
-        auto b = binding.HttpBinding(method="GET", path_template="/connect-peers/{connectPeerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connect-peers/{connectPeerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetConnectPeerAssociations  GET /global-networks/{globalNetworkId}/connect-peer-associations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_connect_peer_associations(self, GetConnectPeerAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.ConnectPeerIds.is_some():
+            multi_query["connectPeerIds"] = input.ConnectPeerIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/connect-peer-associations", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetConnections  GET /global-networks/{globalNetworkId}/connections
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_connections(self, GetConnectionsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.DeviceId.is_some():
+            query["deviceId"] = input.DeviceId.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.ConnectionIds.is_some():
+            multi_query["connectionIds"] = input.ConnectionIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/connections", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetCoreNetwork  GET /core-networks/{coreNetworkId}
@@ -3393,7 +3418,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetCoreNetworkChangeEvents  GET /core-networks/{coreNetworkId}/core-network-change-events/{policyVersionId}
@@ -3408,7 +3433,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-change-events/{policyVersionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-change-events/{policyVersionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetCoreNetworkChangeSet  GET /core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}
@@ -3423,7 +3448,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-change-sets/{policyVersionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetCoreNetworkPolicy  GET /core-networks/{coreNetworkId}/core-network-policy
@@ -3437,7 +3462,43 @@ struct NetworkManagerClient:
             query["policyVersionId"] = str(input.PolicyVersionId.unwrap_or(0))
         if input.Alias.is_some():
             query["alias"] = input.Alias.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetCustomerGatewayAssociations  GET /global-networks/{globalNetworkId}/customer-gateway-associations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_customer_gateway_associations(self, GetCustomerGatewayAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.CustomerGatewayArns.is_some():
+            multi_query["customerGatewayArns"] = input.CustomerGatewayArns.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/customer-gateway-associations", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetDevices  GET /global-networks/{globalNetworkId}/devices
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_devices(self, GetDevicesRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.SiteId.is_some():
+            query["siteId"] = input.SiteId.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.DeviceIds.is_some():
+            multi_query["deviceIds"] = input.DeviceIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/devices", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetDirectConnectGatewayAttachment  GET /direct-connect-gateway-attachments/{attachmentId}
@@ -3446,7 +3507,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/direct-connect-gateway-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/direct-connect-gateway-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetLinkAssociations  GET /global-networks/{globalNetworkId}/link-associations
@@ -3464,7 +3525,30 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/link-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetLinks  GET /global-networks/{globalNetworkId}/links
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_links(self, GetLinksRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.SiteId.is_some():
+            query["siteId"] = input.SiteId.unwrap_or("")
+        if input.Type.is_some():
+            query["type"] = input.Type.unwrap_or("")
+        if input.Provider.is_some():
+            query["provider"] = input.Provider.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.LinkIds.is_some():
+            multi_query["linkIds"] = input.LinkIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/links", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetNetworkResourceCounts  GET /global-networks/{globalNetworkId}/network-resource-count
@@ -3480,7 +3564,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resource-count", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resource-count", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetNetworkResourceRelationships  GET /global-networks/{globalNetworkId}/network-resource-relationships
@@ -3506,7 +3590,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resource-relationships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resource-relationships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetNetworkResources  GET /global-networks/{globalNetworkId}/network-resources
@@ -3532,7 +3616,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetNetworkRoutes  POST /global-networks/{globalNetworkId}/network-routes
@@ -3541,7 +3625,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/network-routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/network-routes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RouteTableIdentifier\":" + input.RouteTableIdentifier.to_json())
         if input.ExactCidrMatches.is_some():
@@ -3627,7 +3711,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-telemetry", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/network-telemetry", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetResourcePolicy  GET /resource-policy/{resourceArn}
@@ -3636,7 +3720,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetRouteAnalysis  GET /global-networks/{globalNetworkId}/route-analyses/{routeAnalysisId}
@@ -3646,7 +3730,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["routeAnalysisId"] = input.RouteAnalysisId
-        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/route-analyses/{routeAnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/route-analyses/{routeAnalysisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetSiteToSiteVpnAttachment  GET /site-to-site-vpn-attachments/{attachmentId}
@@ -3655,7 +3739,41 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/site-to-site-vpn-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/site-to-site-vpn-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetSites  GET /global-networks/{globalNetworkId}/sites
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_sites(self, GetSitesRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.SiteIds.is_some():
+            multi_query["siteIds"] = input.SiteIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/sites", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetTransitGatewayConnectPeerAssociations  GET /global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_transit_gateway_connect_peer_associations(self, GetTransitGatewayConnectPeerAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.TransitGatewayConnectPeerArns.is_some():
+            multi_query["transitGatewayConnectPeerArns"] = input.TransitGatewayConnectPeerArns.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/transit-gateway-connect-peer-associations", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetTransitGatewayPeering  GET /transit-gateway-peerings/{peeringId}
@@ -3664,7 +3782,24 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["peeringId"] = input.PeeringId
-        auto b = binding.HttpBinding(method="GET", path_template="/transit-gateway-peerings/{peeringId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/transit-gateway-peerings/{peeringId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
+    # GetTransitGatewayRegistrations  GET /global-networks/{globalNetworkId}/transit-gateway-registrations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_transit_gateway_registrations(self, GetTransitGatewayRegistrationsRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["globalNetworkId"] = input.GlobalNetworkId
+        dict[str, str] query = {}
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.TransitGatewayArns.is_some():
+            multi_query["transitGatewayArns"] = input.TransitGatewayArns.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/global-networks/{globalNetworkId}/transit-gateway-registrations", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetTransitGatewayRouteTableAttachment  GET /transit-gateway-route-table-attachments/{attachmentId}
@@ -3673,7 +3808,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/transit-gateway-route-table-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/transit-gateway-route-table-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # GetVpcAttachment  GET /vpc-attachments/{attachmentId}
@@ -3682,14 +3817,14 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListAttachmentNatConfigurations  POST /nat-configurations
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_attachment_nat_configurations(self, ListAttachmentNatConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/nat-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/nat-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CoreNetworkId.is_some():
             auto u0 = input.CoreNetworkId.unwrap()
@@ -3728,7 +3863,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/routing-policy-label/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routing-policy-label/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListAttachments  GET /attachments
@@ -3748,7 +3883,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/attachments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attachments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListConnectPeers  GET /connect-peers
@@ -3764,7 +3899,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/connect-peers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connect-peers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListCoreNetworkPolicyVersions  GET /core-networks/{coreNetworkId}/core-network-policy-versions
@@ -3778,7 +3913,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListCoreNetworkPrefixListAssociations  GET /prefix-list/core-network/{coreNetworkId}
@@ -3794,7 +3929,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prefix-list/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prefix-list/core-network/{coreNetworkId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListCoreNetworkRoutingInformation  POST /core-networks/{coreNetworkId}/core-network-routing-information
@@ -3808,7 +3943,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-routing-information", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-routing-information", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SegmentName\":" + networkmanager_json_str(input.SegmentName))
         parts.append("\"EdgeLocation\":" + networkmanager_json_str(input.EdgeLocation))
@@ -3881,7 +4016,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/core-networks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/core-networks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListOrganizationServiceAccessStatus  GET /organizations/service-access
@@ -3892,7 +4027,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/organizations/service-access", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organizations/service-access", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListPeerings  GET /peerings
@@ -3912,7 +4047,7 @@ struct NetworkManagerClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/peerings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/peerings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -3921,14 +4056,14 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # PutAttachmentRoutingPolicyLabel  POST /routing-policy-label
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_attachment_routing_policy_label(self, PutAttachmentRoutingPolicyLabelRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-policy-label", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-policy-label", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAttachmentRoutingPolicyLabelDocument(CoreNetworkId=input.CoreNetworkId, AttachmentId=input.AttachmentId, RoutingPolicyLabel=input.RoutingPolicyLabel, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -3939,7 +4074,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutCoreNetworkPolicyDocument(PolicyDocument=input.PolicyDocument, Description=input.Description, LatestVersionId=input.LatestVersionId, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -3950,7 +4085,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(PolicyDocument=input.PolicyDocument)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -3961,7 +4096,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/transit-gateway-registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/transit-gateway-registrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterTransitGatewayDocument(TransitGatewayArn=input.TransitGatewayArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -3972,7 +4107,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/attachments/{attachmentId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attachments/{attachmentId}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # RemoveAttachmentRoutingPolicyLabel  DELETE /routing-policy-label/core-network/{coreNetworkId}/attachment/{attachmentId}
@@ -3982,7 +4117,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/routing-policy-label/core-network/{coreNetworkId}/attachment/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/routing-policy-label/core-network/{coreNetworkId}/attachment/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # RestoreCoreNetworkPolicyVersion  POST /core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}/restore
@@ -3992,14 +4127,14 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
         labels["policyVersionId"] = str(input.PolicyVersionId)
-        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}/restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/core-networks/{coreNetworkId}/core-network-policy-versions/{policyVersionId}/restore", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
 
     # StartOrganizationServiceAccessUpdate  POST /organizations/service-access
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_organization_service_access_update(self, StartOrganizationServiceAccessUpdateRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organizations/service-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organizations/service-access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartOrganizationServiceAccessUpdateDocument(Action=input.Action)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4010,7 +4145,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/route-analyses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-networks/{globalNetworkId}/route-analyses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartRouteAnalysisDocument(Source=input.Source, Destination=input.Destination, IncludeReturnPath=input.IncludeReturnPath, UseMiddleboxes=input.UseMiddleboxes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4021,7 +4156,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -4030,13 +4165,24 @@ struct NetworkManagerClient:
         auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkmanager_service(), self.region, host)
+
     # UpdateAttachmentNatConfiguration  PATCH /attachments/{attachmentId}/nat-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_attachment_nat_configuration(self, UpdateAttachmentNatConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/attachments/{attachmentId}/nat-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/attachments/{attachmentId}/nat-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NatGatewaySupport.is_some():
             auto u0 = input.NatGatewaySupport.unwrap()
@@ -4063,7 +4209,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["connectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/connections/{connectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/connections/{connectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectionDocument(LinkId=input.LinkId, ConnectedLinkId=input.ConnectedLinkId, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4074,7 +4220,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["coreNetworkId"] = input.CoreNetworkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/core-networks/{coreNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCoreNetworkDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4086,7 +4232,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["deviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/devices/{deviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/devices/{deviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeviceDocument(AWSLocation=input.AWSLocation, Description=input.Description, Type=input.Type, Vendor=input.Vendor, Model=input.Model, SerialNumber=input.SerialNumber, Location=input.Location, SiteId=input.SiteId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4097,7 +4243,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/direct-connect-gateway-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/direct-connect-gateway-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EdgeLocations.is_some():
             auto u0 = input.EdgeLocations.unwrap()
@@ -4114,7 +4260,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGlobalNetworkDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4126,7 +4272,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["linkId"] = input.LinkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/links/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/links/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLinkDocument(Description=input.Description, Type=input.Type, Bandwidth=input.Bandwidth, Provider=input.Provider)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4138,7 +4284,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/network-resources/{resourceArn}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/network-resources/{resourceArn}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Metadata.keys()):
@@ -4154,7 +4300,7 @@ struct NetworkManagerClient:
         dict[str, str] labels = {}
         labels["globalNetworkId"] = input.GlobalNetworkId
         labels["siteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/sites/{siteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-networks/{globalNetworkId}/sites/{siteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSiteDocument(Description=input.Description, Location=input.Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
@@ -4165,7 +4311,7 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attachmentId"] = input.AttachmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/vpc-attachments/{attachmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AddSubnetArns.is_some():
             auto u0 = input.AddSubnetArns.unwrap()
@@ -4184,6 +4330,45 @@ struct NetworkManagerClient:
             parts.append("\"Options\":" + u4.to_json())
         auto bp = restjson.rest_json_document(b, networkmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkmanager_service(), self.region, host)
+
+    # Paginator for DescribeGlobalNetworks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: GlobalNetworks).
+    def paginate_describe_global_networks(self, DescribeGlobalNetworksRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.describe_global_networks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetConnectPeerAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ConnectPeerAssociations).
+    def paginate_get_connect_peer_associations(self, GetConnectPeerAssociationsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_connect_peer_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetConnections — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Connections).
+    def paginate_get_connections(self, GetConnectionsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_connections(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for GetCoreNetworkChangeEvents — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: CoreNetworkChangeEvents).
@@ -4211,12 +4396,51 @@ struct NetworkManagerClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for GetCustomerGatewayAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: CustomerGatewayAssociations).
+    def paginate_get_customer_gateway_associations(self, GetCustomerGatewayAssociationsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_customer_gateway_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetDevices — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Devices).
+    def paginate_get_devices(self, GetDevicesRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_devices(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for GetLinkAssociations — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: LinkAssociations).
     def paginate_get_link_associations(self, GetLinkAssociationsRequest input):
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         while True:
             auto raw = self.get_link_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetLinks — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Links).
+    def paginate_get_links(self, GetLinksRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_links(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")
@@ -4282,6 +4506,45 @@ struct NetworkManagerClient:
         auto host = endpoints.regional_host(networkmanager_service(), self.region)
         while True:
             auto raw = self.get_network_telemetry(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetSites — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Sites).
+    def paginate_get_sites(self, GetSitesRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_sites(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetTransitGatewayConnectPeerAssociations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TransitGatewayConnectPeerAssociations).
+    def paginate_get_transit_gateway_connect_peer_associations(self, GetTransitGatewayConnectPeerAssociationsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_transit_gateway_connect_peer_associations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for GetTransitGatewayRegistrations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: TransitGatewayRegistrations).
+    def paginate_get_transit_gateway_registrations(self, GetTransitGatewayRegistrationsRequest input):
+        auto host = endpoints.regional_host(networkmanager_service(), self.region)
+        while True:
+            auto raw = self.get_transit_gateway_registrations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

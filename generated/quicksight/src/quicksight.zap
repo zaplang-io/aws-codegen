@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 299 operations — 290 with a generated method,
-#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 299 operations — 297 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1772 structs (1078 @derive(Json)), 287 enums, 23 error variants.
 #   49 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -16570,13 +16570,6 @@ def quicksight_error_from_code(str code) -> QuickSightError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable)
-#   DeleteAnalysis (httpQuery `ForceDeleteWithoutRecovery` has unsupported type bool)
-#   DescribeAccountCustomization (httpQuery `Resolved` has unsupported type bool)
-#   DescribeAutomationJob (httpQuery `IncludeInputPayload` has unsupported type bool)
-#   DescribeKeyRegistration (httpQuery `DefaultKeyOnly` has unsupported type bool)
-#   GetDashboardEmbedUrl (httpQuery `UndoRedoDisabled` has unsupported type bool)
-#   RestoreAnalysis (httpQuery `RestoreToFolders` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 #   UpdateLimitsProfile (document member `resourceLimits: dict[ResourceType, ProfileLimitValue]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -25098,6 +25091,12 @@ def word_cloud_visual_to_json(WordCloudVisual v) -> str:
         parts.append("\"VisualContentAltText\":" + quicksight_json_str(u7))
     return quicksight_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def quicksight_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound QuickSight client: credentials + region, threaded into every operation.
 struct QuickSightClient:
     core.Credentials creds
@@ -25110,7 +25109,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-create-reviewed-answers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-create-reviewed-answers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Answers:
@@ -25125,7 +25124,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/batch-delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/batch-delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.KnowledgeBaseIds:
@@ -25141,7 +25140,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-delete-reviewed-answers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/batch-delete-reviewed-answers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AnswerIds.is_some():
             auto u0 = input.AnswerIds.unwrap()
@@ -25158,7 +25157,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="POST", path_template="/governance/limits/accounts/{accountId}/user-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/governance/limits/accounts/{accountId}/user-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.users.is_some():
             auto u0 = input.users.unwrap()
@@ -25183,7 +25182,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
         labels["IngestionId"] = input.IngestionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # CreateAccountCustomization  POST /accounts/{AwsAccountId}/customizations
@@ -25195,7 +25194,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AccountCustomization\":" + input.AccountCustomization.to_json())
         if input.Tags.is_some():
@@ -25213,7 +25212,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Edition.is_some():
             auto u0 = input.Edition.unwrap()
@@ -25290,7 +25289,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ActionConnectorId\":" + quicksight_json_str(input.ActionConnectorId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25323,7 +25322,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/agents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/agents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Spaces.is_some():
             auto u0 = input.Spaces.unwrap()
@@ -25370,7 +25369,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.Parameters.is_some():
@@ -25413,7 +25412,7 @@ struct QuickSightClient:
     # errors: AccessDeniedException, ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_approval_policy(self, CreateApprovalPolicyRequest input) -> str:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/governance/approvalworkflows/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/governance/approvalworkflows/policies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PolicyId\":" + quicksight_json_str(input.PolicyId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25443,7 +25442,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["BrandId"] = input.BrandId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BrandDefinition.is_some():
             auto u0 = input.BrandDefinition.unwrap()
@@ -25463,7 +25462,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/custom-permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/custom-permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CustomPermissionsName\":" + quicksight_json_str(input.CustomPermissionsName))
         if input.Capabilities.is_some():
@@ -25488,7 +25487,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.Parameters.is_some():
@@ -25548,7 +25547,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DataSetId\":" + quicksight_json_str(input.DataSetId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25635,7 +25634,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DataSourceId\":" + quicksight_json_str(input.DataSourceId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25680,7 +25679,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DlpSettingId"] = input.DlpSettingId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         parts.append("\"ProviderType\":" + quicksight_json_str(input.ProviderType))
@@ -25702,7 +25701,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.Description.is_some():
@@ -25728,7 +25727,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FolderId"] = input.FolderId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -25766,7 +25765,7 @@ struct QuickSightClient:
         labels["FolderId"] = input.FolderId
         labels["MemberId"] = input.MemberId
         labels["MemberType"] = input.MemberType
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # CreateGroup  POST /accounts/{AwsAccountId}/namespaces/{Namespace}/groups
@@ -25776,7 +25775,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateGroupDocument(GroupName=input.GroupName, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -25790,7 +25789,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # CreateIAMPolicyAssignment  POST /accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/
@@ -25800,7 +25799,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AssignmentName\":" + quicksight_json_str(input.AssignmentName))
         parts.append("\"AssignmentStatus\":" + input.AssignmentStatus.to_json())
@@ -25827,7 +25826,7 @@ struct QuickSightClient:
         labels["DataSetId"] = input.DataSetId
         labels["IngestionId"] = input.IngestionId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateIngestionDocument(IngestionType=input.IngestionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -25838,7 +25837,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"KnowledgeBaseId\":" + quicksight_json_str(input.KnowledgeBaseId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25877,7 +25876,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Namespace\":" + quicksight_json_str(input.Namespace))
         parts.append("\"IdentityStore\":" + quicksight_json_str(input.IdentityStore))
@@ -25896,7 +25895,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/oauth-client-applications", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/oauth-client-applications", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"OAuthClientApplicationId\":" + quicksight_json_str(input.OAuthClientApplicationId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -25932,7 +25931,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRefreshScheduleDocument(Schedule=input.Schedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -25946,7 +25945,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
         labels["Role"] = input.Role
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # CreateSpace  POST /v1/accounts/{AwsAccountId}/spaces
@@ -25955,7 +25954,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/spaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/spaces", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSpaceDocument(SpaceId=input.SpaceId, Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -25967,7 +25966,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -26007,7 +26006,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTemplateAliasDocument(TemplateVersionNumber=input.TemplateVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -26019,7 +26018,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         parts.append("\"BaseThemeId\":" + quicksight_json_str(input.BaseThemeId))
@@ -26050,7 +26049,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateThemeAliasDocument(ThemeVersionNumber=input.ThemeVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -26061,7 +26060,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TopicId\":" + quicksight_json_str(input.TopicId))
         parts.append("\"Topic\":" + topic_details_to_json(input.Topic))
@@ -26090,7 +26089,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTopicRefreshScheduleDocument(DatasetArn=input.DatasetArn, DatasetName=input.DatasetName, RefreshSchedule=input.RefreshSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -26101,7 +26100,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topicsV2", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/topicsV2", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TopicId\":" + quicksight_json_str(input.TopicId))
         parts.append("\"Topic\":" + topic_v2_details_to_json(input.Topic))
@@ -26129,7 +26128,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/vpc-connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/vpc-connections", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"VPCConnectionId\":" + quicksight_json_str(input.VPCConnectionId))
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
@@ -26163,7 +26162,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteAccountCustomization  DELETE /accounts/{AwsAccountId}/customizations
@@ -26175,7 +26174,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteAccountSubscription  DELETE /account/{AwsAccountId}
@@ -26184,7 +26183,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteActionConnector  DELETE /accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}
@@ -26194,7 +26193,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ActionConnectorId"] = input.ActionConnectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteAgent  DELETE /accounts/{AwsAccountId}/agents/{AgentId}
@@ -26204,7 +26203,24 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AgentId"] = input.AgentId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # DeleteAnalysis  DELETE /accounts/{AwsAccountId}/analyses/{AnalysisId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def delete_analysis(self, DeleteAnalysisRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AnalysisId"] = input.AnalysisId
+        dict[str, str] query = {}
+        if input.RecoveryWindowInDays.is_some():
+            auto qt0 = str(input.RecoveryWindowInDays.unwrap_or(0))
+            query["recovery-window-in-days"] = qt0
+        if input.ForceDeleteWithoutRecovery.is_some():
+            auto qt1 = quicksight_bind_bool(input.ForceDeleteWithoutRecovery.unwrap_or(False))
+            query["force-delete-without-recovery"] = qt1
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteApp  DELETE /accounts/{AwsAccountId}/apps/{AppId}
@@ -26214,7 +26230,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AppId"] = input.AppId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/apps/{AppId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/apps/{AppId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteApprovalPolicy  DELETE /governance/approvalworkflows/policies/{PolicyId}
@@ -26223,7 +26239,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["PolicyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteBrand  DELETE /accounts/{AwsAccountId}/brands/{BrandId}
@@ -26233,7 +26249,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["BrandId"] = input.BrandId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteBrandAssignment  DELETE /accounts/{AwsAccountId}/brandassignments
@@ -26242,7 +26258,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteCustomPermissions  DELETE /accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}
@@ -26252,7 +26268,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["CustomPermissionsName"] = input.CustomPermissionsName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDashboard  DELETE /accounts/{AwsAccountId}/dashboards/{DashboardId}
@@ -26265,7 +26281,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.VersionNumber.is_some():
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDataSet  DELETE /accounts/{AwsAccountId}/data-sets/{DataSetId}
@@ -26275,7 +26291,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDataSetRefreshProperties  DELETE /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties
@@ -26285,7 +26301,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDataSource  DELETE /accounts/{AwsAccountId}/data-sources/{DataSourceId}
@@ -26295,7 +26311,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSourceId"] = input.DataSourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDefaultQBusinessApplication  DELETE /accounts/{AwsAccountId}/default-qbusiness-application
@@ -26307,7 +26323,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteDlpSetting  DELETE /accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}
@@ -26317,7 +26333,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DlpSettingId"] = input.DlpSettingId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteFlow  DELETE /accounts/{AwsAccountId}/flows/{FlowId}
@@ -26327,7 +26343,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FlowId"] = input.FlowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteFolder  DELETE /accounts/{AwsAccountId}/folders/{FolderId}
@@ -26337,7 +26353,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FolderId"] = input.FolderId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteFolderMembership  DELETE /accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}
@@ -26349,7 +26365,7 @@ struct QuickSightClient:
         labels["FolderId"] = input.FolderId
         labels["MemberId"] = input.MemberId
         labels["MemberType"] = input.MemberType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members/{MemberType}/{MemberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteGroup  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}
@@ -26360,7 +26376,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteGroupMembership  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}
@@ -26372,7 +26388,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteIAMPolicyAssignment  DELETE /accounts/{AwsAccountId}/namespace/{Namespace}/iam-policy-assignments/{AssignmentName}
@@ -26383,7 +26399,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AssignmentName"] = input.AssignmentName
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespace/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespace/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteIdentityPropagationConfig  DELETE /accounts/{AwsAccountId}/identity-propagation-config/{Service}
@@ -26393,7 +26409,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Service"] = input.Service
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/identity-propagation-config/{Service}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/identity-propagation-config/{Service}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteKnowledgeBase  DELETE /v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}
@@ -26403,7 +26419,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["KnowledgeBaseId"] = input.KnowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteLimitsProfile  DELETE /governance/limits/accounts/{accountId}/profiles/{profileId}
@@ -26413,7 +26429,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/governance/limits/accounts/{accountId}/profiles/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/governance/limits/accounts/{accountId}/profiles/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteNamespace  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}
@@ -26423,7 +26439,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteOAuthClientApplication  DELETE /accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}
@@ -26433,7 +26449,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["OAuthClientApplicationId"] = input.OAuthClientApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteRefreshSchedule  DELETE /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}
@@ -26444,7 +26460,7 @@ struct QuickSightClient:
         labels["DataSetId"] = input.DataSetId
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ScheduleId"] = input.ScheduleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteRoleCustomPermission  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission
@@ -26455,7 +26471,7 @@ struct QuickSightClient:
         labels["Role"] = input.Role
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteRoleMembership  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}
@@ -26467,7 +26483,7 @@ struct QuickSightClient:
         labels["Role"] = input.Role
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteSpace  DELETE /v1/accounts/{AwsAccountId}/spaces/{SpaceId}
@@ -26477,7 +26493,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTemplate  DELETE /accounts/{AwsAccountId}/templates/{TemplateId}
@@ -26490,7 +26506,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.VersionNumber.is_some():
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTemplateAlias  DELETE /accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}
@@ -26501,7 +26517,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTheme  DELETE /accounts/{AwsAccountId}/themes/{ThemeId}
@@ -26514,7 +26530,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.VersionNumber.is_some():
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteThemeAlias  DELETE /accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}
@@ -26525,7 +26541,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTopic  DELETE /accounts/{AwsAccountId}/topics/{TopicId}
@@ -26535,7 +26551,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTopicRefreshSchedule  DELETE /accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}
@@ -26546,7 +26562,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
         labels["DatasetId"] = input.DatasetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteTopicV2  DELETE /accounts/{AwsAccountId}/topicsV2/{TopicId}
@@ -26556,7 +26572,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteUser  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}
@@ -26567,7 +26583,7 @@ struct QuickSightClient:
         labels["UserName"] = input.UserName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteUserByPrincipalId  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/user-principals/{PrincipalId}
@@ -26578,7 +26594,7 @@ struct QuickSightClient:
         labels["PrincipalId"] = input.PrincipalId
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/user-principals/{PrincipalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/user-principals/{PrincipalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteUserCustomPermission  DELETE /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission
@@ -26589,7 +26605,7 @@ struct QuickSightClient:
         labels["UserName"] = input.UserName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DeleteVPCConnection  DELETE /accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}
@@ -26599,7 +26615,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["VPCConnectionId"] = input.VPCConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAccountCustomPermission  GET /accounts/{AwsAccountId}/custom-permission
@@ -26608,7 +26624,21 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # DescribeAccountCustomization  GET /accounts/{AwsAccountId}/customizations
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ResourceUnavailableException, ThrottlingException
+    def describe_account_customization(self, DescribeAccountCustomizationRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        dict[str, str] query = {}
+        if input.Namespace.is_some():
+            query["namespace"] = input.Namespace.unwrap_or("")
+        if input.Resolved.is_some():
+            query["resolved"] = quicksight_bind_bool(input.Resolved.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAccountSettings  GET /accounts/{AwsAccountId}/settings
@@ -26617,7 +26647,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAccountSubscription  GET /account/{AwsAccountId}
@@ -26626,7 +26656,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/account/{AwsAccountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeActionConnector  GET /accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}
@@ -26636,7 +26666,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ActionConnectorId"] = input.ActionConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeActionConnectorPermissions  GET /accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions
@@ -26646,7 +26676,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ActionConnectorId"] = input.ActionConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAgent  GET /accounts/{AwsAccountId}/agents/{AgentId}
@@ -26656,7 +26686,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AgentId"] = input.AgentId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAgentPermissions  GET /accounts/{AwsAccountId}/agents/{AgentId}/permissions
@@ -26666,7 +26696,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AgentId"] = input.AgentId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents/{AgentId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents/{AgentId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAnalysis  GET /accounts/{AwsAccountId}/analyses/{AnalysisId}
@@ -26676,7 +26706,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAnalysisDefinition  GET /accounts/{AwsAccountId}/analyses/{AnalysisId}/definition
@@ -26686,7 +26716,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/definition", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/definition", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAnalysisPermissions  GET /accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions
@@ -26696,7 +26726,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeApp  GET /accounts/{AwsAccountId}/apps/{AppId}
@@ -26706,7 +26736,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AppId"] = input.AppId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps/{AppId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps/{AppId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAppPermissions  GET /accounts/{AwsAccountId}/apps/{AppId}/permissions
@@ -26716,7 +26746,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AppId"] = input.AppId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps/{AppId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps/{AppId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeApprovalPolicy  GET /governance/approvalworkflows/policies/{PolicyId}
@@ -26725,7 +26755,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["PolicyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="GET", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAssetBundleExportJob  GET /accounts/{AwsAccountId}/asset-bundle-export-jobs/{AssetBundleExportJobId}
@@ -26735,7 +26765,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AssetBundleExportJobId"] = input.AssetBundleExportJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs/{AssetBundleExportJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs/{AssetBundleExportJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeAssetBundleImportJob  GET /accounts/{AwsAccountId}/asset-bundle-import-jobs/{AssetBundleImportJobId}
@@ -26745,7 +26775,26 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AssetBundleImportJobId"] = input.AssetBundleImportJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs/{AssetBundleImportJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs/{AssetBundleImportJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # DescribeAutomationJob  GET /accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs/{JobId}
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def describe_automation_job(self, DescribeAutomationJobRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AutomationGroupId"] = input.AutomationGroupId
+        labels["AutomationId"] = input.AutomationId
+        labels["JobId"] = input.JobId
+        dict[str, str] query = {}
+        if input.IncludeInputPayload.is_some():
+            auto qt0 = quicksight_bind_bool(input.IncludeInputPayload.unwrap_or(False))
+            query["includeInputPayload"] = qt0
+        if input.IncludeOutputPayload.is_some():
+            auto qt1 = quicksight_bind_bool(input.IncludeOutputPayload.unwrap_or(False))
+            query["includeOutputPayload"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs/{JobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeBrand  GET /accounts/{AwsAccountId}/brands/{BrandId}
@@ -26758,7 +26807,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.VersionId.is_some():
             query["versionId"] = input.VersionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeBrandAssignment  GET /accounts/{AwsAccountId}/brandassignments
@@ -26767,7 +26816,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeBrandPublishedVersion  GET /accounts/{AwsAccountId}/brands/{BrandId}/publishedversion
@@ -26777,7 +26826,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["BrandId"] = input.BrandId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeCustomPermissions  GET /accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}
@@ -26787,7 +26836,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["CustomPermissionsName"] = input.CustomPermissionsName
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboard  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}
@@ -26802,7 +26851,7 @@ struct QuickSightClient:
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
         if input.AliasName.is_some():
             query["alias-name"] = input.AliasName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboardDefinition  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/definition
@@ -26817,7 +26866,7 @@ struct QuickSightClient:
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
         if input.AliasName.is_some():
             query["alias-name"] = input.AliasName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/definition", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/definition", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboardPermissions  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions
@@ -26827,7 +26876,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboardSnapshotJob  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}
@@ -26838,7 +26887,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
         labels["SnapshotJobId"] = input.SnapshotJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboardSnapshotJobResult  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}/result
@@ -26849,7 +26898,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
         labels["SnapshotJobId"] = input.SnapshotJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}/result", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs/{SnapshotJobId}/result", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDashboardsQAConfiguration  GET /accounts/{AwsAccountId}/dashboards-qa-configuration
@@ -26858,7 +26907,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards-qa-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards-qa-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDataSet  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}
@@ -26868,7 +26917,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDataSetPermissions  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions
@@ -26878,7 +26927,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDataSetRefreshProperties  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties
@@ -26888,7 +26937,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDataSource  GET /accounts/{AwsAccountId}/data-sources/{DataSourceId}
@@ -26898,7 +26947,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSourceId"] = input.DataSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDataSourcePermissions  GET /accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions
@@ -26908,7 +26957,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSourceId"] = input.DataSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDefaultQBusinessApplication  GET /accounts/{AwsAccountId}/default-qbusiness-application
@@ -26920,7 +26969,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeDlpSetting  GET /accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}
@@ -26930,7 +26979,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DlpSettingId"] = input.DlpSettingId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeFlow  GET /accounts/{AwsAccountId}/flows/{FlowId}
@@ -26942,7 +26991,7 @@ struct QuickSightClient:
         labels["FlowId"] = input.FlowId
         dict[str, str] query = {}
         query["publish-state"] = input.PublishState
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeFolder  GET /accounts/{AwsAccountId}/folders/{FolderId}
@@ -26952,7 +27001,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FolderId"] = input.FolderId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeFolderPermissions  GET /accounts/{AwsAccountId}/folders/{FolderId}/permissions
@@ -26969,7 +27018,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/permissions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeFolderResolvedPermissions  GET /accounts/{AwsAccountId}/folders/{FolderId}/resolved-permissions
@@ -26986,7 +27035,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/resolved-permissions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/resolved-permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeGroup  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}
@@ -26997,7 +27046,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeGroupMembership  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}
@@ -27009,7 +27058,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members/{MemberName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeIAMPolicyAssignment  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}
@@ -27020,7 +27069,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AssignmentName"] = input.AssignmentName
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeIngestion  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}
@@ -27031,7 +27080,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
         labels["IngestionId"] = input.IngestionId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions/{IngestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeIpRestriction  GET /accounts/{AwsAccountId}/ip-restriction
@@ -27040,7 +27089,20 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/ip-restriction", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/ip-restriction", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
+    # DescribeKeyRegistration  GET /accounts/{AwsAccountId}/key-registration
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
+    def describe_key_registration(self, DescribeKeyRegistrationRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        dict[str, str] query = {}
+        if input.DefaultKeyOnly.is_some():
+            auto qt0 = quicksight_bind_bool(input.DefaultKeyOnly.unwrap_or(False))
+            query["default-key-only"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/key-registration", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeKnowledgeBase  GET /v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}
@@ -27050,7 +27112,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["KnowledgeBaseId"] = input.KnowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeKnowledgeBasePermissions  GET /v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions
@@ -27060,7 +27122,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["KnowledgeBaseId"] = input.KnowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeLimitsProfile  GET /governance/limits/accounts/{accountId}/profiles/{profileId}
@@ -27070,7 +27132,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/governance/limits/accounts/{accountId}/profiles/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/governance/limits/accounts/{accountId}/profiles/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeNamespace  GET /accounts/{AwsAccountId}/namespaces/{Namespace}
@@ -27080,7 +27142,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeOAuthClientApplication  GET /accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}
@@ -27090,7 +27152,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["OAuthClientApplicationId"] = input.OAuthClientApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeQPersonalizationConfiguration  GET /accounts/{AwsAccountId}/q-personalization-configuration
@@ -27099,7 +27161,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/q-personalization-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/q-personalization-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeQuickSightQSearchConfiguration  GET /accounts/{AwsAccountId}/quicksight-q-search-configuration
@@ -27108,7 +27170,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/quicksight-q-search-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/quicksight-q-search-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeRefreshSchedule  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}
@@ -27119,7 +27181,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
         labels["ScheduleId"] = input.ScheduleId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeRoleCustomPermission  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission
@@ -27130,7 +27192,7 @@ struct QuickSightClient:
         labels["Role"] = input.Role
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeSelfUpgradeConfiguration  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-configuration
@@ -27140,7 +27202,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeSpace  GET /v1/accounts/{AwsAccountId}/spaces/{SpaceId}
@@ -27153,7 +27215,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.MaxContributors.is_some():
             query["maxContributors"] = str(input.MaxContributors.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeSpacePermissions  GET /v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions
@@ -27163,7 +27225,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTemplate  GET /accounts/{AwsAccountId}/templates/{TemplateId}
@@ -27178,7 +27240,7 @@ struct QuickSightClient:
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
         if input.AliasName.is_some():
             query["alias-name"] = input.AliasName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTemplateAlias  GET /accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}
@@ -27189,7 +27251,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTemplateDefinition  GET /accounts/{AwsAccountId}/templates/{TemplateId}/definition
@@ -27204,7 +27266,7 @@ struct QuickSightClient:
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
         if input.AliasName.is_some():
             query["alias-name"] = input.AliasName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/definition", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/definition", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTemplatePermissions  GET /accounts/{AwsAccountId}/templates/{TemplateId}/permissions
@@ -27214,7 +27276,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTheme  GET /accounts/{AwsAccountId}/themes/{ThemeId}
@@ -27229,7 +27291,7 @@ struct QuickSightClient:
             query["version-number"] = str(input.VersionNumber.unwrap_or(0))
         if input.AliasName.is_some():
             query["alias-name"] = input.AliasName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeThemeAlias  GET /accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}
@@ -27240,7 +27302,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeThemePermissions  GET /accounts/{AwsAccountId}/themes/{ThemeId}/permissions
@@ -27250,7 +27312,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopic  GET /accounts/{AwsAccountId}/topics/{TopicId}
@@ -27260,7 +27322,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopicPermissions  GET /accounts/{AwsAccountId}/topics/{TopicId}/permissions
@@ -27270,7 +27332,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopicPermissionsV2  GET /accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions
@@ -27280,7 +27342,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopicRefresh  GET /accounts/{AwsAccountId}/topics/{TopicId}/refresh/{RefreshId}
@@ -27291,7 +27353,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
         labels["RefreshId"] = input.RefreshId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/refresh/{RefreshId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/refresh/{RefreshId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopicRefreshSchedule  GET /accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}
@@ -27302,7 +27364,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
         labels["DatasetId"] = input.DatasetId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeTopicV2  GET /accounts/{AwsAccountId}/topicsV2/{TopicId}
@@ -27312,7 +27374,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeUser  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}
@@ -27323,7 +27385,7 @@ struct QuickSightClient:
         labels["UserName"] = input.UserName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # DescribeVPCConnection  GET /accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}
@@ -27333,7 +27395,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["VPCConnectionId"] = input.VPCConnectionId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # GenerateEmbedUrlForAnonymousUser  POST /accounts/{AwsAccountId}/embed-url/anonymous-user
@@ -27342,7 +27404,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/anonymous-user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/anonymous-user", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SessionLifetimeInMinutes.is_some():
             auto u0 = input.SessionLifetimeInMinutes.unwrap()
@@ -27374,7 +27436,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SessionLifetimeInMinutes.is_some():
             auto u0 = input.SessionLifetimeInMinutes.unwrap()
@@ -27396,7 +27458,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user-with-identity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/embed-url/registered-user-with-identity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SessionLifetimeInMinutes.is_some():
             auto u0 = input.SessionLifetimeInMinutes.unwrap()
@@ -27411,6 +27473,36 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # GetDashboardEmbedUrl  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/embed-url
+    # errors: AccessDeniedException, DomainNotWhitelistedException, IdentityTypeNotSupportedException, InternalFailureException, InvalidParameterValueException, QuickSightUserNotFoundException, ResourceExistsException, ResourceNotFoundException, SessionLifetimeInMinutesInvalidException, ThrottlingException, UnsupportedPricingPlanException, UnsupportedUserEditionException
+    def get_dashboard_embed_url(self, GetDashboardEmbedUrlRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["DashboardId"] = input.DashboardId
+        dict[str, str] query = {}
+        query["creds-type"] = input.IdentityType
+        if input.SessionLifetimeInMinutes.is_some():
+            query["session-lifetime"] = str(input.SessionLifetimeInMinutes.unwrap_or(0))
+        if input.UndoRedoDisabled.is_some():
+            auto qt0 = quicksight_bind_bool(input.UndoRedoDisabled.unwrap_or(False))
+            query["undo-redo-disabled"] = qt0
+        if input.ResetDisabled.is_some():
+            auto qt1 = quicksight_bind_bool(input.ResetDisabled.unwrap_or(False))
+            query["reset-disabled"] = qt1
+        if input.StatePersistenceEnabled.is_some():
+            auto qt2 = quicksight_bind_bool(input.StatePersistenceEnabled.unwrap_or(False))
+            query["state-persistence-enabled"] = qt2
+        if input.UserArn.is_some():
+            query["user-arn"] = input.UserArn.unwrap_or("")
+        if input.Namespace.is_some():
+            query["namespace"] = input.Namespace.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.AdditionalDashboardIds.is_some():
+            multi_query["additional-dashboard-ids"] = input.AdditionalDashboardIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/embed-url", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
     # GetFlowMetadata  GET /accounts/{AwsAccountId}/flows/{FlowId}/metadata
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ThrottlingException
     def get_flow_metadata(self, GetFlowMetadataInput input) -> str:
@@ -27418,7 +27510,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FlowId"] = input.FlowId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # GetFlowPermissions  GET /accounts/{AwsAccountId}/flows/{FlowId}/permissions
@@ -27428,7 +27520,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FlowId"] = input.FlowId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # GetIdentityContext  POST /accounts/{AwsAccountId}/identity-context
@@ -27437,7 +27529,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/identity-context", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/identity-context", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIdentityContextDocument(UserIdentifier=input.UserIdentifier, Namespace=input.Namespace, SessionExpiresAt=input.SessionExpiresAt, ContextRegion=input.ContextRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -27455,7 +27547,7 @@ struct QuickSightClient:
             query["session-lifetime"] = str(input.SessionLifetimeInMinutes.unwrap_or(0))
         if input.UserArn.is_some():
             query["user-arn"] = input.UserArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/session-embed-url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/session-embed-url", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListActionConnectors  GET /accounts/{AwsAccountId}/action-connectors
@@ -27469,7 +27561,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/action-connectors", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListAgents  GET /accounts/{AwsAccountId}/agents
@@ -27483,7 +27575,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/agents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListAnalyses  GET /accounts/{AwsAccountId}/analyses
@@ -27497,7 +27589,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/analyses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListApprovalPolicies  GET /governance/approvalworkflows/policies
@@ -27509,7 +27601,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/governance/approvalworkflows/policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/governance/approvalworkflows/policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListApps  GET /accounts/{AwsAccountId}/apps
@@ -27523,7 +27615,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/apps", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListAssetBundleExportJobs  GET /accounts/{AwsAccountId}/asset-bundle-export-jobs
@@ -27537,7 +27629,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListAssetBundleImportJobs  GET /accounts/{AwsAccountId}/asset-bundle-import-jobs
@@ -27551,7 +27643,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListBrands  GET /accounts/{AwsAccountId}/brands
@@ -27565,7 +27657,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/brands", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListCustomPermissions  GET /accounts/{AwsAccountId}/custom-permissions
@@ -27579,7 +27671,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permissions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/custom-permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListDashboardVersions  GET /accounts/{AwsAccountId}/dashboards/{DashboardId}/versions
@@ -27594,7 +27686,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListDashboards  GET /accounts/{AwsAccountId}/dashboards
@@ -27608,7 +27700,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/dashboards", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListDataSets  GET /accounts/{AwsAccountId}/data-sets
@@ -27622,7 +27714,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListDataSources  GET /accounts/{AwsAccountId}/data-sources
@@ -27636,7 +27728,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListDlpSettings  GET /accounts/{AwsAccountId}/data-loss-prevention/settings
@@ -27650,7 +27742,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListFlows  GET /accounts/{AwsAccountId}/flows
@@ -27664,7 +27756,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/flows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListFolderMembers  GET /accounts/{AwsAccountId}/folders/{FolderId}/members
@@ -27679,7 +27771,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListFolders  GET /accounts/{AwsAccountId}/folders
@@ -27693,7 +27785,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/folders", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListFoldersForResource  GET /accounts/{AwsAccountId}/resource/{ResourceArn}/folders
@@ -27708,7 +27800,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/resource/{ResourceArn}/folders", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/resource/{ResourceArn}/folders", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListGroupMemberships  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members
@@ -27724,7 +27816,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListGroups  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/groups
@@ -27739,7 +27831,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListIAMPolicyAssignments  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/v2/iam-policy-assignments
@@ -27756,7 +27848,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/v2/iam-policy-assignments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/v2/iam-policy-assignments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListIAMPolicyAssignmentsForUser  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/iam-policy-assignments
@@ -27772,7 +27864,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/iam-policy-assignments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/iam-policy-assignments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListIdentityPropagationConfigs  GET /accounts/{AwsAccountId}/identity-propagation-config
@@ -27786,7 +27878,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/identity-propagation-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/identity-propagation-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListIngestions  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions
@@ -27801,7 +27893,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/ingestions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListKnowledgeBases  GET /v1/accounts/{AwsAccountId}/knowledge-bases/
@@ -27815,7 +27907,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListLimitsProfiles  GET /governance/limits/accounts/{accountId}/profiles
@@ -27831,7 +27923,7 @@ struct QuickSightClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/governance/limits/accounts/{accountId}/profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/governance/limits/accounts/{accountId}/profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListNamespaces  GET /accounts/{AwsAccountId}/namespaces
@@ -27845,7 +27937,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListOAuthClientApplications  GET /accounts/{AwsAccountId}/oauth-client-applications
@@ -27859,7 +27951,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/oauth-client-applications", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/oauth-client-applications", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListRefreshSchedules  GET /accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules
@@ -27869,7 +27961,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListRoleMemberships  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members
@@ -27885,7 +27977,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListSelfUpgrades  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-requests
@@ -27900,7 +27992,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-requests", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-requests", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListSpaceResources  GET /v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources
@@ -27910,7 +28002,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListSpaces  GET /v1/accounts/{AwsAccountId}/spaces
@@ -27924,7 +28016,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/accounts/{AwsAccountId}/spaces", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTagsForResource  GET /resources/{ResourceArn}/tags
@@ -27933,7 +28025,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTemplateAliases  GET /accounts/{AwsAccountId}/templates/{TemplateId}/aliases
@@ -27948,7 +28040,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-result"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTemplateVersions  GET /accounts/{AwsAccountId}/templates/{TemplateId}/versions
@@ -27963,7 +28055,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTemplates  GET /accounts/{AwsAccountId}/templates
@@ -27977,7 +28069,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-result"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/templates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListThemeAliases  GET /accounts/{AwsAccountId}/themes/{ThemeId}/aliases
@@ -27992,7 +28084,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-result"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListThemeVersions  GET /accounts/{AwsAccountId}/themes/{ThemeId}/versions
@@ -28007,7 +28099,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListThemes  GET /accounts/{AwsAccountId}/themes
@@ -28023,7 +28115,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.Type.is_some():
             query["type"] = input.Type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/themes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTopicRefreshSchedules  GET /accounts/{AwsAccountId}/topics/{TopicId}/schedules
@@ -28033,7 +28125,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTopicReviewedAnswers  GET /accounts/{AwsAccountId}/topics/{TopicId}/reviewed-answers
@@ -28043,7 +28135,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/reviewed-answers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/reviewed-answers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTopics  GET /accounts/{AwsAccountId}/topics
@@ -28057,7 +28149,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListTopicsV2  GET /accounts/{AwsAccountId}/topicsV2
@@ -28071,7 +28163,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/topicsV2", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListUserGroups  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/groups
@@ -28087,7 +28179,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListUsers  GET /accounts/{AwsAccountId}/namespaces/{Namespace}/users
@@ -28102,7 +28194,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # ListUsersIndexCapacity  POST /accounts/{awsAccountId}/quick-index/user-capacity
@@ -28111,7 +28203,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["awsAccountId"] = input.awsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{awsAccountId}/quick-index/user-capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{awsAccountId}/quick-index/user-capacity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.namespace.is_some():
             auto u0 = input.namespace.unwrap()
@@ -28148,7 +28240,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/vpc-connections", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{AwsAccountId}/vpc-connections", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # PredictQAResults  POST /accounts/{AwsAccountId}/qa/predict
@@ -28157,7 +28249,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/qa/predict", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/qa/predict", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PredictQAResultsDocument(QueryText=input.QueryText, IncludeQuickSightQIndex=input.IncludeQuickSightQIndex, IncludeGeneratedAnswer=input.IncludeGeneratedAnswer, MaxTopicsToConsider=input.MaxTopicsToConsider)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28169,7 +28261,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-properties", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDataSetRefreshPropertiesDocument(DataSetRefreshProperties=input.DataSetRefreshProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28181,7 +28273,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IdentityType\":" + input.IdentityType.to_json())
         parts.append("\"Email\":" + quicksight_json_str(input.Email))
@@ -28216,6 +28308,20 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # RestoreAnalysis  POST /accounts/{AwsAccountId}/restore/analyses/{AnalysisId}
+    # errors: ConflictException, InternalFailureException, InvalidParameterValueException, LimitExceededException, PreconditionNotMetException, ResourceNotFoundException, ThrottlingException, UnsupportedUserEditionException
+    def restore_analysis(self, RestoreAnalysisRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AwsAccountId"] = input.AwsAccountId
+        labels["AnalysisId"] = input.AnalysisId
+        dict[str, str] query = {}
+        if input.RestoreToFolders.is_some():
+            auto qt0 = quicksight_bind_bool(input.RestoreToFolders.unwrap_or(False))
+            query["restore-to-folders"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/restore/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
     # SearchActionConnectors  POST /accounts/{AwsAccountId}/search/action-connectors
     # errors: AccessDeniedException, InvalidNextTokenException, InvalidParameterValueException, ThrottlingException
     def search_action_connectors(self, SearchActionConnectorsRequest input) -> str:
@@ -28227,7 +28333,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/action-connectors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/action-connectors", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28247,7 +28353,7 @@ struct QuickSightClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/agents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/agents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28262,7 +28368,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/analyses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/analyses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28283,7 +28389,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/apps", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/apps", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28304,7 +28410,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/dashboards", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/dashboards", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28325,7 +28431,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28346,7 +28452,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/data-sources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28367,7 +28473,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows/searchFlows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/flows/searchFlows", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28388,7 +28494,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/folders", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/folders", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28415,7 +28521,7 @@ struct QuickSightClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups-search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups-search", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28430,7 +28536,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/knowledge-bases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/knowledge-bases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -28456,7 +28562,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/spaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/search/spaces", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -28477,7 +28583,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28498,7 +28604,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topicsV2", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/search/topicsV2", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Filters:
@@ -28519,7 +28625,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs/export", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-export-jobs/export", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AssetBundleExportJobId\":" + quicksight_json_str(input.AssetBundleExportJobId))
         list[str] e0 = []
@@ -28557,7 +28663,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs/import", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/asset-bundle-import-jobs/import", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AssetBundleImportJobId\":" + quicksight_json_str(input.AssetBundleImportJobId))
         parts.append("\"AssetBundleImportSource\":" + input.AssetBundleImportSource.to_json())
@@ -28587,7 +28693,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AutomationGroupId"] = input.AutomationGroupId
         labels["AutomationId"] = input.AutomationId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/automation-groups/{AutomationGroupId}/automations/{AutomationId}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAutomationJobDocument(InputPayload=input.InputPayload)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28599,7 +28705,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/snapshot-jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SnapshotJobId\":" + quicksight_json_str(input.SnapshotJobId))
         if input.UserConfiguration.is_some():
@@ -28617,7 +28723,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
         labels["ScheduleId"] = input.ScheduleId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/schedules/{ScheduleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # TagResource  POST /resources/{ResourceArn}/tags
@@ -28626,7 +28732,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -28635,13 +28741,24 @@ struct QuickSightClient:
         auto bp = restjson.rest_json_document(b, quicksight_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
 
+    # UntagResource  DELETE /resources/{ResourceArn}/tags
+    # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(quicksight_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["keys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resources/{ResourceArn}/tags", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
+
     # UpdateAccountCustomPermission  PUT /accounts/{AwsAccountId}/custom-permission
     # errors: AccessDeniedException, InternalFailureException, InvalidParameterValueException, ResourceNotFoundException, ThrottlingException
     def update_account_custom_permission(self, UpdateAccountCustomPermissionRequest input) -> str:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountCustomPermissionDocument(CustomPermissionsName=input.CustomPermissionsName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28655,7 +28772,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/customizations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountCustomizationDocument(AccountCustomization=input.AccountCustomization)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28666,7 +28783,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountSettingsDocument(DefaultNamespace=input.DefaultNamespace, NotificationEmail=input.NotificationEmail, TerminationProtectionEnabled=input.TerminationProtectionEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28678,7 +28795,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ActionConnectorId"] = input.ActionConnectorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateActionConnectorDocument(Name=input.Name, AuthenticationConfig=input.AuthenticationConfig, Description=input.Description, VpcConnectionArn=input.VpcConnectionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28690,7 +28807,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ActionConnectorId"] = input.ActionConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/action-connectors/{ActionConnectorId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -28714,7 +28831,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AgentId"] = input.AgentId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.Description.is_some():
@@ -28769,7 +28886,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AgentId"] = input.AgentId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/agents/{AgentId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -28793,7 +28910,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.Parameters.is_some():
@@ -28821,7 +28938,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AnalysisId"] = input.AnalysisId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/analyses/{AnalysisId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -28845,7 +28962,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AppId"] = input.AppId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/apps/{AppId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/apps/{AppId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -28873,7 +28990,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         dict[str, str] query = {}
         query["namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/application-with-token-exchange-grant", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/application-with-token-exchange-grant", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # UpdateApprovalPolicy  PATCH /governance/approvalworkflows/policies/{PolicyId}
@@ -28882,7 +28999,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["PolicyId"] = input.PolicyId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/governance/approvalworkflows/policies/{PolicyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -28921,7 +29038,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["BrandId"] = input.BrandId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brands/{BrandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandDocument(BrandDefinition=input.BrandDefinition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28932,7 +29049,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brandassignments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandAssignmentDocument(BrandArn=input.BrandArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28944,7 +29061,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["BrandId"] = input.BrandId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandPublishedVersionDocument(VersionId=input.VersionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -28956,7 +29073,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["CustomPermissionsName"] = input.CustomPermissionsName
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Capabilities.is_some():
             auto u0 = input.Capabilities.unwrap()
@@ -28974,7 +29091,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.SourceEntity.is_some():
@@ -29008,7 +29125,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/linked-entities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/linked-entities", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.LinkEntities:
@@ -29024,7 +29141,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29061,7 +29178,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DashboardId"] = input.DashboardId
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards/{DashboardId}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, quicksight_service(), self.region, host)
 
     # UpdateDashboardsQAConfiguration  PUT /accounts/{AwsAccountId}/dashboards-qa-configuration
@@ -29070,7 +29187,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards-qa-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/dashboards-qa-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDashboardsQAConfigurationDocument(DashboardsQAStatus=input.DashboardsQAStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29082,7 +29199,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         list[str] m0 = []
@@ -29148,7 +29265,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29172,7 +29289,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSourceId"] = input.DataSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         if input.DataSourceParameters.is_some():
@@ -29197,7 +29314,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DataSourceId"] = input.DataSourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/data-sources/{DataSourceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29223,7 +29340,7 @@ struct QuickSightClient:
         dict[str, str] query = {}
         if input.Namespace.is_some():
             query["namespace"] = input.Namespace.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/default-qbusiness-application", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDefaultQBusinessApplicationDocument(ApplicationId=input.ApplicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29235,7 +29352,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["DlpSettingId"] = input.DlpSettingId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -29262,7 +29379,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FlowId"] = input.FlowId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/flows/{FlowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFlowDocument(Name=input.Name, Description=input.Description, FlowDefinition=input.FlowDefinition, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29274,7 +29391,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FlowId"] = input.FlowId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/flows/{FlowId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29298,7 +29415,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FolderId"] = input.FolderId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFolderDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29310,7 +29427,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["FolderId"] = input.FolderId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/folders/{FolderId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29335,7 +29452,7 @@ struct QuickSightClient:
         labels["GroupName"] = input.GroupName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/groups/{GroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29348,7 +29465,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["AssignmentName"] = input.AssignmentName
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/iam-policy-assignments/{AssignmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AssignmentStatus.is_some():
             auto u0 = input.AssignmentStatus.unwrap()
@@ -29375,7 +29492,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Service"] = input.Service
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/identity-propagation-config/{Service}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/identity-propagation-config/{Service}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthorizedTargets.is_some():
             auto u0 = input.AuthorizedTargets.unwrap()
@@ -29392,7 +29509,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/ip-restriction", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/ip-restriction", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.IpRestrictionRuleMap.is_some():
             auto u0 = input.IpRestrictionRuleMap.unwrap()
@@ -29424,7 +29541,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/key-registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/key-registration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.KeyRegistration:
@@ -29440,7 +29557,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["KnowledgeBaseId"] = input.KnowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateKnowledgeBaseDocument(Name=input.Name, Description=input.Description, KnowledgeBaseConfiguration=input.KnowledgeBaseConfiguration, MediaExtractionConfiguration=input.MediaExtractionConfiguration, IsEmailNotificationOptedForIngestionFailures=input.IsEmailNotificationOptedForIngestionFailures, AccessControlConfiguration=input.AccessControlConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29452,7 +29569,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["KnowledgeBaseId"] = input.KnowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29476,7 +29593,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["OAuthClientApplicationId"] = input.OAuthClientApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/oauth-client-applications/{OAuthClientApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOAuthClientApplicationDocument(Name=input.Name, ClientId=input.ClientId, ClientSecret=input.ClientSecret, OAuthTokenEndpointUrl=input.OAuthTokenEndpointUrl, OAuthAuthorizationEndpointUrl=input.OAuthAuthorizationEndpointUrl, OAuthScopes=input.OAuthScopes, DataSourceType=input.DataSourceType, IdentityProviderVpcConnectionProperties=input.IdentityProviderVpcConnectionProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29487,7 +29604,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/public-sharing-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/public-sharing-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePublicSharingSettingsDocument(PublicSharingEnabled=input.PublicSharingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29498,7 +29615,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/q-personalization-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/q-personalization-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQPersonalizationConfigurationDocument(PersonalizationMode=input.PersonalizationMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29509,7 +29626,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/quicksight-q-search-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/quicksight-q-search-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQuickSightQSearchConfigurationDocument(QSearchStatus=input.QSearchStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29521,7 +29638,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/data-sets/{DataSetId}/refresh-schedules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRefreshScheduleDocument(Schedule=input.Schedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29534,7 +29651,7 @@ struct QuickSightClient:
         labels["Role"] = input.Role
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoleCustomPermissionDocument(CustomPermissionsName=input.CustomPermissionsName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29545,7 +29662,7 @@ struct QuickSightClient:
         auto host = endpoints.regional_host(quicksight_service(), self.region)
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/spice-capacity-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/spice-capacity-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSPICECapacityConfigurationDocument(PurchaseMode=input.PurchaseMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29557,7 +29674,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/update-self-upgrade-request", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/update-self-upgrade-request", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSelfUpgradeDocument(UpgradeRequestId=input.UpgradeRequestId, Action=input.Action)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29569,7 +29686,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/self-upgrade-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSelfUpgradeConfigurationDocument(SelfUpgradeStatus=input.SelfUpgradeStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29581,7 +29698,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSpaceDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29593,7 +29710,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29617,7 +29734,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["SpaceId"] = input.SpaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accounts/{AwsAccountId}/spaces/{SpaceId}/resources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AddResources.is_some():
             auto u0 = input.AddResources.unwrap()
@@ -29641,7 +29758,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SourceEntity.is_some():
             auto u0 = input.SourceEntity.unwrap()
@@ -29669,7 +29786,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTemplateAliasDocument(TemplateVersionNumber=input.TemplateVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29681,7 +29798,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TemplateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/templates/{TemplateId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29705,7 +29822,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -29728,7 +29845,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
         labels["AliasName"] = input.AliasName
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/aliases/{AliasName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateThemeAliasDocument(ThemeVersionNumber=input.ThemeVersionNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29740,7 +29857,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["ThemeId"] = input.ThemeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/themes/{ThemeId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29764,7 +29881,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Topic\":" + topic_details_to_json(input.Topic))
         if input.CustomInstructions.is_some():
@@ -29780,7 +29897,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29804,7 +29921,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.GrantPermissions.is_some():
             auto u0 = input.GrantPermissions.unwrap()
@@ -29829,7 +29946,7 @@ struct QuickSightClient:
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
         labels["DatasetId"] = input.DatasetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topics/{TopicId}/schedules/{DatasetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTopicRefreshScheduleDocument(RefreshSchedule=input.RefreshSchedule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29841,7 +29958,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["TopicId"] = input.TopicId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/topicsV2/{TopicId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Topic\":" + topic_v2_details_to_json(input.Topic))
         if input.CustomInstructions.is_some():
@@ -29861,7 +29978,7 @@ struct QuickSightClient:
         labels["UserName"] = input.UserName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserDocument(Email=input.Email, Role=input.Role, CustomPermissionsName=input.CustomPermissionsName, UnapplyCustomPermissions=input.UnapplyCustomPermissions, ExternalLoginFederationProviderType=input.ExternalLoginFederationProviderType, CustomFederationProviderUrl=input.CustomFederationProviderUrl, ExternalLoginId=input.ExternalLoginId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29874,7 +29991,7 @@ struct QuickSightClient:
         labels["UserName"] = input.UserName
         labels["AwsAccountId"] = input.AwsAccountId
         labels["Namespace"] = input.Namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserCustomPermissionDocument(CustomPermissionsName=input.CustomPermissionsName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, quicksight_service(), self.region, host)
@@ -29886,7 +30003,7 @@ struct QuickSightClient:
         dict[str, str] labels = {}
         labels["AwsAccountId"] = input.AwsAccountId
         labels["VPCConnectionId"] = input.VPCConnectionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{AwsAccountId}/vpc-connections/{VPCConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + quicksight_json_str(input.Name))
         list[str] e0 = []

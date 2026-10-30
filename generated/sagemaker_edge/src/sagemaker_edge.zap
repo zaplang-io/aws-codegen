@@ -281,7 +281,7 @@ struct Sagemaker_EdgeClient:
     # errors: InternalServiceException
     def get_deployments(self, GetDeploymentsRequest input) -> str:
         auto host = endpoints.regional_host(edge_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDeployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDeployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDeploymentsDocument(DeviceName=input.DeviceName, DeviceFleetName=input.DeviceFleetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, edge_sagemaker_service(), self.region, host)
@@ -290,7 +290,7 @@ struct Sagemaker_EdgeClient:
     # errors: InternalServiceException
     def get_device_registration(self, GetDeviceRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(edge_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDeviceRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDeviceRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDeviceRegistrationDocument(DeviceName=input.DeviceName, DeviceFleetName=input.DeviceFleetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, edge_sagemaker_service(), self.region, host)
@@ -299,7 +299,7 @@ struct Sagemaker_EdgeClient:
     # errors: InternalServiceException
     def send_heartbeat(self, SendHeartbeatRequest input) -> str:
         auto host = endpoints.regional_host(edge_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SendHeartbeat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SendHeartbeat", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AgentMetrics.is_some():
             auto u0 = input.AgentMetrics.unwrap()

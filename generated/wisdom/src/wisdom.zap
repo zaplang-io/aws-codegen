@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 41 operations — 40 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 41 operations — 41 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (64 @derive(Json)), 12 enums, 8 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1211,11 +1211,6 @@ def wisdom_error_from_code(str code) -> WisdomError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1372,7 +1367,7 @@ struct WisdomClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
     def create_assistant(self, CreateAssistantRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1400,7 +1395,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"association\":" + input.association.to_json())
         parts.append("\"associationType\":" + wisdom_json_str(input.associationType))
@@ -1422,7 +1417,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1454,7 +1449,7 @@ struct WisdomClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
     def create_knowledge_base(self, CreateKnowledgeBaseRequest input) -> str:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1488,7 +1483,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.channels.is_some():
             auto u0 = input.channels.unwrap()
@@ -1534,7 +1529,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1558,7 +1553,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteAssistantAssociation  DELETE /assistants/{assistantId}/associations/{assistantAssociationId}
@@ -1568,7 +1563,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["assistantAssociationId"] = input.assistantAssociationId
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteContent  DELETE /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
@@ -1578,7 +1573,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteImportJob  DELETE /knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}
@@ -1588,7 +1583,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["importJobId"] = input.importJobId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteKnowledgeBase  DELETE /knowledgeBases/{knowledgeBaseId}
@@ -1597,7 +1592,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # DeleteQuickResponse  DELETE /knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}
@@ -1607,7 +1602,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["quickResponseId"] = input.quickResponseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAssistant  GET /assistants/{assistantId}
@@ -1616,7 +1611,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetAssistantAssociation  GET /assistants/{assistantId}/associations/{assistantAssociationId}
@@ -1626,7 +1621,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["assistantAssociationId"] = input.assistantAssociationId
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations/{assistantAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetContent  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
@@ -1636,7 +1631,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetContentSummary  GET /knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary
@@ -1646,7 +1641,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/summary", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetImportJob  GET /knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}
@@ -1656,7 +1651,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["importJobId"] = input.importJobId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs/{importJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetKnowledgeBase  GET /knowledgeBases/{knowledgeBaseId}
@@ -1665,7 +1660,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetQuickResponse  GET /knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}
@@ -1675,7 +1670,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["quickResponseId"] = input.quickResponseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetRecommendations  GET /assistants/{assistantId}/sessions/{sessionId}/recommendations
@@ -1690,7 +1685,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.waitTimeSeconds.is_some():
             query["waitTimeSeconds"] = str(input.waitTimeSeconds.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # GetSession  GET /assistants/{assistantId}/sessions/{sessionId}
@@ -1700,7 +1695,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAssistantAssociations  GET /assistants/{assistantId}/associations
@@ -1714,7 +1709,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants/{assistantId}/associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListAssistants  GET /assistants
@@ -1726,7 +1721,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assistants", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assistants", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListContents  GET /knowledgeBases/{knowledgeBaseId}/contents
@@ -1740,7 +1735,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/contents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListImportJobs  GET /knowledgeBases/{knowledgeBaseId}/importJobs
@@ -1754,7 +1749,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListKnowledgeBases  GET /knowledgeBases
@@ -1766,7 +1761,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListQuickResponses  GET /knowledgeBases/{knowledgeBaseId}/quickResponses
@@ -1780,7 +1775,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1789,7 +1784,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # NotifyRecommendationsReceived  POST /assistants/{assistantId}/sessions/{sessionId}/recommendations/notify
@@ -1799,7 +1794,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations/notify", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/sessions/{sessionId}/recommendations/notify", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.recommendationIds:
@@ -1814,7 +1809,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["assistantId"] = input.assistantId
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/query", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/query", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = QueryAssistantDocument(maxResults=input.maxResults, nextToken=input.nextToken, queryText=input.queryText)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -1825,7 +1820,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
 
     # SearchContent  POST /knowledgeBases/{knowledgeBaseId}/search
@@ -1839,7 +1834,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -1856,7 +1851,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/quickResponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/search/quickResponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.attributes.is_some():
             auto u0 = input.attributes.unwrap()
@@ -1879,7 +1874,7 @@ struct WisdomClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/searchSessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistants/{assistantId}/searchSessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchExpression\":" + search_expression_to_json(input.searchExpression))
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
@@ -1891,7 +1886,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/upload", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/upload", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartContentUploadDocument(contentType=input.contentType, presignedUrlTimeToLive=input.presignedUrlTimeToLive)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -1902,7 +1897,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/importJobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1927,7 +1922,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1936,6 +1931,17 @@ struct WisdomClient:
         auto bp = restjson.rest_json_document(b, wisdom_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(wisdom_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, wisdom_service(), self.region, host)
+
     # UpdateContent  POST /knowledgeBases/{knowledgeBaseId}/contents/{contentId}
     # errors: AccessDeniedException, PreconditionFailedException, ResourceNotFoundException, ValidationException
     def update_content(self, UpdateContentRequest input) -> str:
@@ -1943,7 +1949,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["contentId"] = input.contentId
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/contents/{contentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.metadata.is_some():
             auto u0 = input.metadata.unwrap()
@@ -1975,7 +1981,7 @@ struct WisdomClient:
         auto host = endpoints.regional_host(wisdom_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/templateUri", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateKnowledgeBaseTemplateUriDocument(templateUri=input.templateUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wisdom_service(), self.region, host)
@@ -1987,7 +1993,7 @@ struct WisdomClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["quickResponseId"] = input.quickResponseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgeBases/{knowledgeBaseId}/quickResponses/{quickResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.channels.is_some():
             auto u0 = input.channels.unwrap()

@@ -163,7 +163,7 @@ struct SageMaker_MetricsClient:
     # BatchGetMetrics  POST /BatchGetMetrics
     def batch_get_metrics(self, BatchGetMetricsRequest input) -> str:
         auto host = endpoints.regional_host(metrics_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetMetrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetMetrics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.MetricQueries:
@@ -175,7 +175,7 @@ struct SageMaker_MetricsClient:
     # BatchPutMetrics  PUT /BatchPutMetrics
     def batch_put_metrics(self, BatchPutMetricsRequest input) -> str:
         auto host = endpoints.regional_host(metrics_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/BatchPutMetrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/BatchPutMetrics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TrialComponentName\":" + metrics_sagemaker_json_str(input.TrialComponentName))
         list[str] e0 = []

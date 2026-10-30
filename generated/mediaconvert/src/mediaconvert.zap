@@ -9487,7 +9487,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def associate_certificate(self, AssociateCertificateRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/certificates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/certificates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateCertificateDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
@@ -9498,14 +9498,14 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/jobs/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/jobs/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # CreateJob  POST /2017-08-29/jobs
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def create_job(self, CreateJobRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccelerationSettings.is_some():
             auto u0 = input.AccelerationSettings.unwrap()
@@ -9561,7 +9561,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def create_job_template(self, CreateJobTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccelerationSettings.is_some():
             auto u0 = input.AccelerationSettings.unwrap()
@@ -9602,7 +9602,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def create_preset(self, CreatePresetRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/presets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/presets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Category.is_some():
             auto u0 = input.Category.unwrap()
@@ -9625,7 +9625,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def create_queue(self, CreateQueueRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/queues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/queues", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConcurrentJobs.is_some():
             auto u0 = input.ConcurrentJobs.unwrap()
@@ -9659,7 +9659,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def create_resource_share(self, CreateResourceShareRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/resourceShares", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/resourceShares", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateResourceShareDocument(JobId=input.JobId, SupportCaseId=input.SupportCaseId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
@@ -9670,14 +9670,14 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # DeletePolicy  DELETE /2017-08-29/policy
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def delete_policy(self) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # DeletePreset  DELETE /2017-08-29/presets/{name}
@@ -9686,7 +9686,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # DeleteQueue  DELETE /2017-08-29/queues/{name}
@@ -9695,14 +9695,14 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # DescribeEndpoints  POST /2017-08-29/endpoints
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def describe_endpoints(self, DescribeEndpointsRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/endpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/endpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeEndpointsDocument(MaxResults=input.MaxResults, Mode=input.Mode, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
@@ -9713,7 +9713,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/certificates/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-08-29/certificates/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetJob  GET /2017-08-29/jobs/{id}
@@ -9722,7 +9722,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobs/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobs/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetJobTemplate  GET /2017-08-29/jobTemplates/{name}
@@ -9731,7 +9731,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetJobsQueryResults  GET /2017-08-29/jobsQueries/{id}
@@ -9740,14 +9740,14 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobsQueries/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobsQueries/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetPolicy  GET /2017-08-29/policy
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def get_policy(self) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetPreset  GET /2017-08-29/presets/{name}
@@ -9756,7 +9756,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # GetQueue  GET /2017-08-29/queues/{name}
@@ -9765,7 +9765,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListJobTemplates  GET /2017-08-29/jobTemplates
@@ -9783,7 +9783,7 @@ struct MediaConvertClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Order.is_some():
             query["order"] = input.Order.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobTemplates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobTemplates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListJobs  GET /2017-08-29/jobs
@@ -9801,7 +9801,7 @@ struct MediaConvertClient:
             query["queue"] = input.Queue.unwrap_or("")
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListPresets  GET /2017-08-29/presets
@@ -9819,7 +9819,7 @@ struct MediaConvertClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Order.is_some():
             query["order"] = input.Order.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/presets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/presets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListQueues  GET /2017-08-29/queues
@@ -9835,7 +9835,7 @@ struct MediaConvertClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Order.is_some():
             query["order"] = input.Order.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/queues", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/queues", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListTagsForResource  GET /2017-08-29/tags/{arn}
@@ -9844,7 +9844,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # ListVersions  GET /2017-08-29/versions
@@ -9856,14 +9856,14 @@ struct MediaConvertClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # Probe  POST /2017-08-29/probe
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException, UnprocessableEntityException
     def probe(self, ProbeRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/probe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/probe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.InputFiles.is_some():
             auto u0 = input.InputFiles.unwrap()
@@ -9878,7 +9878,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def put_policy(self, PutPolicyRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutPolicyDocument(Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)
@@ -9900,14 +9900,14 @@ struct MediaConvertClient:
             query["queue"] = input.Queue.unwrap_or("")
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/search", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-08-29/search", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconvert_service(), self.region, host)
 
     # StartJobsQuery  POST /2017-08-29/jobsQueries
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def start_jobs_query(self, StartJobsQueryRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobsQueries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/jobsQueries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FilterList.is_some():
             auto u0 = input.FilterList.unwrap()
@@ -9931,7 +9931,7 @@ struct MediaConvertClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceQuotaExceededException, TooManyRequestsException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-08-29/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + mediaconvert_json_str(input.Arn))
         list[str] m0 = []
@@ -9947,7 +9947,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TagKeys.is_some():
             auto u0 = input.TagKeys.unwrap()
@@ -9964,7 +9964,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/jobTemplates/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccelerationSettings.is_some():
             auto u0 = input.AccelerationSettings.unwrap()
@@ -10002,7 +10002,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/presets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Category.is_some():
             auto u0 = input.Category.unwrap()
@@ -10022,7 +10022,7 @@ struct MediaConvertClient:
         auto host = endpoints.regional_host(mediaconvert_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-08-29/queues/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueDocument(ConcurrentJobs=input.ConcurrentJobs, Description=input.Description, MaximumConcurrentFeeds=input.MaximumConcurrentFeeds, ReservationPlanSettings=input.ReservationPlanSettings, Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconvert_service(), self.region, host)

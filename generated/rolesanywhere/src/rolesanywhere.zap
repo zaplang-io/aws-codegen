@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 29 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 30 operations — 30 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   52 structs (25 @derive(Json)), 3 enums, 4 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -463,11 +463,6 @@ def rolesanywhere_error_from_code(str code) -> RolesAnywhereError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteAttributeMapping (httpQuery `specifiers` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -492,7 +487,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ValidationException
     def create_profile(self, CreateProfileRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + rolesanywhere_json_str(input.name))
         if input.requireInstanceProperties.is_some():
@@ -533,7 +528,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ValidationException
     def create_trust_anchor(self, CreateTrustAnchorRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/trustanchors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/trustanchors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + rolesanywhere_json_str(input.name))
         parts.append("\"source\":" + input.source.to_json())
@@ -555,13 +550,27 @@ struct RolesAnywhereClient:
         auto bp = restjson.rest_json_document(b, rolesanywhere_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
 
+    # DeleteAttributeMapping  DELETE /profiles/{profileId}/mappings
+    # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
+    def delete_attribute_mapping(self, DeleteAttributeMappingRequest input) -> str:
+        auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profileId"] = input.profileId
+        dict[str, str] query = {}
+        query["certificateField"] = input.certificateField
+        dict[str, list[str]] multi_query = {}
+        if input.specifiers.is_some():
+            multi_query["specifiers"] = input.specifiers.unwrap()
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profiles/{profileId}/mappings", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
+
     # DeleteCrl  DELETE /crl/{crlId}
     # errors: AccessDeniedException, ResourceNotFoundException
     def delete_crl(self, ScalarCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["crlId"] = input.crlId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DeleteProfile  DELETE /profile/{profileId}
@@ -570,7 +579,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DeleteTrustAnchor  DELETE /trustanchor/{trustAnchorId}
@@ -579,7 +588,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableCrl  POST /crl/{crlId}/disable
@@ -588,7 +597,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["crlId"] = input.crlId
-        auto b = binding.HttpBinding(method="POST", path_template="/crl/{crlId}/disable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/crl/{crlId}/disable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableProfile  POST /profile/{profileId}/disable
@@ -597,7 +606,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="POST", path_template="/profile/{profileId}/disable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profile/{profileId}/disable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # DisableTrustAnchor  POST /trustanchor/{trustAnchorId}/disable
@@ -606,7 +615,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
-        auto b = binding.HttpBinding(method="POST", path_template="/trustanchor/{trustAnchorId}/disable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/trustanchor/{trustAnchorId}/disable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableCrl  POST /crl/{crlId}/enable
@@ -615,7 +624,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["crlId"] = input.crlId
-        auto b = binding.HttpBinding(method="POST", path_template="/crl/{crlId}/enable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/crl/{crlId}/enable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableProfile  POST /profile/{profileId}/enable
@@ -624,7 +633,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="POST", path_template="/profile/{profileId}/enable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profile/{profileId}/enable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # EnableTrustAnchor  POST /trustanchor/{trustAnchorId}/enable
@@ -633,7 +642,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
-        auto b = binding.HttpBinding(method="POST", path_template="/trustanchor/{trustAnchorId}/enable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/trustanchor/{trustAnchorId}/enable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetCrl  GET /crl/{crlId}
@@ -642,7 +651,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["crlId"] = input.crlId
-        auto b = binding.HttpBinding(method="GET", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetProfile  GET /profile/{profileId}
@@ -651,7 +660,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="GET", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetSubject  GET /subject/{subjectId}
@@ -660,7 +669,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["subjectId"] = input.subjectId
-        auto b = binding.HttpBinding(method="GET", path_template="/subject/{subjectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/subject/{subjectId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # GetTrustAnchor  GET /trustanchor/{trustAnchorId}
@@ -669,14 +678,14 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
-        auto b = binding.HttpBinding(method="GET", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ImportCrl  POST /crls
     # errors: AccessDeniedException, ValidationException
     def import_crl(self, ImportCrlRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/crls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/crls", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + rolesanywhere_json_str(input.name))
         parts.append("\"crlData\":" + rolesanywhere_json_str(base64.encode(input.crlData)))
@@ -702,7 +711,7 @@ struct RolesAnywhereClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/crls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/crls", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListProfiles  GET /profiles
@@ -714,7 +723,7 @@ struct RolesAnywhereClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListSubjects  GET /subjects
@@ -726,7 +735,7 @@ struct RolesAnywhereClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/subjects", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/subjects", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListTagsForResource  GET /ListTagsForResource
@@ -735,7 +744,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # ListTrustAnchors  GET /trustanchors
@@ -747,7 +756,7 @@ struct RolesAnywhereClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/trustanchors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustanchors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rolesanywhere_service(), self.region, host)
 
     # PutAttributeMapping  PUT /profiles/{profileId}/mappings
@@ -756,7 +765,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="PUT", path_template="/profiles/{profileId}/mappings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/profiles/{profileId}/mappings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"certificateField\":" + input.certificateField.to_json())
         list[str] e0 = []
@@ -770,7 +779,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def put_notification_settings(self, PutNotificationSettingsRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/put-notifications-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/put-notifications-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"trustAnchorId\":" + rolesanywhere_json_str(input.trustAnchorId))
         list[str] e0 = []
@@ -784,7 +793,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def reset_notification_settings(self, ResetNotificationSettingsRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/reset-notifications-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reset-notifications-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"trustAnchorId\":" + rolesanywhere_json_str(input.trustAnchorId))
         list[str] e0 = []
@@ -798,7 +807,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ResourceNotFoundException, TooManyTagsException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + rolesanywhere_json_str(input.resourceArn))
         list[str] e0 = []
@@ -812,7 +821,7 @@ struct RolesAnywhereClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + rolesanywhere_json_str(input.resourceArn))
         list[str] e0 = []
@@ -828,7 +837,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["crlId"] = input.crlId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/crl/{crlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCrlDocument(name=input.name, crlData=input.crlData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)
@@ -839,7 +848,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profile/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -874,7 +883,7 @@ struct RolesAnywhereClient:
         auto host = endpoints.regional_host(rolesanywhere_service(), self.region)
         dict[str, str] labels = {}
         labels["trustAnchorId"] = input.trustAnchorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/trustanchor/{trustAnchorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTrustAnchorDocument(name=input.name, source=input.source)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rolesanywhere_service(), self.region, host)

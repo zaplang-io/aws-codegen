@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 23 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 24 operations — 24 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (49 @derive(Json)), 11 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -705,11 +705,6 @@ def elemental_inference_error_from_code(str code) -> ElementalInferenceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -845,7 +840,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"associatedResourceName\":" + elemental_inference_json_str(input.associatedResourceName))
         list[str] e0 = []
@@ -862,7 +857,7 @@ struct ElementalInferenceClient:
     # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
     def create_dictionary(self, CreateDictionaryRequest input) -> str:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/dictionary", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/dictionary", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + elemental_inference_json_str(input.name))
         parts.append("\"language\":" + input.language.to_json())
@@ -882,7 +877,7 @@ struct ElementalInferenceClient:
     # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ServiceQuotaExceededException, TooManyRequestException, ValidationException
     def create_feed(self, CreateFeedRequest input) -> str:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + elemental_inference_json_str(input.name))
         if input.accessRoleArn.is_some():
@@ -907,7 +902,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"actionName\":" + elemental_inference_json_str(input.actionName))
         parts.append("\"startConfiguration\":" + input.startConfiguration.to_json())
@@ -924,7 +919,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # DeleteFeed  DELETE /v1/feed/{id}
@@ -933,7 +928,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # DeleteFeedPolicy  DELETE /v1/feed/{id}/policy
@@ -942,7 +937,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # DeleteScheduleAction  DELETE /v1/feed/{id}/schedule-actions
@@ -953,7 +948,7 @@ struct ElementalInferenceClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["actionName"] = input.actionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # DisassociateFeed  POST /v1/feed/{id}/disassociate
@@ -962,7 +957,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/feed/{id}/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateFeedDocument(associatedResourceName=input.associatedResourceName, dryRun=input.dryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
@@ -973,7 +968,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionary/{id}/entries/export", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionary/{id}/entries/export", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # GetDictionary  GET /v1/dictionary/{id}
@@ -982,7 +977,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # GetFeed  GET /v1/feed/{id}
@@ -991,7 +986,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # GetFeedPolicy  GET /v1/feed/{id}/policy
@@ -1000,7 +995,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # GetFixture  GET /v1/fixtures/{fixtureId}
@@ -1009,7 +1004,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["fixtureId"] = input.fixtureId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/fixtures/{fixtureId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/fixtures/{fixtureId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # ListDictionaries  GET /v1/dictionaries
@@ -1021,7 +1016,7 @@ struct ElementalInferenceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/dictionaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # ListFeeds  GET /v1/feeds
@@ -1033,7 +1028,7 @@ struct ElementalInferenceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/feeds", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/feeds", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # ListScheduleActions  GET /v1/feed/{id}/schedule-actions
@@ -1047,7 +1042,7 @@ struct ElementalInferenceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/feed/{id}/schedule-actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -1056,7 +1051,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
 
     # PutFeedPolicy  PUT /v1/feed/{id}/policy
@@ -1065,7 +1060,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/feed/{id}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFeedPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
@@ -1074,7 +1069,7 @@ struct ElementalInferenceClient:
     # errors: AccessDeniedException, GatewayTimedOutException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestException, ValidationException
     def search_fixtures(self, SearchFixturesRequest input) -> str:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/fixtures", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/fixtures", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sport\":" + input.sport.to_json())
         parts.append("\"startDate\":" + elemental_inference_json_str(input.startDate))
@@ -1102,7 +1097,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1111,13 +1106,24 @@ struct ElementalInferenceClient:
         auto bp = restjson.rest_json_document(b, elemental_inference_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, TooManyRequestException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(elemental_inference_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, elemental_inference_service(), self.region, host)
+
     # UpdateDictionary  PATCH /v1/dictionary/{id}
     # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, TooManyRequestException, ValidationException
     def update_dictionary(self, UpdateDictionaryRequest input) -> str:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/dictionary/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDictionaryDocument(name=input.name, language=input.language, entries=input.entries)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, elemental_inference_service(), self.region, host)
@@ -1128,7 +1134,7 @@ struct ElementalInferenceClient:
         auto host = endpoints.regional_host(elemental_inference_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/feed/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + elemental_inference_json_str(input.name))
         if input.accessRoleArn.is_some():

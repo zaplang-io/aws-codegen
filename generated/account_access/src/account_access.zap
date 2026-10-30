@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 10 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (42 @derive(Json)), 2 enums, 8 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -361,11 +361,6 @@ def account_access_error_from_code(str code) -> Account_AccessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -398,7 +393,7 @@ struct Account_AccessClient:
     # errors: AccessDeniedException, AlreadyCreatedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(account_access_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"identitySource\":" + input.identitySource.to_json())
         if input.tags.is_some():
@@ -414,7 +409,7 @@ struct Account_AccessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_entitlement(self, CreateEntitlementRequest input) -> str:
         auto host = endpoints.regional_host(account_access_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/entitlements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/entitlements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEntitlementDocument(applicationArn=input.applicationArn, entitlement=input.entitlement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_access_service(), self.region, host)
@@ -425,7 +420,7 @@ struct Account_AccessClient:
         auto host = endpoints.regional_host(account_access_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationArn"] = input.applicationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # DeleteEntitlement  DELETE /entitlements/{entitlementId}
@@ -436,7 +431,7 @@ struct Account_AccessClient:
         labels["entitlementId"] = input.entitlementId
         dict[str, str] query = {}
         query["applicationArn"] = input.applicationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/entitlements/{entitlementId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/entitlements/{entitlementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # GetApplication  GET /applications/{applicationArn}
@@ -445,7 +440,7 @@ struct Account_AccessClient:
         auto host = endpoints.regional_host(account_access_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationArn"] = input.applicationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # GetEntitlement  GET /entitlements/{entitlementId}
@@ -456,14 +451,14 @@ struct Account_AccessClient:
         labels["entitlementId"] = input.entitlementId
         dict[str, str] query = {}
         query["applicationArn"] = input.applicationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/entitlements/{entitlementId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/entitlements/{entitlementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # ListApplications  POST /applications-list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_applications(self, ListApplicationsRequest input) -> str:
         auto host = endpoints.regional_host(account_access_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListApplicationsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_access_service(), self.region, host)
@@ -472,7 +467,7 @@ struct Account_AccessClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_entitlements(self, ListEntitlementsRequest input) -> str:
         auto host = endpoints.regional_host(account_access_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/entitlements-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/entitlements-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEntitlementsDocument(applicationArn=input.applicationArn, filter=input.filter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_access_service(), self.region, host)
@@ -483,7 +478,7 @@ struct Account_AccessClient:
         auto host = endpoints.regional_host(account_access_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -492,7 +487,7 @@ struct Account_AccessClient:
         auto host = endpoints.regional_host(account_access_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -500,6 +495,17 @@ struct Account_AccessClient:
         parts.append("\"tags\":" + account_access_json_obj(m0))
         auto bp = restjson.rest_json_document(b, account_access_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, account_access_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(account_access_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, account_access_service(), self.region, host)
 
     # Paginator for ListApplications — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: applications).

@@ -614,7 +614,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees?operation=batch-create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Attendees:
@@ -629,7 +629,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="PUT", path_template="/meetings/{MeetingId}/attendees/capabilities?operation=batch-update-except", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/meetings/{MeetingId}/attendees/capabilities?operation=batch-update-except", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ExcludedAttendeeIds:
@@ -645,7 +645,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/attendees", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAttendeeDocument(ExternalUserId=input.ExternalUserId, Capabilities=input.Capabilities)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
@@ -654,7 +654,7 @@ struct Chime_SDK_MeetingsClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, LimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_meeting(self, CreateMeetingRequest input) -> str:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + meetings_chime_json_str(input.ClientRequestToken))
         parts.append("\"MediaRegion\":" + meetings_chime_json_str(input.MediaRegion))
@@ -693,7 +693,7 @@ struct Chime_SDK_MeetingsClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, LimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_meeting_with_attendees(self, CreateMeetingWithAttendeesRequest input) -> str:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings?operation=create-attendees", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings?operation=create-attendees", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientRequestToken\":" + meetings_chime_json_str(input.ClientRequestToken))
         parts.append("\"MediaRegion\":" + meetings_chime_json_str(input.MediaRegion))
@@ -739,7 +739,7 @@ struct Chime_SDK_MeetingsClient:
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
         labels["AttendeeId"] = input.AttendeeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # DeleteMeeting  DELETE /meetings/{MeetingId}
@@ -748,7 +748,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/meetings/{MeetingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/meetings/{MeetingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # GetAttendee  GET /meetings/{MeetingId}/attendees/{AttendeeId}
@@ -758,7 +758,7 @@ struct Chime_SDK_MeetingsClient:
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
         labels["AttendeeId"] = input.AttendeeId
-        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # GetMeeting  GET /meetings/{MeetingId}
@@ -767,7 +767,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # ListAttendees  GET /meetings/{MeetingId}/attendees
@@ -781,7 +781,7 @@ struct Chime_SDK_MeetingsClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}/attendees", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/meetings/{MeetingId}/attendees", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -790,7 +790,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ResourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # StartMeetingTranscription  POST /meetings/{MeetingId}/transcription?operation=start
@@ -799,7 +799,7 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/transcription?operation=start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/transcription?operation=start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMeetingTranscriptionDocument(TranscriptionConfiguration=input.TranscriptionConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)
@@ -810,14 +810,14 @@ struct Chime_SDK_MeetingsClient:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/transcription?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{MeetingId}/transcription?operation=stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, meetings_chime_service(), self.region, host)
 
     # TagResource  POST /tags?operation=tag-resource
     # errors: BadRequestException, ForbiddenException, LimitExceededException, ResourceNotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, TooManyTagsException, UnauthorizedException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + meetings_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -831,7 +831,7 @@ struct Chime_SDK_MeetingsClient:
     # errors: BadRequestException, ForbiddenException, LimitExceededException, ResourceNotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(meetings_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + meetings_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -848,7 +848,7 @@ struct Chime_SDK_MeetingsClient:
         dict[str, str] labels = {}
         labels["MeetingId"] = input.MeetingId
         labels["AttendeeId"] = input.AttendeeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}/capabilities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/meetings/{MeetingId}/attendees/{AttendeeId}/capabilities", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAttendeeCapabilitiesDocument(Capabilities=input.Capabilities)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, meetings_chime_service(), self.region, host)

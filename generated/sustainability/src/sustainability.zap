@@ -251,7 +251,7 @@ struct SustainabilityClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_estimated_carbon_emissions_dimension_values(self, GetEstimatedCarbonEmissionsDimensionValuesRequest input) -> str:
         auto host = endpoints.regional_host(sustainability_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-carbon-emissions-dimension-values", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-carbon-emissions-dimension-values", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TimePeriod\":" + input.TimePeriod.to_json())
         list[str] e0 = []
@@ -271,7 +271,7 @@ struct SustainabilityClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_estimated_water_allocation_dimension_values(self, GetEstimatedWaterAllocationDimensionValuesRequest input) -> str:
         auto host = endpoints.regional_host(sustainability_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-water-allocation-dimension-values", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/estimated-water-allocation-dimension-values", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TimePeriod\":" + input.TimePeriod.to_json())
         list[str] e0 = []

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 24 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   107 structs (53 @derive(Json)), 13 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1121,11 +1121,6 @@ def mq_error_from_code(str code) -> mqError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteTags (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1225,7 +1220,7 @@ struct mqClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, UnauthorizedException
     def create_broker(self, CreateBrokerRequest input) -> str:
         auto host = endpoints.regional_host(mq_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthenticationStrategy.is_some():
             auto u0 = input.AuthenticationStrategy.unwrap()
@@ -1302,7 +1297,7 @@ struct mqClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException
     def create_configuration(self, CreateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mq_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthenticationStrategy.is_some():
             auto u0 = input.AuthenticationStrategy.unwrap()
@@ -1327,7 +1322,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -1345,7 +1340,7 @@ struct mqClient:
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
         labels["username"] = input.Username
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConsoleAccess.is_some():
             auto u0 = input.ConsoleAccess.unwrap()
@@ -1369,7 +1364,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DeleteConfiguration  DELETE /v1/configurations/{configuration-id}
@@ -1378,7 +1373,18 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["configuration-id"] = input.ConfigurationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
+
+    # DeleteTags  DELETE /v1/tags/{resource-arn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto host = endpoints.regional_host(mq_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DeleteUser  DELETE /v1/brokers/{broker-id}/users/{username}
@@ -1388,7 +1394,7 @@ struct mqClient:
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
         labels["username"] = input.Username
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeBroker  GET /v1/brokers/{broker-id}
@@ -1397,7 +1403,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeBrokerEngineTypes  GET /v1/broker-engine-types
@@ -1411,7 +1417,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/broker-engine-types", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/broker-engine-types", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeBrokerInstanceOptions  GET /v1/broker-instance-options
@@ -1429,7 +1435,7 @@ struct mqClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.StorageType.is_some():
             query["storageType"] = input.StorageType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/broker-instance-options", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/broker-instance-options", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeConfiguration  GET /v1/configurations/{configuration-id}
@@ -1438,7 +1444,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["configuration-id"] = input.ConfigurationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeConfigurationRevision  GET /v1/configurations/{configuration-id}/revisions/{configuration-revision}
@@ -1448,7 +1454,7 @@ struct mqClient:
         dict[str, str] labels = {}
         labels["configuration-id"] = input.ConfigurationId
         labels["configuration-revision"] = input.ConfigurationRevision
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}/revisions/{configuration-revision}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}/revisions/{configuration-revision}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeSharedResources  GET /v1/brokers/{broker-id}/shared-resources
@@ -1462,7 +1468,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/shared-resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/shared-resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # DescribeUser  GET /v1/brokers/{broker-id}/users/{username}
@@ -1472,7 +1478,7 @@ struct mqClient:
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
         labels["username"] = input.Username
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # ListBrokers  GET /v1/brokers
@@ -1484,7 +1490,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # ListConfigurationRevisions  GET /v1/configurations/{configuration-id}/revisions
@@ -1498,7 +1504,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}/revisions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{configuration-id}/revisions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # ListConfigurations  GET /v1/configurations
@@ -1510,7 +1516,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # ListTags  GET /v1/tags/{resource-arn}
@@ -1519,7 +1525,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # ListUsers  GET /v1/brokers/{broker-id}/users
@@ -1533,7 +1539,7 @@ struct mqClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brokers/{broker-id}/users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # Promote  POST /v1/brokers/{broker-id}/promote
@@ -1542,7 +1548,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/promote", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/promote", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PromoteDocument(Mode=input.Mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
@@ -1553,7 +1559,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/reboot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brokers/{broker-id}/reboot", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mq_service(), self.region, host)
 
     # UpdateBroker  PUT /v1/brokers/{broker-id}
@@ -1562,7 +1568,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthenticationStrategy.is_some():
             auto u0 = input.AuthenticationStrategy.unwrap()
@@ -1615,7 +1621,7 @@ struct mqClient:
         auto host = endpoints.regional_host(mq_service(), self.region)
         dict[str, str] labels = {}
         labels["configuration-id"] = input.ConfigurationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/configurations/{configuration-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfigurationDocument(Data=input.Data, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mq_service(), self.region, host)
@@ -1627,7 +1633,7 @@ struct mqClient:
         dict[str, str] labels = {}
         labels["broker-id"] = input.BrokerId
         labels["username"] = input.Username
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brokers/{broker-id}/users/{username}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConsoleAccess.is_some():
             auto u0 = input.ConsoleAccess.unwrap()

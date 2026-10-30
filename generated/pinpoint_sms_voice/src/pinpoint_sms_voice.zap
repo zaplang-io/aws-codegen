@@ -338,7 +338,7 @@ struct Pinpoint_SMS_VoiceClient:
     # errors: AlreadyExistsException, BadRequestException, InternalServiceErrorException, LimitExceededException, TooManyRequestsException
     def create_configuration_set(self, CreateConfigurationSetRequest input) -> str:
         auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateConfigurationSetDocument(ConfigurationSetName=input.ConfigurationSetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
@@ -349,7 +349,7 @@ struct Pinpoint_SMS_VoiceClient:
         auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EventDestination.is_some():
             auto u0 = input.EventDestination.unwrap()
@@ -366,7 +366,7 @@ struct Pinpoint_SMS_VoiceClient:
         auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sms_voice_pinpoint_service(), self.region, host)
 
     # DeleteConfigurationSetEventDestination  DELETE /v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}
@@ -376,7 +376,7 @@ struct Pinpoint_SMS_VoiceClient:
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
         labels["EventDestinationName"] = input.EventDestinationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sms_voice_pinpoint_service(), self.region, host)
 
     # GetConfigurationSetEventDestinations  GET /v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations
@@ -385,7 +385,7 @@ struct Pinpoint_SMS_VoiceClient:
         auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sms_voice_pinpoint_service(), self.region, host)
 
     # ListConfigurationSets  GET /v1/sms-voice/configuration-sets
@@ -397,14 +397,14 @@ struct Pinpoint_SMS_VoiceClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/sms-voice/configuration-sets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/sms-voice/configuration-sets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, sms_voice_pinpoint_service(), self.region, host)
 
     # SendVoiceMessage  POST /v1/sms-voice/voice/message
     # errors: BadRequestException, InternalServiceErrorException, TooManyRequestsException
     def send_voice_message(self, SendVoiceMessageRequest input) -> str:
         auto host = endpoints.regional_host(sms_voice_pinpoint_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/voice/message", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sms-voice/voice/message", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendVoiceMessageDocument(CallerId=input.CallerId, ConfigurationSetName=input.ConfigurationSetName, Content=input.Content, DestinationPhoneNumber=input.DestinationPhoneNumber, OriginationPhoneNumber=input.OriginationPhoneNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sms_voice_pinpoint_service(), self.region, host)
@@ -416,7 +416,7 @@ struct Pinpoint_SMS_VoiceClient:
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
         labels["EventDestinationName"] = input.EventDestinationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sms-voice/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EventDestination.is_some():
             auto u0 = input.EventDestination.unwrap()

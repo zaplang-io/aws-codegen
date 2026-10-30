@@ -1347,7 +1347,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/autocomplete", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/autocomplete", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"QueryText\":" + geo_places_json_str(input.QueryText))
         if input.MaxResults.is_some():
@@ -1390,7 +1390,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/geocode", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/geocode", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueryText.is_some():
             auto u0 = input.QueryText.unwrap()
@@ -1447,7 +1447,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/reverse-geocode", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/reverse-geocode", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.QueryPosition:
@@ -1493,7 +1493,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-nearby", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-nearby", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.QueryPosition:
@@ -1536,7 +1536,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-text", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/search-text", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueryText.is_some():
             auto u0 = input.QueryText.unwrap()
@@ -1587,7 +1587,7 @@ struct Geo_PlacesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/suggest", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/suggest", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"QueryText\":" + geo_places_json_str(input.QueryText))
         if input.MaxResults.is_some():

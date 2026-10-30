@@ -216,7 +216,7 @@ struct CloudFront_KeyValueStoreClient:
         labels["Key"] = input.Key
         dict[str, str] headers = {}
         headers["If-Match"] = input.IfMatch
-        auto b = binding.HttpBinding(method="DELETE", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cloudfront_keyvaluestore_service(), self.region, host)
 
     # DescribeKeyValueStore  GET /key-value-stores/{KvsARN}
@@ -225,7 +225,7 @@ struct CloudFront_KeyValueStoreClient:
         auto host = endpoints.regional_host(cloudfront_keyvaluestore_service(), self.region)
         dict[str, str] labels = {}
         labels["KvsARN"] = input.KvsARN
-        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cloudfront_keyvaluestore_service(), self.region, host)
 
     # GetKey  GET /key-value-stores/{KvsARN}/keys/{Key}
@@ -235,7 +235,7 @@ struct CloudFront_KeyValueStoreClient:
         dict[str, str] labels = {}
         labels["KvsARN"] = input.KvsARN
         labels["Key"] = input.Key
-        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cloudfront_keyvaluestore_service(), self.region, host)
 
     # ListKeys  GET /key-value-stores/{KvsARN}/keys
@@ -249,7 +249,7 @@ struct CloudFront_KeyValueStoreClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}/keys", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/key-value-stores/{KvsARN}/keys", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cloudfront_keyvaluestore_service(), self.region, host)
 
     # PutKey  PUT /key-value-stores/{KvsARN}/keys/{Key}
@@ -261,7 +261,7 @@ struct CloudFront_KeyValueStoreClient:
         labels["KvsARN"] = input.KvsARN
         dict[str, str] headers = {}
         headers["If-Match"] = input.IfMatch
-        auto b = binding.HttpBinding(method="PUT", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/key-value-stores/{KvsARN}/keys/{Key}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutKeyDocument(Value=input.Value)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cloudfront_keyvaluestore_service(), self.region, host)
@@ -274,7 +274,7 @@ struct CloudFront_KeyValueStoreClient:
         labels["KvsARN"] = input.KvsARN
         dict[str, str] headers = {}
         headers["If-Match"] = input.IfMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/key-value-stores/{KvsARN}/keys", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/key-value-stores/{KvsARN}/keys", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Puts.is_some():
             auto u0 = input.Puts.unwrap()

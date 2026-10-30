@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 14 operations — 10 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 14 operations — 12 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   61 structs (36 @derive(Json)), 11 enums, 7 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -600,9 +600,7 @@ def codeguru_reviewer_error_from_code(str code) -> CodeGuru_ReviewerError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListCodeReviews (httpQuery `ProviderTypes` has unsupported type list[ProviderType])
-#   ListRecommendationFeedback (httpQuery `UserIds` has unsupported type list[str])
 #   ListRepositoryAssociations (httpQuery `ProviderTypes` has unsupported type list[ProviderType])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -659,7 +657,7 @@ struct CodeGuru_ReviewerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def associate_repository(self, AssociateRepositoryRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Repository\":" + input.Repository.to_json())
         if input.ClientRequestToken.is_some():
@@ -681,7 +679,7 @@ struct CodeGuru_ReviewerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_code_review(self, CreateCodeReviewRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codereviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codereviews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + codeguru_reviewer_json_str(input.Name))
         parts.append("\"RepositoryAssociationArn\":" + codeguru_reviewer_json_str(input.RepositoryAssociationArn))
@@ -698,7 +696,7 @@ struct CodeGuru_ReviewerClient:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
         dict[str, str] labels = {}
         labels["CodeReviewArn"] = input.CodeReviewArn
-        auto b = binding.HttpBinding(method="GET", path_template="/codereviews/{CodeReviewArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/codereviews/{CodeReviewArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # DescribeRecommendationFeedback  GET /feedback/{CodeReviewArn}
@@ -711,7 +709,7 @@ struct CodeGuru_ReviewerClient:
         query["RecommendationId"] = input.RecommendationId
         if input.UserId.is_some():
             query["UserId"] = input.UserId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/feedback/{CodeReviewArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/feedback/{CodeReviewArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # DescribeRepositoryAssociation  GET /associations/{AssociationArn}
@@ -720,7 +718,7 @@ struct CodeGuru_ReviewerClient:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
         dict[str, str] labels = {}
         labels["AssociationArn"] = input.AssociationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/associations/{AssociationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/associations/{AssociationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # DisassociateRepository  DELETE /associations/{AssociationArn}
@@ -729,7 +727,26 @@ struct CodeGuru_ReviewerClient:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
         dict[str, str] labels = {}
         labels["AssociationArn"] = input.AssociationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/associations/{AssociationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/associations/{AssociationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
+
+    # ListRecommendationFeedback  GET /feedback/{CodeReviewArn}/RecommendationFeedback
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_recommendation_feedback(self, ListRecommendationFeedbackRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CodeReviewArn"] = input.CodeReviewArn
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        dict[str, list[str]] multi_query = {}
+        if input.UserIds.is_some():
+            multi_query["UserIds"] = input.UserIds.unwrap()
+        if input.RecommendationIds.is_some():
+            multi_query["RecommendationIds"] = input.RecommendationIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/feedback/{CodeReviewArn}/RecommendationFeedback", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # ListRecommendations  GET /codereviews/{CodeReviewArn}/Recommendations
@@ -743,7 +760,7 @@ struct CodeGuru_ReviewerClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/codereviews/{CodeReviewArn}/Recommendations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/codereviews/{CodeReviewArn}/Recommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -752,14 +769,14 @@ struct CodeGuru_ReviewerClient:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
     # PutRecommendationFeedback  PUT /feedback
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_recommendation_feedback(self, PutRecommendationFeedbackRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/feedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/feedback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CodeReviewArn\":" + codeguru_reviewer_json_str(input.CodeReviewArn))
         parts.append("\"RecommendationId\":" + codeguru_reviewer_json_str(input.RecommendationId))
@@ -776,7 +793,7 @@ struct CodeGuru_ReviewerClient:
         auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -784,6 +801,17 @@ struct CodeGuru_ReviewerClient:
         parts.append("\"Tags\":" + codeguru_reviewer_json_obj(m0))
         auto bp = restjson.rest_json_document(b, codeguru_reviewer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeguru_reviewer_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_reviewer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_reviewer_service(), self.region, host)
 
 # Construct a CodeGuru_ReviewerClient bound to credentials + region.
 def codeguru_reviewer_client(core.Credentials creds, str region) -> CodeGuru_ReviewerClient:

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 28 operations — 27 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 28 operations — 28 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   96 structs (67 @derive(Json)), 11 enums, 7 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -755,11 +755,6 @@ def controltower_error_from_code(str code) -> ControlTowerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1009,7 +1004,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_landing_zone(self, CreateLandingZoneInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-landingzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"version\":" + controltower_json_str(input.version))
         if input.remediationTypes.is_some():
@@ -1034,7 +1029,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_landing_zone(self, DeleteLandingZoneInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-landingzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLandingZoneDocument(landingZoneIdentifier=input.landingZoneIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1043,7 +1038,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disable_baseline(self, DisableBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disable-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disable-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableBaselineDocument(enabledBaselineIdentifier=input.enabledBaselineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1052,7 +1047,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disable_control(self, DisableControlInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disable-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disable-control", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableControlDocument(controlIdentifier=input.controlIdentifier, targetIdentifier=input.targetIdentifier, enabledControlIdentifier=input.enabledControlIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1061,7 +1056,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def enable_baseline(self, EnableBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/enable-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/enable-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"baselineVersion\":" + controltower_json_str(input.baselineVersion))
         if input.parameters.is_some():
@@ -1085,7 +1080,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def enable_control(self, EnableControlInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/enable-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/enable-control", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"controlIdentifier\":" + controltower_json_str(input.controlIdentifier))
         parts.append("\"targetIdentifier\":" + controltower_json_str(input.targetIdentifier))
@@ -1108,7 +1103,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_baseline(self, GetBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBaselineDocument(baselineIdentifier=input.baselineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1117,7 +1112,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_baseline_operation(self, GetBaselineOperationInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-baseline-operation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-baseline-operation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBaselineOperationDocument(operationIdentifier=input.operationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1126,7 +1121,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_control_operation(self, GetControlOperationInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-control-operation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-control-operation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetControlOperationDocument(operationIdentifier=input.operationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1135,7 +1130,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_enabled_baseline(self, GetEnabledBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-enabled-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-enabled-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetEnabledBaselineDocument(enabledBaselineIdentifier=input.enabledBaselineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1144,7 +1139,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_enabled_control(self, GetEnabledControlInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-enabled-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-enabled-control", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetEnabledControlDocument(enabledControlIdentifier=input.enabledControlIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1153,7 +1148,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_landing_zone(self, GetLandingZoneInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-landingzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLandingZoneDocument(landingZoneIdentifier=input.landingZoneIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1162,7 +1157,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_landing_zone_operation(self, GetLandingZoneOperationInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-landingzone-operation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-landingzone-operation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLandingZoneOperationDocument(operationIdentifier=input.operationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1171,7 +1166,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_baselines(self, ListBaselinesInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-baselines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-baselines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListBaselinesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1180,7 +1175,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_control_operations(self, ListControlOperationsInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-control-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-control-operations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -1198,7 +1193,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_enabled_baselines(self, ListEnabledBaselinesInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-baselines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-baselines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -1219,7 +1214,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_enabled_controls(self, ListEnabledControlsInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-controls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-enabled-controls", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.targetIdentifier.is_some():
             auto u0 = input.targetIdentifier.unwrap()
@@ -1243,7 +1238,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_landing_zone_operations(self, ListLandingZoneOperationsInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-landingzone-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-landingzone-operations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -1261,7 +1256,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_landing_zones(self, ListLandingZonesInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-landingzones", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-landingzones", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLandingZonesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1272,14 +1267,14 @@ struct ControlTowerClient:
         auto host = endpoints.regional_host(controltower_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, controltower_service(), self.region, host)
 
     # ResetEnabledBaseline  POST /reset-enabled-baseline
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def reset_enabled_baseline(self, ResetEnabledBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reset-enabled-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reset-enabled-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetEnabledBaselineDocument(enabledBaselineIdentifier=input.enabledBaselineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1288,7 +1283,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def reset_enabled_control(self, ResetEnabledControlInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reset-enabled-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reset-enabled-control", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetEnabledControlDocument(enabledControlIdentifier=input.enabledControlIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1297,7 +1292,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reset_landing_zone(self, ResetLandingZoneInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reset-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reset-landingzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetLandingZoneDocument(landingZoneIdentifier=input.landingZoneIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
@@ -1308,7 +1303,7 @@ struct ControlTowerClient:
         auto host = endpoints.regional_host(controltower_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1317,11 +1312,22 @@ struct ControlTowerClient:
         auto bp = restjson.rest_json_document(b, controltower_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, controltower_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(controltower_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, controltower_service(), self.region, host)
+
     # UpdateEnabledBaseline  POST /update-enabled-baseline
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_enabled_baseline(self, UpdateEnabledBaselineInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-baseline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-baseline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"baselineVersion\":" + controltower_json_str(input.baselineVersion))
         if input.parameters.is_some():
@@ -1338,7 +1344,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_enabled_control(self, UpdateEnabledControlInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-control", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-enabled-control", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.parameters:
@@ -1352,7 +1358,7 @@ struct ControlTowerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_landing_zone(self, UpdateLandingZoneInput input) -> str:
         auto host = endpoints.regional_host(controltower_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-landingzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-landingzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"version\":" + controltower_json_str(input.version))
         if input.remediationTypes.is_some():

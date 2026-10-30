@@ -1619,7 +1619,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/environments/{backendEnvironmentName}/clone", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/environments/{backendEnvironmentName}/clone", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CloneBackendDocument(TargetEnvironmentName=input.TargetEnvironmentName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1628,7 +1628,7 @@ struct AmplifyBackendClient:
     # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
     def create_backend(self, CreateBackendRequest input) -> str:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/backend", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBackendDocument(AppId=input.AppId, AppName=input.AppName, BackendEnvironmentName=input.BackendEnvironmentName, ResourceConfig=input.ResourceConfig, ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1639,7 +1639,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
         parts.append("\"resourceConfig\":" + backend_api_resource_config_to_json(input.ResourceConfig))
@@ -1653,7 +1653,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
         parts.append("\"resourceConfig\":" + create_backend_auth_resource_config_to_json(input.ResourceConfig))
@@ -1667,7 +1667,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBackendConfigDocument(BackendManagerAppId=input.BackendManagerAppId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1678,7 +1678,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"backendEnvironmentName\":" + amplifybackend_json_str(input.BackendEnvironmentName))
         parts.append("\"resourceConfig\":" + create_backend_storage_resource_config_to_json(input.ResourceConfig))
@@ -1692,7 +1692,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/challenge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/challenge", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # DeleteBackend  POST /backend/{appId}/environments/{backendEnvironmentName}/remove
@@ -1702,7 +1702,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/environments/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/environments/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # DeleteBackendAPI  POST /backend/{appId}/api/{backendEnvironmentName}/remove
@@ -1712,7 +1712,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ResourceConfig.is_some():
             auto u0 = input.ResourceConfig.unwrap()
@@ -1728,7 +1728,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteBackendAuthDocument(ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1740,7 +1740,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteBackendStorageDocument(ResourceName=input.ResourceName, ServiceName=input.ServiceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1752,7 +1752,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["sessionId"] = input.SessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/challenge/{sessionId}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/challenge/{sessionId}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # GenerateBackendAPIModels  POST /backend/{appId}/api/{backendEnvironmentName}/generateModels
@@ -1762,7 +1762,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/generateModels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/generateModels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateBackendAPIModelsDocument(ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1773,7 +1773,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/details", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackendDocument(BackendEnvironmentName=input.BackendEnvironmentName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1785,7 +1785,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ResourceConfig.is_some():
             auto u0 = input.ResourceConfig.unwrap()
@@ -1801,7 +1801,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/getModels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}/getModels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackendAPIModelsDocument(ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1813,7 +1813,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackendAuthDocument(ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1826,7 +1826,7 @@ struct AmplifyBackendClient:
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
         labels["jobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/backend/{appId}/job/{backendEnvironmentName}/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backend/{appId}/job/{backendEnvironmentName}/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # GetBackendStorage  POST /backend/{appId}/storage/{backendEnvironmentName}/details
@@ -1836,7 +1836,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/details", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBackendStorageDocument(ResourceName=input.ResourceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1848,7 +1848,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["sessionId"] = input.SessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/backend/{appId}/challenge/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/backend/{appId}/challenge/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # ImportBackendAuth  POST /backend/{appId}/auth/{backendEnvironmentName}/import
@@ -1858,7 +1858,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/import", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}/import", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportBackendAuthDocument(IdentityPoolId=input.IdentityPoolId, NativeClientId=input.NativeClientId, UserPoolId=input.UserPoolId, WebClientId=input.WebClientId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1870,7 +1870,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/import", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}/import", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportBackendStorageDocument(BucketName=input.BucketName, ServiceName=input.ServiceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1882,7 +1882,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/job/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/job/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListBackendJobsDocument(JobId=input.JobId, MaxResults=input.MaxResults, NextToken=input.NextToken, Operation=input.Operation, Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1891,7 +1891,7 @@ struct AmplifyBackendClient:
     # errors: BadRequestException, GatewayTimeoutException, NotFoundException, TooManyRequestsException
     def list_s3_buckets(self, ListS3BucketsRequest input) -> str:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/s3Buckets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/s3Buckets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListS3BucketsDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1902,7 +1902,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveAllBackendsDocument(CleanAmplifyApp=input.CleanAmplifyApp)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1913,7 +1913,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config/remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config/remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifybackend_service(), self.region, host)
 
     # UpdateBackendAPI  POST /backend/{appId}/api/{backendEnvironmentName}
@@ -1923,7 +1923,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/api/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ResourceConfig.is_some():
             auto u0 = input.ResourceConfig.unwrap()
@@ -1939,7 +1939,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/auth/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceConfig\":" + update_backend_auth_resource_config_to_json(input.ResourceConfig))
         parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))
@@ -1952,7 +1952,7 @@ struct AmplifyBackendClient:
         auto host = endpoints.regional_host(amplifybackend_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/config/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBackendConfigDocument(LoginAuthConfig=input.LoginAuthConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1965,7 +1965,7 @@ struct AmplifyBackendClient:
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
         labels["jobId"] = input.JobId
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/job/{backendEnvironmentName}/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/job/{backendEnvironmentName}/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBackendJobDocument(Operation=input.Operation, Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplifybackend_service(), self.region, host)
@@ -1977,7 +1977,7 @@ struct AmplifyBackendClient:
         dict[str, str] labels = {}
         labels["appId"] = input.AppId
         labels["backendEnvironmentName"] = input.BackendEnvironmentName
-        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/backend/{appId}/storage/{backendEnvironmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceConfig\":" + update_backend_storage_resource_config_to_json(input.ResourceConfig))
         parts.append("\"resourceName\":" + amplifybackend_json_str(input.ResourceName))

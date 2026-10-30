@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 46 operations — 43 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 46 operations — 44 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   144 structs (72 @derive(Json)), 14 enums, 9 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1437,7 +1437,6 @@ def network_security_manager_error_from_code(str code) -> Network_Security_Manag
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateScope (document member `scopeConfiguration: ScopeConfiguration` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1558,7 +1557,7 @@ struct Network_Security_ManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
     def create_deployment(self, CreateDeploymentInput input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1594,7 +1593,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentIdentifier"] = input.deploymentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/deployments/{deploymentIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deployments/{deploymentIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1612,7 +1611,7 @@ struct Network_Security_ManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
     def create_policy(self, CreatePolicyInput input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1648,7 +1647,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["policyIdentifier"] = input.policyIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1666,7 +1665,7 @@ struct Network_Security_ManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
     def create_rule(self, CreateRuleInput input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1696,7 +1695,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1716,7 +1715,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeIdentifier"] = input.scopeIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/scopes/{scopeIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/scopes/{scopeIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1734,7 +1733,7 @@ struct Network_Security_ManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, TagPolicyViolationException, ThrottlingException, ValidationException
     def create_template(self, CreateTemplateInput input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1766,7 +1765,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["templateIdentifier"] = input.templateIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/templates/{templateIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/templates/{templateIdentifier}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1786,7 +1785,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/admin-account/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/admin-account/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # DeleteDeployment  DELETE /deployments/{deploymentIdentifier}
@@ -1795,7 +1794,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentIdentifier"] = input.deploymentIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # DeletePolicy  DELETE /policies/{policyIdentifier}
@@ -1804,7 +1803,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["policyIdentifier"] = input.policyIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # DeleteRule  DELETE /rules/{ruleIdentifier}
@@ -1813,7 +1812,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # DeleteScope  DELETE /scopes/{scopeIdentifier}
@@ -1822,7 +1821,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeIdentifier"] = input.scopeIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/scopes/{scopeIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/scopes/{scopeIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # DeleteTemplate  DELETE /templates/{templateIdentifier}
@@ -1831,14 +1830,14 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["templateIdentifier"] = input.templateIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GenerateRuleConfiguration  POST /GenerateRuleConfiguration
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def generate_rule_configuration(self, GenerateRuleConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GenerateRuleConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GenerateRuleConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateRuleConfigurationDocument(prompt=input.prompt, ruleFirewallType=input.ruleFirewallType, ruleType=input.ruleType, wafConfigDataType=input.wafConfigDataType, currentConfiguration=input.currentConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
@@ -1849,7 +1848,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/admin-account/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/admin-account/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GetDeployment  GET /deployments/{deploymentIdentifier}
@@ -1858,7 +1857,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentIdentifier"] = input.deploymentIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GetPolicy  GET /policies/{policyIdentifier}
@@ -1867,7 +1866,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["policyIdentifier"] = input.policyIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GetRule  GET /rules/{ruleIdentifier}
@@ -1876,7 +1875,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GetScope  GET /scopes/{scopeIdentifier}
@@ -1885,7 +1884,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeIdentifier"] = input.scopeIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # GetTemplate  GET /templates/{templateIdentifier}
@@ -1894,7 +1893,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["templateIdentifier"] = input.templateIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListAdminAccounts  GET /admin-accounts
@@ -1906,7 +1905,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/admin-accounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/admin-accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListAggregateResourceSynchronizationStatuses  GET /aggregate-sync-statuses
@@ -1920,7 +1919,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/aggregate-sync-statuses", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/aggregate-sync-statuses", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListDeploymentSnapshots  GET /deployments/{deploymentIdentifier}/snapshots
@@ -1934,7 +1933,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/deployments/{deploymentIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/deployments/{deploymentIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListDeployments  GET /deployments
@@ -1948,7 +1947,7 @@ struct Network_Security_ManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/deployments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/deployments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListPolicies  GET /policies
@@ -1962,7 +1961,7 @@ struct Network_Security_ManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListPolicySnapshots  GET /policies/{policyIdentifier}/snapshots
@@ -1976,7 +1975,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListResourceAssociations  GET /resource-associations
@@ -1989,7 +1988,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-associations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-associations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListResourceSynchronizationStatuses  GET /resource-sync-statuses
@@ -2004,7 +2003,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-sync-statuses", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-sync-statuses", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListRuleSnapshots  GET /rules/{ruleIdentifier}/snapshots
@@ -2018,7 +2017,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListRules  GET /rules
@@ -2032,7 +2031,7 @@ struct Network_Security_ManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListScopeSnapshots  GET /scopes/{scopeIdentifier}/snapshots
@@ -2046,7 +2045,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListScopes  GET /scopes
@@ -2060,7 +2059,7 @@ struct Network_Security_ManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/scopes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scopes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2069,7 +2068,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListTemplateSnapshots  GET /templates/{templateIdentifier}/snapshots
@@ -2083,7 +2082,7 @@ struct Network_Security_ManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateIdentifier}/snapshots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # ListTemplates  GET /templates
@@ -2097,14 +2096,14 @@ struct Network_Security_ManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
 
     # PutAdminAccount  PUT /admin-account
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ServiceUnavailableException, ThrottlingException, ValidationException
     def put_admin_account(self, PutAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/admin-account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/admin-account", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"accountId\":" + network_security_manager_json_str(input.accountId))
         parts.append("\"priority\":" + str(input.priority))
@@ -2120,7 +2119,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2129,13 +2128,24 @@ struct Network_Security_ManagerClient:
         auto bp = restjson.rest_json_document(b, network_security_manager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TagPolicyViolationException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(network_security_manager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, network_security_manager_service(), self.region, host)
+
     # UpdateDeployment  PATCH /deployments/{deploymentIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_deployment(self, UpdateDeploymentInput input) -> str:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentIdentifier"] = input.deploymentIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/deployments/{deploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
         if input.deploymentDescription.is_some():
@@ -2169,7 +2179,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["policyIdentifier"] = input.policyIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
         if input.policyDescription.is_some():
@@ -2200,7 +2210,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRuleDocument(updateToken=input.updateToken, ruleType=input.ruleType, ruleDescription=input.ruleDescription, configuration=input.configuration, isPublished=input.isPublished, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, network_security_manager_service(), self.region, host)
@@ -2211,7 +2221,7 @@ struct Network_Security_ManagerClient:
         auto host = endpoints.regional_host(network_security_manager_service(), self.region)
         dict[str, str] labels = {}
         labels["templateIdentifier"] = input.templateIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{templateIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"updateToken\":" + network_security_manager_json_str(input.updateToken))
         if input.templateDescription.is_some():

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 14 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 15 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   76 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -668,7 +668,6 @@ def health_agent_error_from_code(str code) -> ConnectHealthError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   StartMedicalScribeListeningSession (httpPayload member `inputStream` is a non-derivable structure)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
@@ -726,14 +725,14 @@ struct ConnectHealthClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions/{subscriptionId}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions/{subscriptionId}/activate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # CreateDomain  POST /domain
     # errors: ServiceQuotaExceededException
     def create_domain(self, CreateDomainInput input) -> str:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/domain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + health_agent_json_str(input.name))
         if input.kmsKeyArn.is_some():
@@ -757,7 +756,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # DeactivateSubscription  POST /domains/{domainId}/subscriptions/{subscriptionId}/deactivate
@@ -767,7 +766,7 @@ struct ConnectHealthClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions/{subscriptionId}/deactivate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{domainId}/subscriptions/{subscriptionId}/deactivate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # DeleteDomain  DELETE /domain/{domainId}
@@ -776,7 +775,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domain/{domainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domain/{domainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # GetDomain  GET /domain/{domainId}
@@ -785,7 +784,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="GET", path_template="/domain/{domainId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domain/{domainId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # GetMedicalScribeListeningSession  GET /medical-scribe-stream/domain/{domainId}/subscription/{subscriptionId}/session/{sessionId}
@@ -796,7 +795,7 @@ struct ConnectHealthClient:
         labels["sessionId"] = input.sessionId
         labels["domainId"] = input.domainId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="GET", path_template="/medical-scribe-stream/domain/{domainId}/subscription/{subscriptionId}/session/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/medical-scribe-stream/domain/{domainId}/subscription/{subscriptionId}/session/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # GetPatientInsightsJob  GET /domain/{domainId}/patient-insights-job/{jobId}
@@ -806,7 +805,7 @@ struct ConnectHealthClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/domain/{domainId}/patient-insights-job/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domain/{domainId}/patient-insights-job/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # GetSubscription  GET /domains/{domainId}/subscriptions/{subscriptionId}
@@ -816,7 +815,7 @@ struct ConnectHealthClient:
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{domainId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{domainId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # ListDomains  GET /domain
@@ -829,7 +828,7 @@ struct ConnectHealthClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # ListSubscriptions  GET /domains/{domainId}/subscriptions
@@ -843,7 +842,7 @@ struct ConnectHealthClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{domainId}/subscriptions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{domainId}/subscriptions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -851,7 +850,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # StartPatientInsightsJob  POST /domain/{domainId}/patient-insights-job
@@ -860,7 +859,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["domainId"] = input.domainId
-        auto b = binding.HttpBinding(method="POST", path_template="/domain/{domainId}/patient-insights-job", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domain/{domainId}/patient-insights-job", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"patientContext\":" + input.patientContext.to_json())
         parts.append("\"insightsContext\":" + input.insightsContext.to_json())
@@ -879,7 +878,7 @@ struct ConnectHealthClient:
         auto host = endpoints.regional_host(health_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -887,6 +886,16 @@ struct ConnectHealthClient:
         parts.append("\"tags\":" + health_agent_json_obj(m0))
         auto bp = restjson.rest_json_document(b, health_agent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, health_agent_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(health_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # Paginator for ListDomains — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: domains).

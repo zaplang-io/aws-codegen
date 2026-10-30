@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 51 operations — 50 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 51 operations — 51 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   136 structs (101 @derive(Json)), 15 enums, 9 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Chime_SDK_Messaging rest-json protocol: SigV4 service "chime" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1134,11 +1135,6 @@ def messaging_chime_error_from_code(str code) -> Chime_SDK_MessagingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListChannelMessages (httpQuery `NotBefore` has unsupported type DateTime)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1286,7 +1282,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/channel-flow", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/channel-flow", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateChannelFlowDocument(ChannelFlowArn=input.ChannelFlowArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1299,7 +1295,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Type.is_some():
             auto u0 = input.Type.unwrap()
@@ -1320,7 +1316,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["channelArn"] = input.ChannelArn
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}?operation=channel-flow-callback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}?operation=channel-flow-callback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CallbackId\":" + messaging_chime_json_str(input.CallbackId))
         if input.DeleteResource.is_some():
@@ -1336,7 +1332,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AppInstanceArn\":" + messaging_chime_json_str(input.AppInstanceArn))
         parts.append("\"Name\":" + messaging_chime_json_str(input.Name))
@@ -1388,7 +1384,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/bans", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/bans", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelBanDocument(MemberArn=input.MemberArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1397,7 +1393,7 @@ struct Chime_SDK_MessagingClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_channel_flow(self, CreateChannelFlowRequest input) -> str:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/channel-flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channel-flows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AppInstanceArn\":" + messaging_chime_json_str(input.AppInstanceArn))
         list[str] e0 = []
@@ -1423,7 +1419,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/memberships", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/memberships", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelMembershipDocument(MemberArn=input.MemberArn, Type=input.Type, SubChannelId=input.SubChannelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1436,7 +1432,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/moderators", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/moderators", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateChannelModeratorDocument(ChannelModeratorArn=input.ChannelModeratorArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1449,7 +1445,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteChannelBan  DELETE /channels/{channelArn}/bans/{memberArn}
@@ -1461,7 +1457,7 @@ struct Chime_SDK_MessagingClient:
         labels["memberArn"] = input.MemberArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/bans/{memberArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/bans/{memberArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteChannelFlow  DELETE /channel-flows/{channelFlowArn}
@@ -1470,7 +1466,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["channelFlowArn"] = input.ChannelFlowArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteChannelMembership  DELETE /channels/{channelArn}/memberships/{memberArn}
@@ -1485,7 +1481,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/memberships/{memberArn}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/memberships/{memberArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteChannelMessage  DELETE /channels/{channelArn}/messages/{messageId}
@@ -1500,7 +1496,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteChannelModerator  DELETE /channels/{channelArn}/moderators/{channelModeratorArn}
@@ -1512,7 +1508,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelModeratorArn"] = input.ChannelModeratorArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/moderators/{channelModeratorArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/moderators/{channelModeratorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DeleteMessagingStreamingConfigurations  DELETE /app-instances/{appInstanceArn}/streaming-configurations
@@ -1521,7 +1517,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannel  GET /channels/{channelArn}
@@ -1532,7 +1528,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelBan  GET /channels/{channelArn}/bans/{memberArn}
@@ -1544,7 +1540,7 @@ struct Chime_SDK_MessagingClient:
         labels["memberArn"] = input.MemberArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/bans/{memberArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/bans/{memberArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelFlow  GET /channel-flows/{channelFlowArn}
@@ -1553,7 +1549,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["channelFlowArn"] = input.ChannelFlowArn
-        auto b = binding.HttpBinding(method="GET", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelMembership  GET /channels/{channelArn}/memberships/{memberArn}
@@ -1568,7 +1564,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships/{memberArn}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships/{memberArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelMembershipForAppInstanceUser  GET /channels/{channelArn}?scope=app-instance-user-membership
@@ -1581,7 +1577,7 @@ struct Chime_SDK_MessagingClient:
         query["app-instance-user-arn"] = input.AppInstanceUserArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}?scope=app-instance-user-membership", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}?scope=app-instance-user-membership", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelModeratedByAppInstanceUser  GET /channels/{channelArn}?scope=app-instance-user-moderated-channel
@@ -1594,7 +1590,7 @@ struct Chime_SDK_MessagingClient:
         query["app-instance-user-arn"] = input.AppInstanceUserArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}?scope=app-instance-user-moderated-channel", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}?scope=app-instance-user-moderated-channel", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DescribeChannelModerator  GET /channels/{channelArn}/moderators/{channelModeratorArn}
@@ -1606,7 +1602,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelModeratorArn"] = input.ChannelModeratorArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/moderators/{channelModeratorArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/moderators/{channelModeratorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # DisassociateChannelFlow  DELETE /channels/{channelArn}/channel-flow/{channelFlowArn}
@@ -1618,7 +1614,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelFlowArn"] = input.ChannelFlowArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/channel-flow/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{channelArn}/channel-flow/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # GetChannelMembershipPreferences  GET /channels/{channelArn}/memberships/{memberArn}/preferences
@@ -1630,7 +1626,7 @@ struct Chime_SDK_MessagingClient:
         labels["memberArn"] = input.MemberArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships/{memberArn}/preferences", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships/{memberArn}/preferences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # GetChannelMessage  GET /channels/{channelArn}/messages/{messageId}
@@ -1645,7 +1641,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # GetChannelMessageStatus  GET /channels/{channelArn}/messages/{messageId}?scope=message-status
@@ -1660,7 +1656,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/messages/{messageId}?scope=message-status", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/messages/{messageId}?scope=message-status", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # GetMessagingSessionEndpoint  GET /endpoints/messaging-session
@@ -1670,7 +1666,7 @@ struct Chime_SDK_MessagingClient:
         dict[str, str] query = {}
         if input.NetworkType.is_some():
             query["network-type"] = input.NetworkType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/endpoints/messaging-session", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/endpoints/messaging-session", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # GetMessagingStreamingConfigurations  GET /app-instances/{appInstanceArn}/streaming-configurations
@@ -1679,7 +1675,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelBans  GET /channels/{channelArn}/bans
@@ -1695,7 +1691,7 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/bans", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/bans", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelFlows  GET /channel-flows
@@ -1708,7 +1704,7 @@ struct Chime_SDK_MessagingClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channel-flows", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channel-flows", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelMemberships  GET /channels/{channelArn}/memberships
@@ -1728,7 +1724,7 @@ struct Chime_SDK_MessagingClient:
             query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/memberships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelMembershipsForAppInstanceUser  GET /channels?scope=app-instance-user-memberships
@@ -1744,7 +1740,33 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=app-instance-user-memberships", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=app-instance-user-memberships", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
+
+    # ListChannelMessages  GET /channels/{channelArn}/messages
+    # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
+    def list_channel_messages(self, ListChannelMessagesRequest input) -> str:
+        auto host = endpoints.regional_host(messaging_chime_service(), self.region)
+        dict[str, str] labels = {}
+        labels["channelArn"] = input.ChannelArn
+        dict[str, str] query = {}
+        if input.SortOrder.is_some():
+            query["sort-order"] = input.SortOrder.unwrap_or("")
+        if input.NotBefore.is_some():
+            auto qt0 = datetime.strftime(input.NotBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["not-before"] = qt0
+        if input.NotAfter.is_some():
+            auto qt1 = datetime.strftime(input.NotAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["not-after"] = qt1
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.SubChannelId.is_some():
+            query["sub-channel-id"] = input.SubChannelId.unwrap_or("")
+        dict[str, str] headers = {}
+        headers["x-amz-chime-bearer"] = input.ChimeBearer
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/messages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelModerators  GET /channels/{channelArn}/moderators
@@ -1760,7 +1782,7 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/moderators", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/moderators", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannels  GET /channels
@@ -1777,7 +1799,7 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelsAssociatedWithChannelFlow  GET /channels?scope=channel-flow-associations
@@ -1790,7 +1812,7 @@ struct Chime_SDK_MessagingClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=channel-flow-associations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=channel-flow-associations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListChannelsModeratedByAppInstanceUser  GET /channels?scope=app-instance-user-moderated-channels
@@ -1806,7 +1828,7 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=app-instance-user-moderated-channels", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels?scope=app-instance-user-moderated-channels", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListSubChannels  GET /channels/{channelArn}/subchannels
@@ -1822,7 +1844,7 @@ struct Chime_SDK_MessagingClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/subchannels", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/{channelArn}/subchannels", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -1831,7 +1853,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ResourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
     # PutChannelExpirationSettings  PUT /channels/{channelArn}/expiration-settings
@@ -1843,7 +1865,7 @@ struct Chime_SDK_MessagingClient:
         dict[str, str] headers = {}
         if input.ChimeBearer.is_some():
             headers["x-amz-chime-bearer"] = input.ChimeBearer.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/expiration-settings", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/expiration-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutChannelExpirationSettingsDocument(ExpirationSettings=input.ExpirationSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1857,7 +1879,7 @@ struct Chime_SDK_MessagingClient:
         labels["memberArn"] = input.MemberArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/memberships/{memberArn}/preferences", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/memberships/{memberArn}/preferences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutChannelMembershipPreferencesDocument(Preferences=input.Preferences)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1868,7 +1890,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}/streaming-configurations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.StreamingConfigurations:
@@ -1886,7 +1908,7 @@ struct Chime_SDK_MessagingClient:
         labels["messageId"] = input.MessageId
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RedactChannelMessageDocument(SubChannelId=input.SubChannelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -1903,7 +1925,7 @@ struct Chime_SDK_MessagingClient:
         dict[str, str] headers = {}
         if input.ChimeBearer.is_some():
             headers["x-amz-chime-bearer"] = input.ChimeBearer.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/channels?operation=search", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels?operation=search", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Fields:
@@ -1920,7 +1942,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/messages", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/{channelArn}/messages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Content\":" + messaging_chime_json_str(input.Content))
         parts.append("\"Type\":" + input.Type.to_json())
@@ -1957,7 +1979,7 @@ struct Chime_SDK_MessagingClient:
     # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + messaging_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1971,7 +1993,7 @@ struct Chime_SDK_MessagingClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + messaging_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1989,7 +2011,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(Name=input.Name, Mode=input.Mode, Metadata=input.Metadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -2000,7 +2022,7 @@ struct Chime_SDK_MessagingClient:
         auto host = endpoints.regional_host(messaging_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["channelFlowArn"] = input.ChannelFlowArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channel-flows/{channelFlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Processors:
@@ -2019,7 +2041,7 @@ struct Chime_SDK_MessagingClient:
         labels["messageId"] = input.MessageId
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/messages/{messageId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelMessageDocument(Content=input.Content, Metadata=input.Metadata, SubChannelId=input.SubChannelId, ContentType=input.ContentType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, messaging_chime_service(), self.region, host)
@@ -2032,7 +2054,7 @@ struct Chime_SDK_MessagingClient:
         labels["channelArn"] = input.ChannelArn
         dict[str, str] headers = {}
         headers["x-amz-chime-bearer"] = input.ChimeBearer
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/readMarker", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/{channelArn}/readMarker", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, messaging_chime_service(), self.region, host)
 
 # Construct a Chime_SDK_MessagingClient bound to credentials + region.

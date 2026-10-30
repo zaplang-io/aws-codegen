@@ -875,7 +875,7 @@ struct CloudFrontClient:
     # errors: CloudFrontOriginAccessIdentityAlreadyExists, InconsistentQuantities, InvalidArgument, MissingBody, TooManyCloudFrontOriginAccessIdentities
     def create_cloud_front_origin_access_identity(self, CreateCloudFrontOriginAccessIdentityRequest input) -> str:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/origin-access-identity/cloudfront", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/origin-access-identity/cloudfront", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CloudFrontOriginAccessIdentityConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.CloudFrontOriginAccessIdentityConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)
@@ -889,7 +889,7 @@ struct CloudFrontClient:
     # errors: AccessDenied, CNAMEAlreadyExists, DistributionAlreadyExists, InconsistentQuantities, InvalidArgument, InvalidDefaultRootObject, InvalidErrorCode, InvalidForwardCookies, InvalidGeoRestrictionParameter, InvalidHeadersForS3Origin, InvalidLocationCode, InvalidMinimumProtocolVersion, InvalidOrigin, InvalidOriginAccessIdentity, InvalidProtocolSettings, InvalidRelativePath, InvalidRequiredProtocol, InvalidResponseCode, InvalidTTLOrder, InvalidViewerCertificate, InvalidWebACLId, MissingBody, NoSuchOrigin, TooManyCacheBehaviors, TooManyCertificates, TooManyCookieNamesInWhiteList, TooManyDistributionCNAMEs, TooManyDistributions, TooManyHeadersInForwardedValues, TooManyOrigins, TooManyTrustedSigners, TrustedSignerDoesNotExist
     def create_distribution(self, CreateDistributionRequest input) -> str:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/distribution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/distribution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("DistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.DistributionConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)
@@ -1130,7 +1130,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["DistributionId"] = input.DistributionId
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/distribution/{DistributionId}/invalidation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/distribution/{DistributionId}/invalidation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("InvalidationBatch", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto n0 = restxml.rest_xml_struct(root, "Paths")
         auto t1 = str(input.InvalidationBatch.Paths.Quantity)
@@ -1148,7 +1148,7 @@ struct CloudFrontClient:
     # errors: AccessDenied, CNAMEAlreadyExists, InconsistentQuantities, InvalidArgument, InvalidOrigin, InvalidOriginAccessIdentity, MissingBody, StreamingDistributionAlreadyExists, TooManyStreamingDistributionCNAMEs, TooManyStreamingDistributions, TooManyTrustedSigners, TrustedSignerDoesNotExist
     def create_streaming_distribution(self, CreateStreamingDistributionRequest input) -> str:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/streaming-distribution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/streaming-distribution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("StreamingDistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.StreamingDistributionConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)
@@ -1200,7 +1200,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # DeleteDistribution  DELETE /2015-09-17/distribution/{Id}
@@ -1212,7 +1212,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # DeleteStreamingDistribution  DELETE /2015-09-17/streaming-distribution/{Id}
@@ -1224,7 +1224,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/streaming-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-09-17/streaming-distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetCloudFrontOriginAccessIdentity  GET /2015-09-17/origin-access-identity/cloudfront/{Id}
@@ -1233,7 +1233,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetCloudFrontOriginAccessIdentityConfig  GET /2015-09-17/origin-access-identity/cloudfront/{Id}/config
@@ -1242,7 +1242,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetDistribution  GET /2015-09-17/distribution/{Id}
@@ -1251,7 +1251,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetDistributionConfig  GET /2015-09-17/distribution/{Id}/config
@@ -1260,7 +1260,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetInvalidation  GET /2015-09-17/distribution/{DistributionId}/invalidation/{Id}
@@ -1270,7 +1270,7 @@ struct CloudFrontClient:
         dict[str, str] labels = {}
         labels["DistributionId"] = input.DistributionId
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{DistributionId}/invalidation/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{DistributionId}/invalidation/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetStreamingDistribution  GET /2015-09-17/streaming-distribution/{Id}
@@ -1279,7 +1279,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # GetStreamingDistributionConfig  GET /2015-09-17/streaming-distribution/{Id}/config
@@ -1288,7 +1288,7 @@ struct CloudFrontClient:
         auto host = endpoints.regional_host(cloudfront_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # ListCloudFrontOriginAccessIdentities  GET /2015-09-17/origin-access-identity/cloudfront
@@ -1300,7 +1300,7 @@ struct CloudFrontClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/origin-access-identity/cloudfront", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # ListDistributions  GET /2015-09-17/distribution
@@ -1312,7 +1312,7 @@ struct CloudFrontClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # ListDistributionsByWebACLId  GET /2015-09-17/distributionsByWebACLId/{WebACLId}
@@ -1326,7 +1326,7 @@ struct CloudFrontClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distributionsByWebACLId/{WebACLId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distributionsByWebACLId/{WebACLId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # ListInvalidations  GET /2015-09-17/distribution/{DistributionId}/invalidation
@@ -1340,7 +1340,7 @@ struct CloudFrontClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{DistributionId}/invalidation", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/distribution/{DistributionId}/invalidation", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # ListStreamingDistributions  GET /2015-09-17/streaming-distribution
@@ -1352,7 +1352,7 @@ struct CloudFrontClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-09-17/streaming-distribution", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, cloudfront_service(), self.region, host)
 
     # UpdateCloudFrontOriginAccessIdentity  PUT /2015-09-17/origin-access-identity/cloudfront/{Id}/config
@@ -1364,7 +1364,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}/config", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/origin-access-identity/cloudfront/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CloudFrontOriginAccessIdentityConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.CloudFrontOriginAccessIdentityConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)
@@ -1383,7 +1383,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("DistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.DistributionConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)
@@ -1627,7 +1627,7 @@ struct CloudFrontClient:
         dict[str, str] headers = {}
         if input.IfMatch.is_some():
             headers["If-Match"] = input.IfMatch.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/streaming-distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/streaming-distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("StreamingDistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
         auto t0 = input.StreamingDistributionConfig.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t0)

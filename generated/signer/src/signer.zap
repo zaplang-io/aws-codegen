@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 15 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 19 operations — 18 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   65 structs (44 @derive(Json)), 6 enums, 10 error variants.
-#   1 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The signer rest-json protocol: SigV4 service "signer" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -608,14 +609,10 @@ def signer_error_from_code(str code) -> signerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetRevocationStatus (httpQuery `signatureTimestamp` has unsupported type DateTime)
-#   ListSigningJobs (httpQuery `isRevoked` has unsupported type bool)
-#   ListSigningProfiles (httpQuery `includeCanceled` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+#   ListSigningProfiles (httpQuery `statuses` has unsupported type list[SigningProfileStatus])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   ListSigningJobs (operation not generated)
 #   ListSigningProfiles (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -660,6 +657,12 @@ struct StartSigningJobDocument:
     str clientRequestToken
     Optional[str] profileOwner
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def signer_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound signer client: credentials + region, threaded into every operation.
 struct signerClient:
     core.Credentials creds
@@ -671,7 +674,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["profileName"] = input.profileName
-        auto b = binding.HttpBinding(method="POST", path_template="/signing-profiles/{profileName}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/signing-profiles/{profileName}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddProfilePermissionDocument(profileVersion=input.profileVersion, action=input.action, principal=input.principal, revisionId=input.revisionId, statementId=input.statementId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
@@ -682,7 +685,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["profileName"] = input.profileName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # DescribeSigningJob  GET /signing-jobs/{jobId}
@@ -691,7 +694,22 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/signing-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
+
+    # GetRevocationStatus  GET /revocations
+    # errors: AccessDeniedException, InternalServiceErrorException, TooManyRequestsException, ValidationException
+    def get_revocation_status(self, GetRevocationStatusRequest input) -> str:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        dict[str, str] query = {}
+        auto qt0 = datetime.strftime(input.signatureTimestamp, "%Y-%m-%dT%H:%M:%SZ")
+        query["signatureTimestamp"] = qt0
+        query["platformId"] = input.platformId
+        query["profileVersionArn"] = input.profileVersionArn
+        query["jobArn"] = input.jobArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["certificateHashes"] = input.certificateHashes
+        auto b = binding.HttpBinding(method="GET", path_template="/revocations", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # GetSigningPlatform  GET /signing-platforms/{platformId}
@@ -700,7 +718,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["platformId"] = input.platformId
-        auto b = binding.HttpBinding(method="GET", path_template="/signing-platforms/{platformId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-platforms/{platformId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # GetSigningProfile  GET /signing-profiles/{profileName}
@@ -712,7 +730,7 @@ struct signerClient:
         dict[str, str] query = {}
         if input.profileOwner.is_some():
             query["profileOwner"] = input.profileOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # ListProfilePermissions  GET /signing-profiles/{profileName}/permissions
@@ -724,7 +742,35 @@ struct signerClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/signing-profiles/{profileName}/permissions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-profiles/{profileName}/permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
+
+    # ListSigningJobs  GET /signing-jobs
+    # errors: AccessDeniedException, InternalServiceErrorException, TooManyRequestsException, ValidationException
+    def list_signing_jobs(self, ListSigningJobsRequest input) -> str:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        dict[str, str] query = {}
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        if input.platformId.is_some():
+            query["platformId"] = input.platformId.unwrap_or("")
+        if input.requestedBy.is_some():
+            query["requestedBy"] = input.requestedBy.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.isRevoked.is_some():
+            query["isRevoked"] = signer_bind_bool(input.isRevoked.unwrap_or(False))
+        if input.signatureExpiresBefore.is_some():
+            auto qt0 = datetime.strftime(input.signatureExpiresBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["signatureExpiresBefore"] = qt0
+        if input.signatureExpiresAfter.is_some():
+            auto qt1 = datetime.strftime(input.signatureExpiresAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["signatureExpiresAfter"] = qt1
+        if input.jobInvoker.is_some():
+            query["jobInvoker"] = input.jobInvoker.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # ListSigningPlatforms  GET /signing-platforms
@@ -742,7 +788,7 @@ struct signerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/signing-platforms", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signing-platforms", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -751,7 +797,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # PutSigningProfile  PUT /signing-profiles/{profileName}
@@ -760,7 +806,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["profileName"] = input.profileName
-        auto b = binding.HttpBinding(method="PUT", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/signing-profiles/{profileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.signingMaterial.is_some():
             auto u0 = input.signingMaterial.unwrap()
@@ -796,7 +842,7 @@ struct signerClient:
         labels["statementId"] = input.statementId
         dict[str, str] query = {}
         query["revisionId"] = input.revisionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/signing-profiles/{profileName}/permissions/{statementId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/signing-profiles/{profileName}/permissions/{statementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
 
     # RevokeSignature  PUT /signing-jobs/{jobId}/revoke
@@ -805,7 +851,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/signing-jobs/{jobId}/revoke", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/signing-jobs/{jobId}/revoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeSignatureDocument(jobOwner=input.jobOwner, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
@@ -816,7 +862,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["profileName"] = input.profileName
-        auto b = binding.HttpBinding(method="PUT", path_template="/signing-profiles/{profileName}/revoke", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/signing-profiles/{profileName}/revoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeSigningProfileDocument(profileVersion=input.profileVersion, reason=input.reason, effectiveTime=input.effectiveTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
@@ -825,7 +871,7 @@ struct signerClient:
     # errors: AccessDeniedException, InternalServiceErrorException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def sign_payload(self, SignPayloadRequest input) -> str:
         auto host = endpoints.regional_host(signer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/signing-jobs/with-payload", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/signing-jobs/with-payload", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SignPayloadDocument(profileName=input.profileName, profileOwner=input.profileOwner, payload=input.payload, payloadFormat=input.payloadFormat)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
@@ -834,7 +880,7 @@ struct signerClient:
     # errors: AccessDeniedException, InternalServiceErrorException, ResourceNotFoundException, ThrottlingException, TooManyRequestsException, ValidationException
     def start_signing_job(self, StartSigningJobRequest input) -> str:
         auto host = endpoints.regional_host(signer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/signing-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/signing-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSigningJobDocument(source=input.source, destination=input.destination, profileName=input.profileName, clientRequestToken=input.clientRequestToken, profileOwner=input.profileOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
@@ -845,7 +891,7 @@ struct signerClient:
         auto host = endpoints.regional_host(signer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -853,6 +899,30 @@ struct signerClient:
         parts.append("\"tags\":" + signer_json_obj(m0))
         auto bp = restjson.rest_json_document(b, signer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, signer_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, InternalServiceErrorException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, signer_service(), self.region, host)
+
+    # Paginator for ListSigningJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobs).
+    def paginate_list_signing_jobs(self, ListSigningJobsRequest input):
+        auto host = endpoints.regional_host(signer_service(), self.region)
+        while True:
+            auto raw = self.list_signing_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListSigningPlatforms — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: platforms).

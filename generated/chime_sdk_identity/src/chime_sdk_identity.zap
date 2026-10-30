@@ -697,7 +697,7 @@ struct Chime_SDK_IdentityClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_app_instance(self, CreateAppInstanceRequest input) -> str:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/app-instances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + identity_chime_json_str(input.Name))
         if input.Metadata.is_some():
@@ -719,7 +719,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/app-instances/{appInstanceArn}/admins", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instances/{appInstanceArn}/admins", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAppInstanceAdminDocument(AppInstanceAdminArn=input.AppInstanceAdminArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -728,7 +728,7 @@ struct Chime_SDK_IdentityClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_app_instance_bot(self, CreateAppInstanceBotRequest input) -> str:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-bots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-bots", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AppInstanceArn\":" + identity_chime_json_str(input.AppInstanceArn))
         if input.Name.is_some():
@@ -752,7 +752,7 @@ struct Chime_SDK_IdentityClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_app_instance_user(self, CreateAppInstanceUserRequest input) -> str:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AppInstanceArn\":" + identity_chime_json_str(input.AppInstanceArn))
         parts.append("\"AppInstanceUserId\":" + identity_chime_json_str(input.AppInstanceUserId))
@@ -779,7 +779,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DeleteAppInstanceAdmin  DELETE /app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}
@@ -789,7 +789,7 @@ struct Chime_SDK_IdentityClient:
         dict[str, str] labels = {}
         labels["appInstanceAdminArn"] = input.AppInstanceAdminArn
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DeleteAppInstanceBot  DELETE /app-instance-bots/{appInstanceBotArn}
@@ -798,7 +798,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceBotArn"] = input.AppInstanceBotArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DeleteAppInstanceUser  DELETE /app-instance-users/{appInstanceUserArn}
@@ -807,7 +807,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DeregisterAppInstanceUserEndpoint  DELETE /app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}
@@ -817,7 +817,7 @@ struct Chime_SDK_IdentityClient:
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
         labels["endpointId"] = input.EndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DescribeAppInstance  GET /app-instances/{appInstanceArn}
@@ -826,7 +826,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DescribeAppInstanceAdmin  GET /app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}
@@ -836,7 +836,7 @@ struct Chime_SDK_IdentityClient:
         dict[str, str] labels = {}
         labels["appInstanceAdminArn"] = input.AppInstanceAdminArn
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/admins/{appInstanceAdminArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DescribeAppInstanceBot  GET /app-instance-bots/{appInstanceBotArn}
@@ -845,7 +845,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceBotArn"] = input.AppInstanceBotArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DescribeAppInstanceUser  GET /app-instance-users/{appInstanceUserArn}
@@ -854,7 +854,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # DescribeAppInstanceUserEndpoint  GET /app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}
@@ -864,7 +864,7 @@ struct Chime_SDK_IdentityClient:
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
         labels["endpointId"] = input.EndpointId
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # GetAppInstanceRetentionSettings  GET /app-instances/{appInstanceArn}/retention-settings
@@ -873,7 +873,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/retention-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/retention-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListAppInstanceAdmins  GET /app-instances/{appInstanceArn}/admins
@@ -887,7 +887,7 @@ struct Chime_SDK_IdentityClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/admins", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances/{appInstanceArn}/admins", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListAppInstanceBots  GET /app-instance-bots
@@ -900,7 +900,7 @@ struct Chime_SDK_IdentityClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-bots", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-bots", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListAppInstanceUserEndpoints  GET /app-instance-users/{appInstanceUserArn}/endpoints
@@ -914,7 +914,7 @@ struct Chime_SDK_IdentityClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}/endpoints", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users/{appInstanceUserArn}/endpoints", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListAppInstanceUsers  GET /app-instance-users
@@ -927,7 +927,7 @@ struct Chime_SDK_IdentityClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instance-users", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListAppInstances  GET /app-instances
@@ -939,7 +939,7 @@ struct Chime_SDK_IdentityClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/app-instances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/app-instances", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -948,7 +948,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ResourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, identity_chime_service(), self.region, host)
 
     # PutAppInstanceRetentionSettings  PUT /app-instances/{appInstanceArn}/retention-settings
@@ -957,7 +957,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}/retention-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}/retention-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAppInstanceRetentionSettingsDocument(AppInstanceRetentionSettings=input.AppInstanceRetentionSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -968,7 +968,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}/expiration-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}/expiration-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAppInstanceUserExpirationSettingsDocument(ExpirationSettings=input.ExpirationSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -979,7 +979,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
-        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users/{appInstanceUserArn}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/app-instance-users/{appInstanceUserArn}/endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterAppInstanceUserEndpointDocument(Name=input.Name, Type=input.Type, ResourceArn=input.ResourceArn, EndpointAttributes=input.EndpointAttributes, ClientRequestToken=input.ClientRequestToken, AllowMessages=input.AllowMessages)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -988,7 +988,7 @@ struct Chime_SDK_IdentityClient:
     # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + identity_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1002,7 +1002,7 @@ struct Chime_SDK_IdentityClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + identity_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1018,7 +1018,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceArn"] = input.AppInstanceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instances/{appInstanceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAppInstanceDocument(Name=input.Name, Metadata=input.Metadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -1029,7 +1029,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceBotArn"] = input.AppInstanceBotArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-bots/{appInstanceBotArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAppInstanceBotDocument(Name=input.Name, Metadata=input.Metadata, Configuration=input.Configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -1040,7 +1040,7 @@ struct Chime_SDK_IdentityClient:
         auto host = endpoints.regional_host(identity_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAppInstanceUserDocument(Name=input.Name, Metadata=input.Metadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)
@@ -1052,7 +1052,7 @@ struct Chime_SDK_IdentityClient:
         dict[str, str] labels = {}
         labels["appInstanceUserArn"] = input.AppInstanceUserArn
         labels["endpointId"] = input.EndpointId
-        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/app-instance-users/{appInstanceUserArn}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAppInstanceUserEndpointDocument(Name=input.Name, AllowMessages=input.AllowMessages)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, identity_chime_service(), self.region, host)

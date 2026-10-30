@@ -2587,7 +2587,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/facets", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/facets", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SchemaFacet\":" + input.SchemaFacet.to_json())
         if input.ObjectAttributeList.is_some():
@@ -2606,7 +2606,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/apply", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/apply", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ApplySchemaDocument(PublishedSchemaArn=input.PublishedSchemaArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2617,7 +2617,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/attach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/attach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AttachObjectDocument(ParentReference=input.ParentReference, ChildReference=input.ChildReference, LinkName=input.LinkName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2628,7 +2628,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/policy/attach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/policy/attach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AttachPolicyDocument(PolicyReference=input.PolicyReference, ObjectReference=input.ObjectReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2639,7 +2639,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index/attach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index/attach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AttachToIndexDocument(IndexReference=input.IndexReference, TargetReference=input.TargetReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2650,7 +2650,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/attach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/attach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceObjectReference\":" + input.SourceObjectReference.to_json())
         parts.append("\"TargetObjectReference\":" + input.TargetObjectReference.to_json())
@@ -2670,7 +2670,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/batchread", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/batchread", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Operations:
@@ -2685,7 +2685,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/batchwrite", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/batchwrite", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Operations:
@@ -2700,7 +2700,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDirectoryDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2711,7 +2711,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
         if input.Attributes.is_some():
@@ -2735,7 +2735,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.OrderedIndexedAttributeList:
@@ -2757,7 +2757,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SchemaFacets:
@@ -2782,7 +2782,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, AccessDeniedException, InternalServiceException, InvalidArnException, LimitExceededException, RetryableConflictException, SchemaAlreadyExistsException, ValidationException
     def create_schema(self, CreateSchemaRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSchemaDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2793,7 +2793,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Facet\":" + typed_link_facet_to_json(input.Facet))
         auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
@@ -2805,7 +2805,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # DeleteFacet  PUT /amazonclouddirectory/2017-01-11/facet/delete
@@ -2814,7 +2814,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteFacetDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2825,7 +2825,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteObjectDocument(ObjectReference=input.ObjectReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2836,7 +2836,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # DeleteTypedLinkFacet  PUT /amazonclouddirectory/2017-01-11/typedlink/facet/delete
@@ -2845,7 +2845,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTypedLinkFacetDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2856,7 +2856,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index/detach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/index/detach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DetachFromIndexDocument(IndexReference=input.IndexReference, TargetReference=input.TargetReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2867,7 +2867,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/detach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/detach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DetachObjectDocument(ParentReference=input.ParentReference, LinkName=input.LinkName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2878,7 +2878,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/policy/detach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/policy/detach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DetachPolicyDocument(PolicyReference=input.PolicyReference, ObjectReference=input.ObjectReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2889,7 +2889,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/detach", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/detach", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
         auto bp = restjson.rest_json_document(b, clouddirectory_json_obj(parts))
@@ -2901,7 +2901,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/disable", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/disable", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # EnableDirectory  PUT /amazonclouddirectory/2017-01-11/directory/enable
@@ -2910,14 +2910,14 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/enable", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/directory/enable", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # GetAppliedSchemaVersion  POST /amazonclouddirectory/2017-01-11/schema/getappliedschema
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def get_applied_schema_version(self, GetAppliedSchemaVersionRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/getappliedschema", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/getappliedschema", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAppliedSchemaVersionDocument(SchemaArn=input.SchemaArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2928,7 +2928,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/directory/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/directory/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # GetFacet  POST /amazonclouddirectory/2017-01-11/facet
@@ -2937,7 +2937,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFacetDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2948,7 +2948,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
         list[str] e0 = []
@@ -2969,7 +2969,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/attributes/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/attributes/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
         parts.append("\"SchemaFacet\":" + input.SchemaFacet.to_json())
@@ -2988,7 +2988,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/information", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/information", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetObjectInformationDocument(ObjectReference=input.ObjectReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -2999,7 +2999,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/json", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/json", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, clouddirectory_service(), self.region, host)
 
     # GetTypedLinkFacetInformation  POST /amazonclouddirectory/2017-01-11/typedlink/facet/get
@@ -3008,7 +3008,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/get", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTypedLinkFacetInformationDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3017,7 +3017,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def list_applied_schema_arns(self, ListAppliedSchemaArnsRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/applied", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/applied", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAppliedSchemaArnsDocument(DirectoryArn=input.DirectoryArn, SchemaArn=input.SchemaArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3030,7 +3030,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/indices", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/indices", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAttachedIndicesDocument(TargetReference=input.TargetReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3039,7 +3039,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def list_development_schema_arns(self, ListDevelopmentSchemaArnsRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/development", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/development", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDevelopmentSchemaArnsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3048,7 +3048,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, RetryableConflictException, ValidationException
     def list_directories(self, ListDirectoriesRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/directory/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/directory/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDirectoriesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults, state=input.state)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3059,7 +3059,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet/attributes", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet/attributes", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFacetAttributesDocument(Name=input.Name, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3070,7 +3070,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet/list", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/facet/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFacetNamesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3081,7 +3081,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/incoming", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/incoming", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
         if input.FilterAttributeRanges.is_some():
@@ -3113,7 +3113,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/index/targets", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/index/targets", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RangesOnIndexedValues.is_some():
             auto u0 = input.RangesOnIndexedValues.unwrap()
@@ -3135,7 +3135,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, ResourceNotFoundException, ValidationException
     def list_managed_schema_arns(self, ListManagedSchemaArnsRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/managed", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/managed", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListManagedSchemaArnsDocument(SchemaArn=input.SchemaArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3148,7 +3148,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/attributes", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/attributes", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectAttributesDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults, FacetFilter=input.FacetFilter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3161,7 +3161,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/children", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/children", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectChildrenDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3172,7 +3172,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/parentpaths", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/parentpaths", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectParentPathsDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3185,7 +3185,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/parent", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/parent", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectParentsDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults, IncludeAllLinksToEachParent=input.IncludeAllLinksToEachParent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3198,7 +3198,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/policy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/object/policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListObjectPoliciesDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3209,7 +3209,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/outgoing", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/outgoing", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
         if input.FilterAttributeRanges.is_some():
@@ -3241,7 +3241,7 @@ struct CloudDirectoryClient:
         headers["x-amz-data-partition"] = input.DirectoryArn
         if input.ConsistencyLevel.is_some():
             headers["x-amz-consistency-level"] = input.ConsistencyLevel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/policy/attachment", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/policy/attachment", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPolicyAttachmentsDocument(PolicyReference=input.PolicyReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3250,7 +3250,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidNextTokenException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def list_published_schema_arns(self, ListPublishedSchemaArnsRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/published", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/schema/published", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPublishedSchemaArnsDocument(SchemaArn=input.SchemaArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3259,7 +3259,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidTaggingRequestException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(ResourceArn=input.ResourceArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3270,7 +3270,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/attributes", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/attributes", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTypedLinkFacetAttributesDocument(Name=input.Name, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3281,7 +3281,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/list", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTypedLinkFacetNamesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3292,7 +3292,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/policy/lookup", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/policy/lookup", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = LookupPolicyDocument(ObjectReference=input.ObjectReference, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3303,7 +3303,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DevelopmentSchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/publish", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/publish", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishSchemaDocument(Version=input.Version, MinorVersion=input.MinorVersion, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3314,7 +3314,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/json", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/json", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSchemaFromJsonDocument(Document=input.Document)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3325,7 +3325,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/facets/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/facets/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveFacetFromObjectDocument(SchemaFacet=input.SchemaFacet, ObjectReference=input.ObjectReference)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3334,7 +3334,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidTaggingRequestException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/add", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/add", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + clouddirectory_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -3348,7 +3348,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidArnException, InvalidTaggingRequestException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/remove", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/tags/remove", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + clouddirectory_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -3364,7 +3364,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/facet", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
         if input.AttributeUpdates.is_some():
@@ -3385,7 +3385,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/amazonclouddirectory/2017-01-11/typedlink/attributes/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TypedLinkSpecifier\":" + typed_link_specifier_to_json(input.TypedLinkSpecifier))
         list[str] e0 = []
@@ -3401,7 +3401,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.DirectoryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/object/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectReference\":" + input.ObjectReference.to_json())
         list[str] e0 = []
@@ -3417,7 +3417,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSchemaDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3428,7 +3428,7 @@ struct CloudDirectoryClient:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-data-partition"] = input.SchemaArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/typedlink/facet", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + clouddirectory_json_str(input.Name))
         list[str] e0 = []
@@ -3446,7 +3446,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, IncompatibleSchemaException, InternalServiceException, InvalidArnException, InvalidAttachmentException, ResourceNotFoundException, RetryableConflictException, SchemaAlreadyExistsException, ValidationException
     def upgrade_applied_schema(self, UpgradeAppliedSchemaRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/upgradeapplied", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/upgradeapplied", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradeAppliedSchemaDocument(PublishedSchemaArn=input.PublishedSchemaArn, DirectoryArn=input.DirectoryArn, DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)
@@ -3455,7 +3455,7 @@ struct CloudDirectoryClient:
     # errors: AccessDeniedException, IncompatibleSchemaException, InternalServiceException, InvalidArnException, InvalidAttachmentException, LimitExceededException, ResourceNotFoundException, RetryableConflictException, ValidationException
     def upgrade_published_schema(self, UpgradePublishedSchemaRequest input) -> str:
         auto host = endpoints.regional_host(clouddirectory_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/upgradepublished", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/amazonclouddirectory/2017-01-11/schema/upgradepublished", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradePublishedSchemaDocument(DevelopmentSchemaArn=input.DevelopmentSchemaArn, PublishedSchemaArn=input.PublishedSchemaArn, MinorVersion=input.MinorVersion, DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, clouddirectory_service(), self.region, host)

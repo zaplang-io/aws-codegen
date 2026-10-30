@@ -189,7 +189,7 @@ struct MediaStore_DataClient:
         auto host = endpoints.regional_host(data_mediastore_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["Path"] = input.Path
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_mediastore_service(), self.region, host)
 
     # DescribeObject  HEAD /{Path+}
@@ -198,7 +198,7 @@ struct MediaStore_DataClient:
         auto host = endpoints.regional_host(data_mediastore_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["Path"] = input.Path
-        auto b = binding.HttpBinding(method="HEAD", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="HEAD", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_mediastore_service(), self.region, host)
 
     # GetObject  GET /{Path+}
@@ -210,7 +210,7 @@ struct MediaStore_DataClient:
         dict[str, str] headers = {}
         if input.Range.is_some():
             headers["Range"] = input.Range.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_mediastore_service(), self.region, host)
 
     # ListItems  GET /
@@ -224,7 +224,7 @@ struct MediaStore_DataClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_mediastore_service(), self.region, host)
 
     # PutObject  PUT /{Path+}
@@ -241,8 +241,9 @@ struct MediaStore_DataClient:
         if input.StorageClass.is_some():
             headers["x-amz-storage-class"] = input.StorageClass.unwrap_or("")
         if input.UploadAvailability.is_some():
-            headers["x-amz-upload-availability"] = input.UploadAvailability.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.UploadAvailability.unwrap_or("")
+            headers["x-amz-upload-availability"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Path+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, data_mediastore_service(), self.region, host)
 

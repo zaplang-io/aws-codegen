@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 36 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 40 operations — 40 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   121 structs (82 @derive(Json)), 16 enums, 7 error variants.
-#   8 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Notifications rest-json protocol: SigV4 service "notifications" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1122,20 +1123,6 @@ def notifications_error_from_code(str code) -> NotificationsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListManagedNotificationChildEvents (httpQuery `startTime` has unsupported type DateTime)
-#   ListManagedNotificationEvents (httpQuery `startTime` has unsupported type DateTime)
-#   ListNotificationEvents (httpQuery `startTime` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListManagedNotificationChildEvents (operation not generated)
-#   ListManagedNotificationEvents (operation not generated)
-#   ListNotificationEvents (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1200,6 +1187,12 @@ struct UpdateNotificationConfigurationDocument:
     Optional[str] description
     Optional[AggregationDuration] aggregationDuration
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def notifications_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Notifications client: credentials + region, threaded into every operation.
 struct NotificationsClient:
     core.Credentials creds
@@ -1211,7 +1204,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/associate/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/associate/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateChannelDocument(notificationConfigurationArn=input.notificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1222,7 +1215,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["contactIdentifier"] = input.contactIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/contacts/associate-managed-notification/{contactIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contacts/associate-managed-notification/{contactIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateManagedNotificationAccountContactDocument(managedNotificationConfigurationArn=input.managedNotificationConfigurationArn, isSensitiveEventsSubscribed=input.isSensitiveEventsSubscribed)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1233,7 +1226,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["channelArn"] = input.channelArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/associate-managed-notification/{channelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/associate-managed-notification/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateManagedNotificationAdditionalChannelDocument(managedNotificationConfigurationArn=input.managedNotificationConfigurationArn, isSensitiveEventsSubscribed=input.isSensitiveEventsSubscribed)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1244,7 +1237,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["organizationalUnitId"] = input.organizationalUnitId
-        auto b = binding.HttpBinding(method="POST", path_template="/organizational-units/associate/{organizationalUnitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organizational-units/associate/{organizationalUnitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateOrganizationalUnitDocument(notificationConfigurationArn=input.notificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1253,7 +1246,7 @@ struct NotificationsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_event_rule(self, CreateEventRuleRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/event-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/event-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"notificationConfigurationArn\":" + notifications_json_str(input.notificationConfigurationArn))
         parts.append("\"source\":" + notifications_json_str(input.source))
@@ -1272,7 +1265,7 @@ struct NotificationsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_notification_configuration(self, CreateNotificationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/notification-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/notification-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + notifications_json_str(input.name))
         parts.append("\"description\":" + notifications_json_str(input.description))
@@ -1294,7 +1287,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # DeleteNotificationConfiguration  DELETE /notification-configurations/{arn}
@@ -1303,7 +1296,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # DeregisterNotificationHub  DELETE /notification-hubs/{notificationHubRegion}
@@ -1312,14 +1305,14 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["notificationHubRegion"] = input.notificationHubRegion
-        auto b = binding.HttpBinding(method="DELETE", path_template="/notification-hubs/{notificationHubRegion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/notification-hubs/{notificationHubRegion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # DisableNotificationsAccessForOrganization  DELETE /organization/access
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disable_notifications_access_for_organization(self) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/organization/access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/organization/access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # DisassociateChannel  POST /channels/disassociate/{arn}
@@ -1328,7 +1321,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/channels/disassociate/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels/disassociate/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateChannelDocument(notificationConfigurationArn=input.notificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1339,7 +1332,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["contactIdentifier"] = input.contactIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/contacts/disassociate-managed-notification/{contactIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contacts/disassociate-managed-notification/{contactIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateManagedNotificationAccountContactDocument(managedNotificationConfigurationArn=input.managedNotificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1350,7 +1343,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["channelArn"] = input.channelArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/disassociate-managed-notification/{channelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/disassociate-managed-notification/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateManagedNotificationAdditionalChannelDocument(managedNotificationConfigurationArn=input.managedNotificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1361,7 +1354,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["organizationalUnitId"] = input.organizationalUnitId
-        auto b = binding.HttpBinding(method="POST", path_template="/organizational-units/disassociate/{organizationalUnitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organizational-units/disassociate/{organizationalUnitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateOrganizationalUnitDocument(notificationConfigurationArn=input.notificationConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1370,7 +1363,7 @@ struct NotificationsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def enable_notifications_access_for_organization(self) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetEventRule  GET /event-rules/{arn}
@@ -1379,7 +1372,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetManagedNotificationChildEvent  GET /managed-notification-child-events/{arn}
@@ -1391,7 +1384,7 @@ struct NotificationsClient:
         dict[str, str] query = {}
         if input.locale.is_some():
             query["locale"] = input.locale.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-child-events/{arn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-child-events/{arn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetManagedNotificationConfiguration  GET /managed-notification-configurations/{arn}
@@ -1400,7 +1393,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetManagedNotificationEvent  GET /managed-notification-events/{arn}
@@ -1412,7 +1405,7 @@ struct NotificationsClient:
         dict[str, str] query = {}
         if input.locale.is_some():
             query["locale"] = input.locale.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-events/{arn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-events/{arn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetNotificationConfiguration  GET /notification-configurations/{arn}
@@ -1421,7 +1414,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetNotificationEvent  GET /notification-events/{arn}
@@ -1433,14 +1426,14 @@ struct NotificationsClient:
         dict[str, str] query = {}
         if input.locale.is_some():
             query["locale"] = input.locale.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/notification-events/{arn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notification-events/{arn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # GetNotificationsAccessForOrganization  GET /organization/access
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_notifications_access_for_organization(self) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/organization/access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organization/access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListChannels  GET /channels
@@ -1453,7 +1446,7 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListEventRules  GET /event-rules
@@ -1466,7 +1459,7 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/event-rules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-rules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListManagedNotificationChannelAssociations  GET /channels/list-managed-notification-channel-associations
@@ -1474,12 +1467,40 @@ struct NotificationsClient:
     def list_managed_notification_channel_associations(self, ListManagedNotificationChannelAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] query = {}
-        query["managedNotificationConfigurationArn"] = input.managedNotificationConfigurationArn
+        auto qt0 = input.managedNotificationConfigurationArn
+        query["managedNotificationConfigurationArn"] = qt0
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channels/list-managed-notification-channel-associations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channels/list-managed-notification-channel-associations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
+
+    # ListManagedNotificationChildEvents  GET /list-managed-notification-child-events/{aggregateManagedNotificationEventArn}
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_managed_notification_child_events(self, ListManagedNotificationChildEventsRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] labels = {}
+        auto qt0 = input.aggregateManagedNotificationEventArn
+        labels["aggregateManagedNotificationEventArn"] = qt0
+        dict[str, str] query = {}
+        if input.startTime.is_some():
+            auto qt1 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt1
+        if input.endTime.is_some():
+            auto qt2 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt2
+        if input.locale.is_some():
+            query["locale"] = input.locale.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.relatedAccount.is_some():
+            query["relatedAccount"] = input.relatedAccount.unwrap_or("")
+        if input.organizationalUnitId.is_some():
+            query["organizationalUnitId"] = input.organizationalUnitId.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-managed-notification-child-events/{aggregateManagedNotificationEventArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListManagedNotificationConfigurations  GET /managed-notification-configurations
@@ -1493,7 +1514,36 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
+
+    # ListManagedNotificationEvents  GET /managed-notification-events
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_managed_notification_events(self, ListManagedNotificationEventsRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] query = {}
+        if input.startTime.is_some():
+            auto qt0 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt0
+        if input.endTime.is_some():
+            auto qt1 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt1
+        if input.locale.is_some():
+            query["locale"] = input.locale.unwrap_or("")
+        if input.source.is_some():
+            query["source"] = input.source.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.organizationalUnitId.is_some():
+            query["organizationalUnitId"] = input.organizationalUnitId.unwrap_or("")
+        if input.relatedAccount.is_some():
+            query["relatedAccount"] = input.relatedAccount.unwrap_or("")
+        if input.includeSensitiveEvents.is_some():
+            auto qt2 = notifications_bind_bool(input.includeSensitiveEvents.unwrap_or(False))
+            query["includeSensitiveEvents"] = qt2
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-notification-events", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListMemberAccounts  GET /list-member-accounts
@@ -1512,7 +1562,7 @@ struct NotificationsClient:
             query["status"] = input.status.unwrap_or("")
         if input.organizationalUnitId.is_some():
             query["organizationalUnitId"] = input.organizationalUnitId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-member-accounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-member-accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListNotificationConfigurations  GET /notification-configurations
@@ -1532,7 +1582,37 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/notification-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notification-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
+
+    # ListNotificationEvents  GET /notification-events
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_notification_events(self, ListNotificationEventsRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] query = {}
+        if input.startTime.is_some():
+            auto qt0 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt0
+        if input.endTime.is_some():
+            auto qt1 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt1
+        if input.locale.is_some():
+            query["locale"] = input.locale.unwrap_or("")
+        if input.source.is_some():
+            query["source"] = input.source.unwrap_or("")
+        if input.includeChildEvents.is_some():
+            auto qt2 = notifications_bind_bool(input.includeChildEvents.unwrap_or(False))
+            query["includeChildEvents"] = qt2
+        if input.aggregateNotificationEventArn.is_some():
+            auto qt3 = input.aggregateNotificationEventArn.unwrap_or("")
+            query["aggregateNotificationEventArn"] = qt3
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.organizationalUnitId.is_some():
+            query["organizationalUnitId"] = input.organizationalUnitId.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/notification-events", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListNotificationHubs  GET /notification-hubs
@@ -1544,7 +1624,7 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/notification-hubs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notification-hubs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListOrganizationalUnits  GET /organizational-units
@@ -1557,7 +1637,7 @@ struct NotificationsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/organizational-units", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organizational-units", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{arn}
@@ -1566,14 +1646,14 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
 
     # RegisterNotificationHub  POST /notification-hubs
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def register_notification_hub(self, RegisterNotificationHubRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/notification-hubs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/notification-hubs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterNotificationHubDocument(notificationHubRegion=input.notificationHubRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1584,7 +1664,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1593,13 +1673,24 @@ struct NotificationsClient:
         auto bp = restjson.rest_json_document(b, notifications_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{arn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        dict[str, str] labels = {}
+        labels["arn"] = input.arn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, notifications_service(), self.region, host)
+
     # UpdateEventRule  PUT /event-rules/{arn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_event_rule(self, UpdateEventRuleRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/event-rules/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.eventPattern.is_some():
             auto u0 = input.eventPattern.unwrap()
@@ -1617,7 +1708,7 @@ struct NotificationsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_managed_notification_channel_association(self, UpdateManagedNotificationChannelAssociationRequest input) -> str:
         auto host = endpoints.regional_host(notifications_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels/update-managed-notification-channel-association", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels/update-managed-notification-channel-association", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateManagedNotificationChannelAssociationDocument(managedNotificationConfigurationArn=input.managedNotificationConfigurationArn, channelIdentifier=input.channelIdentifier, isSensitiveEventsSubscribed=input.isSensitiveEventsSubscribed)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1628,7 +1719,7 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/notification-configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNotificationConfigurationDocument(name=input.name, description=input.description, aggregationDuration=input.aggregationDuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, notifications_service(), self.region, host)
@@ -1672,12 +1763,38 @@ struct NotificationsClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListManagedNotificationChildEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: managedNotificationChildEvents).
+    def paginate_list_managed_notification_child_events(self, ListManagedNotificationChildEventsRequest input):
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        while True:
+            auto raw = self.list_managed_notification_child_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListManagedNotificationConfigurations — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: managedNotificationConfigurations).
     def paginate_list_managed_notification_configurations(self, ListManagedNotificationConfigurationsRequest input):
         auto host = endpoints.regional_host(notifications_service(), self.region)
         while True:
             auto raw = self.list_managed_notification_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListManagedNotificationEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: managedNotificationEvents).
+    def paginate_list_managed_notification_events(self, ListManagedNotificationEventsRequest input):
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        while True:
+            auto raw = self.list_managed_notification_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1704,6 +1821,19 @@ struct NotificationsClient:
         auto host = endpoints.regional_host(notifications_service(), self.region)
         while True:
             auto raw = self.list_notification_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNotificationEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: notificationEvents).
+    def paginate_list_notification_events(self, ListNotificationEventsRequest input):
+        auto host = endpoints.regional_host(notifications_service(), self.region)
+        while True:
+            auto raw = self.list_notification_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -424,7 +424,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidCodecPrivateDataException, InvalidMediaFrameException, MissingCodecPrivateDataException, NoDataRetentionException, NotAuthorizedException, ResourceNotFoundException, UnsupportedStreamMediaTypeException
     def get_clip(self, GetClipInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getClip", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getClip", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetClipDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, ClipFragmentSelector=input.ClipFragmentSelector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -433,7 +433,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidCodecPrivateDataException, MissingCodecPrivateDataException, NoDataRetentionException, NotAuthorizedException, ResourceNotFoundException, UnsupportedStreamMediaTypeException
     def get_dash_streaming_session_url(self, GetDASHStreamingSessionURLInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getDASHStreamingSessionURL", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getDASHStreamingSessionURL", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDASHStreamingSessionURLDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, PlaybackMode=input.PlaybackMode, DisplayFragmentTimestamp=input.DisplayFragmentTimestamp, DisplayFragmentNumber=input.DisplayFragmentNumber, DASHFragmentSelector=input.DASHFragmentSelector, Expires=input.Expires, MaxManifestFragmentResults=input.MaxManifestFragmentResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -442,7 +442,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidCodecPrivateDataException, MissingCodecPrivateDataException, NoDataRetentionException, NotAuthorizedException, ResourceNotFoundException, UnsupportedStreamMediaTypeException
     def get_hls_streaming_session_url(self, GetHLSStreamingSessionURLInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getHLSStreamingSessionURL", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getHLSStreamingSessionURL", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetHLSStreamingSessionURLDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, PlaybackMode=input.PlaybackMode, HLSFragmentSelector=input.HLSFragmentSelector, ContainerFormat=input.ContainerFormat, DiscontinuityMode=input.DiscontinuityMode, DisplayFragmentTimestamp=input.DisplayFragmentTimestamp, Expires=input.Expires, MaxMediaPlaylistFragmentResults=input.MaxMediaPlaylistFragmentResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -451,7 +451,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, NotAuthorizedException, ResourceNotFoundException
     def get_images(self, GetImagesInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getImages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getImages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StreamName.is_some():
             auto u0 = input.StreamName.unwrap()
@@ -491,7 +491,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def get_media_for_fragment_list(self, GetMediaForFragmentListInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getMediaForFragmentList", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getMediaForFragmentList", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StreamName.is_some():
             auto u0 = input.StreamName.unwrap()
@@ -510,7 +510,7 @@ struct Kinesis_Video_Archived_MediaClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def list_fragments(self, ListFragmentsInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listFragments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listFragments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFragmentsDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, MaxResults=input.MaxResults, NextToken=input.NextToken, FragmentSelector=input.FragmentSelector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)

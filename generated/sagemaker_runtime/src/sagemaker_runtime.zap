@@ -210,24 +210,30 @@ struct SageMaker_RuntimeClient:
         if input.Accept.is_some():
             headers["Accept"] = input.Accept.unwrap_or("")
         if input.CustomAttributes.is_some():
-            headers["X-Amzn-SageMaker-Custom-Attributes"] = input.CustomAttributes.unwrap_or("")
+            auto qt0 = input.CustomAttributes.unwrap_or("")
+            headers["X-Amzn-SageMaker-Custom-Attributes"] = qt0
         if input.TargetModel.is_some():
             headers["X-Amzn-SageMaker-Target-Model"] = input.TargetModel.unwrap_or("")
         if input.TargetVariant.is_some():
-            headers["X-Amzn-SageMaker-Target-Variant"] = input.TargetVariant.unwrap_or("")
+            auto qt1 = input.TargetVariant.unwrap_or("")
+            headers["X-Amzn-SageMaker-Target-Variant"] = qt1
         if input.TargetContainerHostname.is_some():
-            headers["X-Amzn-SageMaker-Target-Container-Hostname"] = input.TargetContainerHostname.unwrap_or("")
+            auto qt2 = input.TargetContainerHostname.unwrap_or("")
+            headers["X-Amzn-SageMaker-Target-Container-Hostname"] = qt2
         if input.InferenceId.is_some():
             headers["X-Amzn-SageMaker-Inference-Id"] = input.InferenceId.unwrap_or("")
         if input.EnableExplanations.is_some():
-            headers["X-Amzn-SageMaker-Enable-Explanations"] = input.EnableExplanations.unwrap_or("")
+            auto qt3 = input.EnableExplanations.unwrap_or("")
+            headers["X-Amzn-SageMaker-Enable-Explanations"] = qt3
         if input.InferenceComponentName.is_some():
-            headers["X-Amzn-SageMaker-Inference-Component"] = input.InferenceComponentName.unwrap_or("")
+            auto qt4 = input.InferenceComponentName.unwrap_or("")
+            headers["X-Amzn-SageMaker-Inference-Component"] = qt4
         if input.SessionId.is_some():
             headers["X-Amzn-SageMaker-Session-Id"] = input.SessionId.unwrap_or("")
         if input.PrefixAwareId.is_some():
-            headers["X-Amzn-SageMaker-Prefix-Aware-Id"] = input.PrefixAwareId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/invocations", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt5 = input.PrefixAwareId.unwrap_or("")
+            headers["X-Amzn-SageMaker-Prefix-Aware-Id"] = qt5
+        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/invocations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, runtime_sagemaker_service(), self.region, host)
 
@@ -243,20 +249,25 @@ struct SageMaker_RuntimeClient:
         if input.Accept.is_some():
             headers["X-Amzn-SageMaker-Accept"] = input.Accept.unwrap_or("")
         if input.CustomAttributes.is_some():
-            headers["X-Amzn-SageMaker-Custom-Attributes"] = input.CustomAttributes.unwrap_or("")
+            auto qt0 = input.CustomAttributes.unwrap_or("")
+            headers["X-Amzn-SageMaker-Custom-Attributes"] = qt0
         if input.InferenceId.is_some():
             headers["X-Amzn-SageMaker-Inference-Id"] = input.InferenceId.unwrap_or("")
         if input.InputLocation.is_some():
-            headers["X-Amzn-SageMaker-InputLocation"] = input.InputLocation.unwrap_or("")
+            auto qt1 = input.InputLocation.unwrap_or("")
+            headers["X-Amzn-SageMaker-InputLocation"] = qt1
         if input.S3OutputPathExtension.is_some():
-            headers["X-Amzn-SageMaker-S3OutputPathExtension"] = input.S3OutputPathExtension.unwrap_or("")
+            auto qt2 = input.S3OutputPathExtension.unwrap_or("")
+            headers["X-Amzn-SageMaker-S3OutputPathExtension"] = qt2
         if input.Filename.is_some():
             headers["X-Amzn-SageMaker-Filename"] = input.Filename.unwrap_or("")
         if input.RequestTTLSeconds.is_some():
-            headers["X-Amzn-SageMaker-RequestTTLSeconds"] = str(input.RequestTTLSeconds.unwrap_or(0))
+            auto qt3 = str(input.RequestTTLSeconds.unwrap_or(0))
+            headers["X-Amzn-SageMaker-RequestTTLSeconds"] = qt3
         if input.InvocationTimeoutSeconds.is_some():
-            headers["X-Amzn-SageMaker-InvocationTimeoutSeconds"] = str(input.InvocationTimeoutSeconds.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/async-invocations", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt4 = str(input.InvocationTimeoutSeconds.unwrap_or(0))
+            headers["X-Amzn-SageMaker-InvocationTimeoutSeconds"] = qt4
+        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/async-invocations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, runtime_sagemaker_service(), self.region, host)
 
@@ -272,20 +283,25 @@ struct SageMaker_RuntimeClient:
         if input.Accept.is_some():
             headers["X-Amzn-SageMaker-Accept"] = input.Accept.unwrap_or("")
         if input.CustomAttributes.is_some():
-            headers["X-Amzn-SageMaker-Custom-Attributes"] = input.CustomAttributes.unwrap_or("")
+            auto qt0 = input.CustomAttributes.unwrap_or("")
+            headers["X-Amzn-SageMaker-Custom-Attributes"] = qt0
         if input.TargetVariant.is_some():
-            headers["X-Amzn-SageMaker-Target-Variant"] = input.TargetVariant.unwrap_or("")
+            auto qt1 = input.TargetVariant.unwrap_or("")
+            headers["X-Amzn-SageMaker-Target-Variant"] = qt1
         if input.TargetContainerHostname.is_some():
-            headers["X-Amzn-SageMaker-Target-Container-Hostname"] = input.TargetContainerHostname.unwrap_or("")
+            auto qt2 = input.TargetContainerHostname.unwrap_or("")
+            headers["X-Amzn-SageMaker-Target-Container-Hostname"] = qt2
         if input.InferenceId.is_some():
             headers["X-Amzn-SageMaker-Inference-Id"] = input.InferenceId.unwrap_or("")
         if input.InferenceComponentName.is_some():
-            headers["X-Amzn-SageMaker-Inference-Component"] = input.InferenceComponentName.unwrap_or("")
+            auto qt3 = input.InferenceComponentName.unwrap_or("")
+            headers["X-Amzn-SageMaker-Inference-Component"] = qt3
         if input.SessionId.is_some():
             headers["X-Amzn-SageMaker-Session-Id"] = input.SessionId.unwrap_or("")
         if input.PrefixAwareId.is_some():
-            headers["X-Amzn-SageMaker-Prefix-Aware-Id"] = input.PrefixAwareId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/invocations-response-stream", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt4 = input.PrefixAwareId.unwrap_or("")
+            headers["X-Amzn-SageMaker-Prefix-Aware-Id"] = qt4
+        auto b = binding.HttpBinding(method="POST", path_template="/endpoints/{EndpointName}/invocations-response-stream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, runtime_sagemaker_service(), self.region, host)
 

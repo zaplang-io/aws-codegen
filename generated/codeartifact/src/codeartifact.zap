@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 45 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 48 operations — 47 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   132 structs (85 @derive(Json)), 15 enums, 7 error variants.
-#   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -1234,13 +1234,7 @@ def codeartifact_error_from_code(str code) -> codeartifactError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListAssociatedPackages (httpQuery `preview` has unsupported type bool)
-#   PublishPackageVersion (httpQuery `unfinished` has unsupported type bool)
 #   UpdatePackageGroupOriginConfiguration (document member `restrictions: dict[PackageGroupOriginRestrictionType, PackageGroupOriginRestrictionMode]` is not serializable)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListAssociatedPackages (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1277,6 +1271,12 @@ struct UpdatePackageGroupDocument:
     Optional[str] contactInfo
     Optional[str] description
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def codeartifact_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound codeartifact client: credentials + region, threaded into every operation.
 struct codeartifactClient:
     core.Credentials creds
@@ -1292,7 +1292,7 @@ struct codeartifactClient:
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
         query["external-connection"] = input.externalConnection
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # CopyPackageVersions  POST /v1/package/versions/copy
@@ -1309,7 +1309,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/copy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/copy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.versions.is_some():
             auto u0 = input.versions.unwrap()
@@ -1338,7 +1338,7 @@ struct codeartifactClient:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
         dict[str, str] query = {}
         query["domain"] = input.domain
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.encryptionKey.is_some():
             auto u0 = input.encryptionKey.unwrap()
@@ -1360,7 +1360,7 @@ struct codeartifactClient:
         query["domain"] = input.domain
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packageGroup\":" + codeartifact_json_str(input.packageGroup))
         if input.contactInfo.is_some():
@@ -1387,7 +1387,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1415,7 +1415,7 @@ struct codeartifactClient:
         query["domain"] = input.domain
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DeleteDomainPermissionsPolicy  DELETE /v1/domain/permissions/policy
@@ -1428,7 +1428,7 @@ struct codeartifactClient:
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         if input.policyRevision.is_some():
             query["policy-revision"] = input.policyRevision.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DeletePackage  DELETE /v1/package
@@ -1444,7 +1444,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/package", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/package", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DeletePackageGroup  DELETE /v1/package-group
@@ -1456,7 +1456,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["package-group"] = input.packageGroup
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DeletePackageVersions  POST /v1/package/versions/delete
@@ -1472,7 +1472,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/delete", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/delete", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.versions:
@@ -1493,7 +1493,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DeleteRepositoryPermissionsPolicy  DELETE /v1/repository/permissions/policies
@@ -1507,7 +1507,7 @@ struct codeartifactClient:
         query["repository"] = input.repository
         if input.policyRevision.is_some():
             query["policy-revision"] = input.policyRevision.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository/permissions/policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository/permissions/policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DescribeDomain  GET /v1/domain
@@ -1518,7 +1518,7 @@ struct codeartifactClient:
         query["domain"] = input.domain
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DescribePackage  GET /v1/package
@@ -1534,7 +1534,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DescribePackageGroup  GET /v1/package-group
@@ -1546,7 +1546,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["package-group"] = input.packageGroup
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DescribePackageVersion  GET /v1/package/version
@@ -1563,7 +1563,7 @@ struct codeartifactClient:
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
         query["version"] = input.packageVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DescribeRepository  GET /v1/repository
@@ -1575,7 +1575,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DisassociateExternalConnection  DELETE /v1/repository/external-connection
@@ -1588,7 +1588,7 @@ struct codeartifactClient:
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
         query["external-connection"] = input.externalConnection
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/repository/external-connection", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # DisposePackageVersions  POST /v1/package/versions/dispose
@@ -1604,7 +1604,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/dispose", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/dispose", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.versions:
@@ -1634,7 +1634,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/get-associated-package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/get-associated-package-group", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetAuthorizationToken  POST /v1/authorization-token
@@ -1647,7 +1647,7 @@ struct codeartifactClient:
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         if input.durationSeconds.is_some():
             query["duration"] = str(input.durationSeconds.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/authorization-token", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/authorization-token", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetDomainPermissionsPolicy  GET /v1/domain/permissions/policy
@@ -1658,7 +1658,7 @@ struct codeartifactClient:
         query["domain"] = input.domain
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetPackageVersionAsset  GET /v1/package/version/asset
@@ -1678,7 +1678,7 @@ struct codeartifactClient:
         query["asset"] = input.asset
         if input.packageVersionRevision.is_some():
             query["revision"] = input.packageVersionRevision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version/asset", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version/asset", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetPackageVersionReadme  GET /v1/package/version/readme
@@ -1695,7 +1695,7 @@ struct codeartifactClient:
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
         query["version"] = input.packageVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version/readme", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package/version/readme", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetRepositoryEndpoint  GET /v1/repository/endpoint
@@ -1710,7 +1710,7 @@ struct codeartifactClient:
         query["format"] = input.format
         if input.endpointType.is_some():
             query["endpointType"] = input.endpointType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository/endpoint", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository/endpoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # GetRepositoryPermissionsPolicy  GET /v1/repository/permissions/policy
@@ -1722,7 +1722,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository/permissions/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/repository/permissions/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListAllowedRepositoriesForGroup  GET /v1/package-group-allowed-repositories
@@ -1739,14 +1739,32 @@ struct codeartifactClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/package-group-allowed-repositories", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/package-group-allowed-repositories", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
+
+    # ListAssociatedPackages  GET /v1/list-associated-packages
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def list_associated_packages(self, ListAssociatedPackagesRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["package-group"] = input.packageGroup
+        if input.maxResults.is_some():
+            query["max-results"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["next-token"] = input.nextToken.unwrap_or("")
+        if input.preview.is_some():
+            query["preview"] = codeartifact_bind_bool(input.preview.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/list-associated-packages", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListDomains  POST /v1/domains
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_domains(self, ListDomainsRequest input) -> str:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDomainsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
@@ -1765,7 +1783,7 @@ struct codeartifactClient:
             query["next-token"] = input.nextToken.unwrap_or("")
         if input.prefix.is_some():
             query["prefix"] = input.prefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListPackageVersionAssets  POST /v1/package/version/assets
@@ -1786,7 +1804,7 @@ struct codeartifactClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/version/assets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/version/assets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListPackageVersionDependencies  POST /v1/package/version/dependencies
@@ -1805,7 +1823,7 @@ struct codeartifactClient:
         query["version"] = input.packageVersion
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/version/dependencies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/version/dependencies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListPackageVersions  POST /v1/package/versions
@@ -1831,7 +1849,7 @@ struct codeartifactClient:
             query["next-token"] = input.nextToken.unwrap_or("")
         if input.originType.is_some():
             query["originType"] = input.originType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListPackages  POST /v1/packages
@@ -1857,7 +1875,7 @@ struct codeartifactClient:
             query["publish"] = input.publish.unwrap_or("")
         if input.upstream.is_some():
             query["upstream"] = input.upstream.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/packages", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/packages", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListRepositories  POST /v1/repositories
@@ -1871,7 +1889,7 @@ struct codeartifactClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/repositories", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/repositories", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListRepositoriesInDomain  POST /v1/domain/repositories
@@ -1890,7 +1908,7 @@ struct codeartifactClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/domain/repositories", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/domain/repositories", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListSubPackageGroups  POST /v1/package-groups/sub-groups
@@ -1906,7 +1924,7 @@ struct codeartifactClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-groups/sub-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package-groups/sub-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
 
     # ListTagsForResource  POST /v1/tags
@@ -1915,14 +1933,38 @@ struct codeartifactClient:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeartifact_service(), self.region, host)
+
+    # PublishPackageVersion  POST /v1/package/version/publish
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def publish_package_version(self, PublishPackageVersionRequest input) -> str:
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        dict[str, str] query = {}
+        query["domain"] = input.domain
+        if input.domainOwner.is_some():
+            query["domain-owner"] = input.domainOwner.unwrap_or("")
+        query["repository"] = input.repository
+        query["format"] = input.format
+        if input.namespace.is_some():
+            query["namespace"] = input.namespace.unwrap_or("")
+        query["package"] = input.package
+        query["version"] = input.packageVersion
+        query["asset"] = input.assetName
+        if input.unfinished.is_some():
+            auto qt0 = codeartifact_bind_bool(input.unfinished.unwrap_or(False))
+            query["unfinished"] = qt0
+        dict[str, str] headers = {}
+        headers["x-amz-content-sha256"] = input.assetSHA256
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/version/publish", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, str(input.assetContent), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
 
     # PutDomainPermissionsPolicy  PUT /v1/domain/permissions/policy
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_domain_permissions_policy(self, PutDomainPermissionsPolicyRequest input) -> str:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/domain/permissions/policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDomainPermissionsPolicyDocument(domain=input.domain, domainOwner=input.domainOwner, policyRevision=input.policyRevision, policyDocument=input.policyDocument)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
@@ -1940,7 +1982,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutPackageOriginConfigurationDocument(restrictions=input.restrictions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
@@ -1954,7 +1996,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/repository/permissions/policy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/repository/permissions/policy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRepositoryPermissionsPolicyDocument(policyRevision=input.policyRevision, policyDocument=input.policyDocument)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
@@ -1965,7 +2007,7 @@ struct codeartifactClient:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tag", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -1980,7 +2022,7 @@ struct codeartifactClient:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/untag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/untag", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tagKeys:
@@ -1997,7 +2039,7 @@ struct codeartifactClient:
         query["domain"] = input.domain
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/package-group", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageGroupDocument(packageGroup=input.packageGroup, contactInfo=input.contactInfo, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeartifact_service(), self.region, host)
@@ -2015,7 +2057,7 @@ struct codeartifactClient:
         if input.namespace.is_some():
             query["namespace"] = input.namespace.unwrap_or("")
         query["package"] = input.package
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/update_status", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/package/versions/update_status", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.versions:
@@ -2043,7 +2085,7 @@ struct codeartifactClient:
         if input.domainOwner.is_some():
             query["domain-owner"] = input.domainOwner.unwrap_or("")
         query["repository"] = input.repository
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/repository", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -2063,6 +2105,19 @@ struct codeartifactClient:
         auto host = endpoints.regional_host(codeartifact_service(), self.region)
         while True:
             auto raw = self.list_allowed_repositories_for_group(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAssociatedPackages — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: packages).
+    def paginate_list_associated_packages(self, ListAssociatedPackagesRequest input):
+        auto host = endpoints.regional_host(codeartifact_service(), self.region)
+        while True:
+            auto raw = self.list_associated_packages(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

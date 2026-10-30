@@ -488,7 +488,7 @@ struct Lex_Runtime_ServiceClient:
         labels["botName"] = input.botName
         labels["botAlias"] = input.botAlias
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, runtime_lex_service(), self.region, host)
 
     # GetSession  GET /bot/{botName}/alias/{botAlias}/user/{userId}/session/
@@ -502,7 +502,7 @@ struct Lex_Runtime_ServiceClient:
         dict[str, str] query = {}
         if input.checkpointLabelFilter.is_some():
             query["checkpointLabelFilter"] = input.checkpointLabelFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, runtime_lex_service(), self.region, host)
 
     # PostContent  POST /bot/{botName}/alias/{botAlias}/user/{userId}/content
@@ -515,15 +515,17 @@ struct Lex_Runtime_ServiceClient:
         labels["userId"] = input.userId
         dict[str, str] headers = {}
         if input.sessionAttributes.is_some():
-            headers["x-amz-lex-session-attributes"] = input.sessionAttributes.unwrap_or("")
+            auto qt0 = input.sessionAttributes.unwrap_or("")
+            headers["x-amz-lex-session-attributes"] = qt0
         if input.requestAttributes.is_some():
-            headers["x-amz-lex-request-attributes"] = input.requestAttributes.unwrap_or("")
+            auto qt1 = input.requestAttributes.unwrap_or("")
+            headers["x-amz-lex-request-attributes"] = qt1
         headers["Content-Type"] = input.contentType
         if input.accept.is_some():
             headers["Accept"] = input.accept.unwrap_or("")
         if input.activeContexts.is_some():
             headers["x-amz-lex-active-contexts"] = input.activeContexts.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/content", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.inputStream), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, runtime_lex_service(), self.region, host)
 
@@ -535,7 +537,7 @@ struct Lex_Runtime_ServiceClient:
         labels["botName"] = input.botName
         labels["botAlias"] = input.botAlias
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/text", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/text", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sessionAttributes.is_some():
             auto u0 = input.sessionAttributes.unwrap()
@@ -570,7 +572,7 @@ struct Lex_Runtime_ServiceClient:
         dict[str, str] headers = {}
         if input.accept.is_some():
             headers["Accept"] = input.accept.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bot/{botName}/alias/{botAlias}/user/{userId}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sessionAttributes.is_some():
             auto u0 = input.sessionAttributes.unwrap()

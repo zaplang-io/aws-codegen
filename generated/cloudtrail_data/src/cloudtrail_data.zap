@@ -140,7 +140,7 @@ struct CloudTrail_DataClient:
         query["channelArn"] = input.channelArn
         if input.externalId.is_some():
             query["externalId"] = input.externalId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/PutAuditEvents", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutAuditEvents", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.auditEvents:

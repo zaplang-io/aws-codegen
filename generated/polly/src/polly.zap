@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 8 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 10 operations — 9 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   58 structs (44 @derive(Json)), 10 enums, 24 error variants.
-#   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -721,12 +721,7 @@ def polly_error_from_code(str code) -> PollyError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   DescribeVoices (httpQuery `IncludeAdditionalLanguageCodes` has unsupported type bool)
 #   StartSpeechSynthesisStream (httpHeader `LexiconNames` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeVoices (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -735,6 +730,12 @@ def polly_error_from_code(str code) -> PollyError:
 struct PutLexiconDocument:
     # document members of PutLexicon
     str Content
+
+# Render a bool bound to a URI/query/header slot as its wire text.
+def polly_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound Polly client: credentials + region, threaded into every operation.
 struct PollyClient:
@@ -747,7 +748,24 @@ struct PollyClient:
         auto host = endpoints.regional_host(polly_service(), self.region)
         dict[str, str] labels = {}
         labels["LexiconName"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
+
+    # DescribeVoices  GET /v1/voices
+    # errors: InvalidNextTokenException, ServiceFailureException
+    def describe_voices(self, DescribeVoicesInput input) -> str:
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        dict[str, str] query = {}
+        if input.Engine.is_some():
+            query["Engine"] = input.Engine.unwrap_or("")
+        if input.LanguageCode.is_some():
+            query["LanguageCode"] = input.LanguageCode.unwrap_or("")
+        if input.IncludeAdditionalLanguageCodes.is_some():
+            auto qt0 = polly_bind_bool(input.IncludeAdditionalLanguageCodes.unwrap_or(False))
+            query["IncludeAdditionalLanguageCodes"] = qt0
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/voices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
     # GetLexicon  GET /v1/lexicons/{LexiconName}
@@ -756,7 +774,7 @@ struct PollyClient:
         auto host = endpoints.regional_host(polly_service(), self.region)
         dict[str, str] labels = {}
         labels["LexiconName"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
     # GetSpeechSynthesisTask  GET /v1/synthesisTasks/{TaskId}
@@ -765,7 +783,7 @@ struct PollyClient:
         auto host = endpoints.regional_host(polly_service(), self.region)
         dict[str, str] labels = {}
         labels["TaskId"] = input.TaskId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/synthesisTasks/{TaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/synthesisTasks/{TaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
     # ListLexicons  GET /v1/lexicons
@@ -775,7 +793,7 @@ struct PollyClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/lexicons", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/lexicons", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
     # ListSpeechSynthesisTasks  GET /v1/synthesisTasks
@@ -789,7 +807,7 @@ struct PollyClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.Status.is_some():
             query["Status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, polly_service(), self.region, host)
 
     # PutLexicon  PUT /v1/lexicons/{LexiconName}
@@ -798,7 +816,7 @@ struct PollyClient:
         auto host = endpoints.regional_host(polly_service(), self.region)
         dict[str, str] labels = {}
         labels["LexiconName"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/lexicons/{LexiconName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutLexiconDocument(Content=input.Content)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
@@ -807,7 +825,7 @@ struct PollyClient:
     # errors: EngineNotSupportedException, InvalidS3BucketException, InvalidS3KeyException, InvalidSampleRateException, InvalidSnsTopicArnException, InvalidSsmlException, LanguageNotSupportedException, LexiconNotFoundException, MarksNotSupportedForFormatException, ServiceFailureException, SsmlMarksNotSupportedForTextTypeException, TextLengthExceededException
     def start_speech_synthesis_task(self, StartSpeechSynthesisTaskInput input) -> str:
         auto host = endpoints.regional_host(polly_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/synthesisTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Engine.is_some():
             auto u0 = input.Engine.unwrap()
@@ -850,7 +868,7 @@ struct PollyClient:
     # errors: EngineNotSupportedException, InvalidSampleRateException, InvalidSsmlException, LanguageNotSupportedException, LexiconNotFoundException, MarksNotSupportedForFormatException, ServiceFailureException, SsmlMarksNotSupportedForTextTypeException, TextLengthExceededException
     def synthesize_speech(self, SynthesizeSpeechInput input) -> str:
         auto host = endpoints.regional_host(polly_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/speech", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/speech", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Engine.is_some():
             auto u0 = input.Engine.unwrap()
@@ -881,6 +899,19 @@ struct PollyClient:
         parts.append("\"VoiceId\":" + input.VoiceId.to_json())
         auto bp = restjson.rest_json_document(b, polly_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, polly_service(), self.region, host)
+
+    # Paginator for DescribeVoices — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Voices).
+    def paginate_describe_voices(self, DescribeVoicesInput input):
+        auto host = endpoints.regional_host(polly_service(), self.region)
+        while True:
+            auto raw = self.describe_voices(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
     # Paginator for ListLexicons — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Lexicons).

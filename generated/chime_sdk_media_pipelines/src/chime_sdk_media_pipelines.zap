@@ -1579,7 +1579,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_capture_pipeline(self, CreateMediaCapturePipelineRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-capture-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-capture-pipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceType\":" + media_pipelines_chime_json_str(input.SourceType))
         parts.append("\"SourceArn\":" + media_pipelines_chime_json_str(input.SourceArn))
@@ -1610,7 +1610,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_concatenation_pipeline(self, CreateMediaConcatenationPipelineRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-concatenation-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-concatenation-pipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Sources:
@@ -1636,7 +1636,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_insights_pipeline(self, CreateMediaInsightsPipelineRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"MediaInsightsPipelineConfigurationArn\":" + media_pipelines_chime_json_str(input.MediaInsightsPipelineConfigurationArn))
         if input.KinesisVideoStreamSourceRuntimeConfiguration.is_some():
@@ -1670,7 +1670,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_insights_pipeline_configuration(self, CreateMediaInsightsPipelineConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipeline-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipeline-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"MediaInsightsPipelineConfigurationName\":" + media_pipelines_chime_json_str(input.MediaInsightsPipelineConfigurationName))
         parts.append("\"ResourceAccessRoleArn\":" + media_pipelines_chime_json_str(input.ResourceAccessRoleArn))
@@ -1697,7 +1697,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_live_connector_pipeline(self, CreateMediaLiveConnectorPipelineRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-live-connector-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-live-connector-pipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Sources:
@@ -1723,7 +1723,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_pipeline_kinesis_video_stream_pool(self, CreateMediaPipelineKinesisVideoStreamPoolRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/media-pipeline-kinesis-video-stream-pools", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-pipeline-kinesis-video-stream-pools", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StreamConfiguration\":" + input.StreamConfiguration.to_json())
         parts.append("\"PoolName\":" + media_pipelines_chime_json_str(input.PoolName))
@@ -1743,7 +1743,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_media_stream_pipeline(self, CreateMediaStreamPipelineRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-stream-pipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sdk-media-stream-pipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Sources:
@@ -1771,7 +1771,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["mediaPipelineId"] = input.MediaPipelineId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sdk-media-capture-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sdk-media-capture-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # DeleteMediaInsightsPipelineConfiguration  DELETE /media-insights-pipeline-configurations/{identifier}
@@ -1780,7 +1780,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # DeleteMediaPipeline  DELETE /sdk-media-pipelines/{mediaPipelineId}
@@ -1789,7 +1789,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["mediaPipelineId"] = input.MediaPipelineId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sdk-media-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sdk-media-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # DeleteMediaPipelineKinesisVideoStreamPool  DELETE /media-pipeline-kinesis-video-stream-pools/{identifier}
@@ -1798,7 +1798,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetMediaCapturePipeline  GET /sdk-media-capture-pipelines/{mediaPipelineId}
@@ -1807,7 +1807,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["mediaPipelineId"] = input.MediaPipelineId
-        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-capture-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-capture-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetMediaInsightsPipelineConfiguration  GET /media-insights-pipeline-configurations/{identifier}
@@ -1816,7 +1816,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetMediaPipeline  GET /sdk-media-pipelines/{mediaPipelineId}
@@ -1825,7 +1825,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["mediaPipelineId"] = input.MediaPipelineId
-        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-pipelines/{mediaPipelineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetMediaPipelineKinesisVideoStreamPool  GET /media-pipeline-kinesis-video-stream-pools/{identifier}
@@ -1834,7 +1834,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetSpeakerSearchTask  GET /media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}
@@ -1844,7 +1844,7 @@ struct Chime_SDK_Media_PipelinesClient:
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
         labels["speakerSearchTaskId"] = input.SpeakerSearchTaskId
-        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # GetVoiceToneAnalysisTask  GET /media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}
@@ -1854,7 +1854,7 @@ struct Chime_SDK_Media_PipelinesClient:
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
         labels["voiceToneAnalysisTaskId"] = input.VoiceToneAnalysisTaskId
-        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # ListMediaCapturePipelines  GET /sdk-media-capture-pipelines
@@ -1866,7 +1866,7 @@ struct Chime_SDK_Media_PipelinesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-capture-pipelines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-capture-pipelines", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # ListMediaInsightsPipelineConfigurations  GET /media-insights-pipeline-configurations
@@ -1878,7 +1878,7 @@ struct Chime_SDK_Media_PipelinesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipeline-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-insights-pipeline-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # ListMediaPipelineKinesisVideoStreamPools  GET /media-pipeline-kinesis-video-stream-pools
@@ -1890,7 +1890,7 @@ struct Chime_SDK_Media_PipelinesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/media-pipeline-kinesis-video-stream-pools", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/media-pipeline-kinesis-video-stream-pools", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # ListMediaPipelines  GET /sdk-media-pipelines
@@ -1902,7 +1902,7 @@ struct Chime_SDK_Media_PipelinesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-pipelines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sdk-media-pipelines", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -1911,7 +1911,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ResourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # StartSpeakerSearchTask  POST /media-insights-pipelines/{identifier}/speaker-search-tasks?operation=start
@@ -1920,7 +1920,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks?operation=start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks?operation=start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSpeakerSearchTaskDocument(VoiceProfileDomainArn=input.VoiceProfileDomainArn, KinesisVideoStreamSourceTaskConfiguration=input.KinesisVideoStreamSourceTaskConfiguration, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
@@ -1931,7 +1931,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks?operation=start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks?operation=start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartVoiceToneAnalysisTaskDocument(LanguageCode=input.LanguageCode, KinesisVideoStreamSourceTaskConfiguration=input.KinesisVideoStreamSourceTaskConfiguration, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
@@ -1943,7 +1943,7 @@ struct Chime_SDK_Media_PipelinesClient:
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
         labels["speakerSearchTaskId"] = input.SpeakerSearchTaskId
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/speaker-search-tasks/{speakerSearchTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # StopVoiceToneAnalysisTask  POST /media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}?operation=stop
@@ -1953,14 +1953,14 @@ struct Chime_SDK_Media_PipelinesClient:
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
         labels["voiceToneAnalysisTaskId"] = input.VoiceToneAnalysisTaskId
-        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/media-insights-pipelines/{identifier}/voice-tone-analysis-tasks/{voiceToneAnalysisTaskId}?operation=stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, media_pipelines_chime_service(), self.region, host)
 
     # TagResource  POST /tags?operation=tag-resource
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + media_pipelines_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1974,7 +1974,7 @@ struct Chime_SDK_Media_PipelinesClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags?operation=untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + media_pipelines_chime_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1990,7 +1990,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/media-insights-pipeline-configurations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceAccessRoleArn\":" + media_pipelines_chime_json_str(input.ResourceAccessRoleArn))
         if input.RealTimeAlertConfiguration.is_some():
@@ -2009,7 +2009,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/media-insights-pipeline-status/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/media-insights-pipeline-status/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMediaInsightsPipelineStatusDocument(UpdateStatus=input.UpdateStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)
@@ -2020,7 +2020,7 @@ struct Chime_SDK_Media_PipelinesClient:
         auto host = endpoints.regional_host(media_pipelines_chime_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/media-pipeline-kinesis-video-stream-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMediaPipelineKinesisVideoStreamPoolDocument(StreamConfiguration=input.StreamConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, media_pipelines_chime_service(), self.region, host)

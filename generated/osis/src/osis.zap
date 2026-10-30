@@ -702,7 +702,7 @@ struct OSISClient:
     # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
     def create_pipeline(self, CreatePipelineRequest input) -> str:
         auto host = endpoints.regional_host(osis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PipelineName\":" + osis_json_str(input.PipelineName))
         parts.append("\"MinUnits\":" + str(input.MinUnits))
@@ -736,7 +736,7 @@ struct OSISClient:
     # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def create_pipeline_endpoint(self, CreatePipelineEndpointRequest input) -> str:
         auto host = endpoints.regional_host(osis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipelineEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/createPipelineEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PipelineArn\":" + osis_json_str(input.PipelineArn))
         parts.append("\"VpcOptions\":" + pipeline_endpoint_vpc_options_to_json(input.VpcOptions))
@@ -749,7 +749,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/deletePipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/deletePipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # DeletePipelineEndpoint  DELETE /2022-01-01/osis/deletePipelineEndpoint/{EndpointId}
@@ -758,7 +758,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["EndpointId"] = input.EndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/deletePipelineEndpoint/{EndpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/deletePipelineEndpoint/{EndpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /2022-01-01/osis/resourcePolicy/{ResourceArn}
@@ -767,7 +767,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # GetPipeline  GET /2022-01-01/osis/getPipeline/{PipelineName}
@@ -776,7 +776,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # GetPipelineBlueprint  GET /2022-01-01/osis/getPipelineBlueprint/{BlueprintName}
@@ -788,7 +788,7 @@ struct OSISClient:
         dict[str, str] query = {}
         if input.Format.is_some():
             query["format"] = input.Format.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipelineBlueprint/{BlueprintName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipelineBlueprint/{BlueprintName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # GetPipelineChangeProgress  GET /2022-01-01/osis/getPipelineChangeProgress/{PipelineName}
@@ -797,7 +797,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipelineChangeProgress/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/getPipelineChangeProgress/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # GetResourcePolicy  GET /2022-01-01/osis/resourcePolicy/{ResourceArn}
@@ -806,14 +806,14 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # ListPipelineBlueprints  POST /2022-01-01/osis/listPipelineBlueprints
     # errors: AccessDeniedException, DisabledOperationException, InternalException, InvalidPaginationTokenException, ValidationException
     def list_pipeline_blueprints(self) -> str:
         auto host = endpoints.regional_host(osis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/listPipelineBlueprints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/listPipelineBlueprints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # ListPipelineEndpointConnections  GET /2022-01-01/osis/listPipelineEndpointConnections
@@ -825,7 +825,7 @@ struct OSISClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelineEndpointConnections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelineEndpointConnections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # ListPipelineEndpoints  GET /2022-01-01/osis/listPipelineEndpoints
@@ -837,7 +837,7 @@ struct OSISClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelineEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelineEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # ListPipelines  GET /2022-01-01/osis/listPipelines
@@ -849,7 +849,7 @@ struct OSISClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listPipelines", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # ListTagsForResource  GET /2022-01-01/osis/listTagsForResource/
@@ -858,7 +858,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listTagsForResource/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2022-01-01/osis/listTagsForResource/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # PutResourcePolicy  PUT /2022-01-01/osis/resourcePolicy/{ResourceArn}
@@ -867,7 +867,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
@@ -876,7 +876,7 @@ struct OSISClient:
     # errors: AccessDeniedException, DisabledOperationException, InternalException, LimitExceededException, ValidationException
     def revoke_pipeline_endpoint_connections(self, RevokePipelineEndpointConnectionsRequest input) -> str:
         auto host = endpoints.regional_host(osis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/revokePipelineEndpointConnections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/revokePipelineEndpointConnections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PipelineArn\":" + osis_json_str(input.PipelineArn))
         list[str] e0 = []
@@ -892,7 +892,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/startPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/startPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # StopPipeline  PUT /2022-01-01/osis/stopPipeline/{PipelineName}
@@ -901,7 +901,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/stopPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/stopPipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, osis_service(), self.region, host)
 
     # TagResource  POST /2022-01-01/osis/tagResource/
@@ -910,7 +910,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/tagResource/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/tagResource/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -925,7 +925,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/untagResource/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/untagResource/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TagKeys:
@@ -940,7 +940,7 @@ struct OSISClient:
         auto host = endpoints.regional_host(osis_service(), self.region)
         dict[str, str] labels = {}
         labels["PipelineName"] = input.PipelineName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/updatePipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2022-01-01/osis/updatePipeline/{PipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePipelineDocument(MinUnits=input.MinUnits, MaxUnits=input.MaxUnits, PipelineConfigurationBody=input.PipelineConfigurationBody, LogPublishingOptions=input.LogPublishingOptions, BufferOptions=input.BufferOptions, EncryptionAtRestOptions=input.EncryptionAtRestOptions, PipelineRoleArn=input.PipelineRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)
@@ -949,7 +949,7 @@ struct OSISClient:
     # errors: AccessDeniedException, DisabledOperationException, InternalException, ValidationException
     def validate_pipeline(self, ValidatePipelineRequest input) -> str:
         auto host = endpoints.regional_host(osis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/validatePipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2022-01-01/osis/validatePipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidatePipelineDocument(PipelineConfigurationBody=input.PipelineConfigurationBody)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, osis_service(), self.region, host)

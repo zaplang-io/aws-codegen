@@ -1091,7 +1091,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ValidationException
     def batch_delete_tax_registration(self, BatchDeleteTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -1104,7 +1104,7 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def batch_get_tax_exemptions(self, BatchGetTaxExemptionsRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTaxExemptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTaxExemptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -1117,7 +1117,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ValidationException
     def batch_put_tax_registration(self, BatchPutTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchPutTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchPutTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -1131,7 +1131,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_supplemental_tax_registration(self, DeleteSupplementalTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSupplementalTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSupplementalTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSupplementalTaxRegistrationDocument(authorityId=input.authorityId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1140,7 +1140,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_tax_registration(self, DeleteTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTaxRegistrationDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1149,21 +1149,21 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_tax_exemption_types(self) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxExemptionTypes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxExemptionTypes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, tax_service(), self.region, host)
 
     # GetTaxInheritance  POST /GetTaxInheritance
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_tax_inheritance(self) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxInheritance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxInheritance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, tax_service(), self.region, host)
 
     # GetTaxRegistration  POST /GetTaxRegistration
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_tax_registration(self, GetTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTaxRegistrationDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1172,7 +1172,7 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ValidationException
     def get_tax_registration_document(self, GetTaxRegistrationDocumentRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxRegistrationDocument", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTaxRegistrationDocument", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTaxRegistrationDocumentDocument(destinationS3Location=input.destinationS3Location, taxDocumentMetadata=input.taxDocumentMetadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1181,7 +1181,7 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_supplemental_tax_registrations(self, ListSupplementalTaxRegistrationsRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSupplementalTaxRegistrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSupplementalTaxRegistrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSupplementalTaxRegistrationsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1190,7 +1190,7 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tax_exemptions(self, ListTaxExemptionsRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTaxExemptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTaxExemptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTaxExemptionsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1199,7 +1199,7 @@ struct TaxSettingsClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tax_registrations(self, ListTaxRegistrationsRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTaxRegistrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTaxRegistrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTaxRegistrationsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1208,7 +1208,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ValidationException
     def put_supplemental_tax_registration(self, PutSupplementalTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutSupplementalTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutSupplementalTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSupplementalTaxRegistrationDocument(taxRegistrationEntry=input.taxRegistrationEntry)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1217,7 +1217,7 @@ struct TaxSettingsClient:
     # errors: AccessDeniedException, AttachmentUploadException, CaseCreationLimitExceededException, InternalServerException, ResourceNotFoundException, ValidationException
     def put_tax_exemption(self, PutTaxExemptionRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxExemption", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxExemption", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -1233,7 +1233,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def put_tax_inheritance(self, PutTaxInheritanceRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxInheritance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxInheritance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTaxInheritanceDocument(heritageStatus=input.heritageStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, tax_service(), self.region, host)
@@ -1242,7 +1242,7 @@ struct TaxSettingsClient:
     # errors: ConflictException, InternalServerException, ValidationException
     def put_tax_registration(self, PutTaxRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(tax_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxRegistration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTaxRegistration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountId.is_some():
             auto u0 = input.accountId.unwrap()

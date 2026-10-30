@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 48 operations — 47 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 48 operations — 48 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   245 structs (124 @derive(Json)), 35 enums, 2 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2321,11 +2321,6 @@ def batch_error_from_code(str code) -> BatchError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3522,7 +3517,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def cancel_job(self, CancelJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelJobDocument(jobId=input.jobId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3531,7 +3526,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def cancel_jobs(self, CancelJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/canceljobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobs:
@@ -3545,7 +3540,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_compute_environment(self, CreateComputeEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createcomputeenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createcomputeenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"computeEnvironmentName\":" + batch_json_str(input.computeEnvironmentName))
         parts.append("\"type\":" + input.type.to_json())
@@ -3583,7 +3578,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_consumable_resource(self, CreateConsumableResourceRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createconsumableresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"consumableResourceName\":" + batch_json_str(input.consumableResourceName))
         if input.totalQuantity.is_some():
@@ -3605,7 +3600,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_job_queue(self, CreateJobQueueRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createjobqueue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createjobqueue", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobQueueName\":" + batch_json_str(input.jobQueueName))
         if input.state.is_some():
@@ -3649,7 +3644,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_quota_share(self, CreateQuotaShareRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createquotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createquotashare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"quotaShareName\":" + batch_json_str(input.quotaShareName))
         parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
@@ -3675,7 +3670,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_scheduling_policy(self, CreateSchedulingPolicyRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createschedulingpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createschedulingpolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + batch_json_str(input.name))
         if input.quotaSharePolicy.is_some():
@@ -3697,7 +3692,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def create_service_environment(self, CreateServiceEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/createserviceenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/createserviceenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceEnvironmentName\":" + batch_json_str(input.serviceEnvironmentName))
         parts.append("\"serviceEnvironmentType\":" + batch_json_str(input.serviceEnvironmentType))
@@ -3721,7 +3716,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_compute_environment(self, DeleteComputeEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletecomputeenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletecomputeenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteComputeEnvironmentDocument(computeEnvironment=input.computeEnvironment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3730,7 +3725,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_consumable_resource(self, DeleteConsumableResourceRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteconsumableresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConsumableResourceDocument(consumableResource=input.consumableResource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3739,7 +3734,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_job_queue(self, DeleteJobQueueRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletejobqueue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletejobqueue", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteJobQueueDocument(jobQueue=input.jobQueue)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3748,7 +3743,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_quota_share(self, DeleteQuotaShareRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletequotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deletequotashare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteQuotaShareDocument(quotaShareArn=input.quotaShareArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3757,7 +3752,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_scheduling_policy(self, DeleteSchedulingPolicyRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteschedulingpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteschedulingpolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSchedulingPolicyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3766,7 +3761,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def delete_service_environment(self, DeleteServiceEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteserviceenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deleteserviceenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteServiceEnvironmentDocument(serviceEnvironment=input.serviceEnvironment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3775,7 +3770,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def deregister_job_definition(self, DeregisterJobDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/deregisterjobdefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/deregisterjobdefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterJobDefinitionDocument(jobDefinition=input.jobDefinition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3784,7 +3779,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_compute_environments(self, DescribeComputeEnvironmentsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describecomputeenvironments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describecomputeenvironments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.computeEnvironments.is_some():
             auto u0 = input.computeEnvironments.unwrap()
@@ -3805,7 +3800,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_consumable_resource(self, DescribeConsumableResourceRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeconsumableresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeConsumableResourceDocument(consumableResource=input.consumableResource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3814,7 +3809,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_job_definitions(self, DescribeJobDefinitionsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobdefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobdefinitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobDefinitions.is_some():
             auto u0 = input.jobDefinitions.unwrap()
@@ -3841,7 +3836,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_job_queues(self, DescribeJobQueuesRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobqueues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobqueues", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobQueues.is_some():
             auto u0 = input.jobQueues.unwrap()
@@ -3862,7 +3857,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_jobs(self, DescribeJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describejobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobs:
@@ -3875,7 +3870,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_quota_share(self, DescribeQuotaShareRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describequotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describequotashare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeQuotaShareDocument(quotaShareArn=input.quotaShareArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3884,7 +3879,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_scheduling_policies(self, DescribeSchedulingPoliciesRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeschedulingpolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeschedulingpolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.arns:
@@ -3897,7 +3892,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_service_environments(self, DescribeServiceEnvironmentsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeserviceenvironments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeserviceenvironments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.serviceEnvironments.is_some():
             auto u0 = input.serviceEnvironments.unwrap()
@@ -3918,7 +3913,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def describe_service_job(self, DescribeServiceJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeservicejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/describeservicejob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeServiceJobDocument(jobId=input.jobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3927,7 +3922,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def get_job_queue_snapshot(self, GetJobQueueSnapshotRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/getjobqueuesnapshot", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/getjobqueuesnapshot", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetJobQueueSnapshotDocument(jobQueue=input.jobQueue)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -3936,7 +3931,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_consumable_resources(self, ListConsumableResourcesRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listconsumableresources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listconsumableresources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -3957,7 +3952,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_jobs(self, ListJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobQueue.is_some():
             auto u0 = input.jobQueue.unwrap()
@@ -3990,7 +3985,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_jobs_by_consumable_resource(self, ListJobsByConsumableResourceRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobsbyconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listjobsbyconsumableresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"consumableResource\":" + batch_json_str(input.consumableResource))
         if input.filters.is_some():
@@ -4012,7 +4007,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_quota_shares(self, ListQuotaSharesRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listquotashares", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listquotashares", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListQuotaSharesDocument(jobQueue=input.jobQueue, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -4021,7 +4016,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_scheduling_policies(self, ListSchedulingPoliciesRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listschedulingpolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listschedulingpolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSchedulingPoliciesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -4030,7 +4025,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def list_service_jobs(self, ListServiceJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/listservicejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/listservicejobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobQueue.is_some():
             auto u0 = input.jobQueue.unwrap()
@@ -4059,14 +4054,14 @@ struct BatchClient:
         auto host = endpoints.regional_host(batch_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, batch_service(), self.region, host)
 
     # RegisterJobDefinition  POST /v1/registerjobdefinition
     # errors: ClientException, ServerException
     def register_job_definition(self, RegisterJobDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/registerjobdefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/registerjobdefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobDefinitionName\":" + batch_json_str(input.jobDefinitionName))
         parts.append("\"type\":" + input.type.to_json())
@@ -4122,7 +4117,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def submit_job(self, SubmitJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitjob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitjob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + batch_json_str(input.jobName))
         parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
@@ -4185,7 +4180,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def submit_service_job(self, SubmitServiceJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitservicejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/submitservicejob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + batch_json_str(input.jobName))
         parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
@@ -4227,7 +4222,7 @@ struct BatchClient:
         auto host = endpoints.regional_host(batch_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -4240,7 +4235,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def terminate_job(self, TerminateJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TerminateJobDocument(jobId=input.jobId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -4249,7 +4244,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def terminate_jobs(self, TerminateJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminatejobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobs:
@@ -4263,7 +4258,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def terminate_service_job(self, TerminateServiceJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminateservicejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminateservicejob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TerminateServiceJobDocument(jobId=input.jobId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -4272,7 +4267,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def terminate_service_jobs(self, TerminateServiceJobsRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminateservicejobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/terminateservicejobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobs:
@@ -4282,11 +4277,22 @@ struct BatchClient:
         auto bp = restjson.rest_json_document(b, batch_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: ClientException, ServerException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(batch_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, batch_service(), self.region, host)
+
     # UpdateComputeEnvironment  POST /v1/updatecomputeenvironment
     # errors: ClientException, ServerException
     def update_compute_environment(self, UpdateComputeEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatecomputeenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatecomputeenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"computeEnvironment\":" + batch_json_str(input.computeEnvironment))
         if input.state.is_some():
@@ -4320,7 +4326,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_consumable_resource(self, UpdateConsumableResourceRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateconsumableresource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateconsumableresource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConsumableResourceDocument(consumableResource=input.consumableResource, operation=input.operation, quantity=input.quantity, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)
@@ -4329,7 +4335,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_job_queue(self, UpdateJobQueueRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatejobqueue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatejobqueue", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobQueue\":" + batch_json_str(input.jobQueue))
         if input.state.is_some():
@@ -4366,7 +4372,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_quota_share(self, UpdateQuotaShareRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatequotashare", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updatequotashare", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"quotaShareArn\":" + batch_json_str(input.quotaShareArn))
         if input.capacityLimits.is_some():
@@ -4391,7 +4397,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_scheduling_policy(self, UpdateSchedulingPolicyRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateschedulingpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateschedulingpolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + batch_json_str(input.arn))
         if input.quotaSharePolicy.is_some():
@@ -4407,7 +4413,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_service_environment(self, UpdateServiceEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateserviceenvironment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateserviceenvironment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"serviceEnvironment\":" + batch_json_str(input.serviceEnvironment))
         if input.state.is_some():
@@ -4426,7 +4432,7 @@ struct BatchClient:
     # errors: ClientException, ServerException
     def update_service_job(self, UpdateServiceJobRequest input) -> str:
         auto host = endpoints.regional_host(batch_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateservicejob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/updateservicejob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceJobDocument(jobId=input.jobId, schedulingPriority=input.schedulingPriority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, batch_service(), self.region, host)

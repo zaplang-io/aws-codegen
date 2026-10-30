@@ -529,7 +529,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/cancel-authentication", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/cancel-authentication", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelParticipantAuthenticationDocument(SessionId=input.SessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -540,7 +540,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/complete-attachment-upload", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/complete-attachment-upload", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AttachmentIds:
@@ -556,7 +556,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ParticipantToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/connection", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/connection", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Type.is_some():
             auto u0 = input.Type.unwrap()
@@ -578,7 +578,7 @@ struct ConnectParticipantClient:
         labels["ViewToken"] = input.ViewToken
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="GET", path_template="/participant/views/{ViewToken}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/participant/views/{ViewToken}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, participant_connect_service(), self.region, host)
 
     # DisconnectParticipant  POST /participant/disconnect
@@ -587,7 +587,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/disconnect", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/disconnect", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectParticipantDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -598,7 +598,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/attachment", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/attachment", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAttachmentDocument(AttachmentId=input.AttachmentId, UrlExpiryInSeconds=input.UrlExpiryInSeconds, UrlContentDisposition=input.UrlContentDisposition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -609,7 +609,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/authentication-url", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/authentication-url", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAuthenticationUrlDocument(SessionId=input.SessionId, RedirectUri=input.RedirectUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -620,7 +620,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/transcript", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/transcript", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTranscriptDocument(ContactId=input.ContactId, MaxResults=input.MaxResults, NextToken=input.NextToken, ScanDirection=input.ScanDirection, SortOrder=input.SortOrder, StartPosition=input.StartPosition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -631,7 +631,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/event", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/event", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendEventDocument(ContentType=input.ContentType, Content=input.Content, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -642,7 +642,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/message", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/message", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendMessageDocument(ContentType=input.ContentType, Content=input.Content, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)
@@ -653,7 +653,7 @@ struct ConnectParticipantClient:
         auto host = endpoints.regional_host(participant_connect_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amz-Bearer"] = input.ConnectionToken
-        auto b = binding.HttpBinding(method="POST", path_template="/participant/start-attachment-upload", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/participant/start-attachment-upload", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAttachmentUploadDocument(ContentType=input.ContentType, AttachmentSizeInBytes=input.AttachmentSizeInBytes, AttachmentName=input.AttachmentName, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, participant_connect_service(), self.region, host)

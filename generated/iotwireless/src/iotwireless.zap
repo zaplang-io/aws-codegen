@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 112 operations — 111 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 112 operations — 112 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   367 structs (280 @derive(Json)), 38 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2887,11 +2887,6 @@ def api_iotwireless_error_from_code(str code) -> IoT_WirelessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3605,7 +3600,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def associate_aws_account_with_partner_account(self, AssociateAwsAccountWithPartnerAccountRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/partner-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/partner-accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Sidewalk\":" + input.Sidewalk.to_json())
         if input.ClientRequestToken.is_some():
@@ -3626,7 +3621,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}/multicast-group", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}/multicast-group", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMulticastGroupWithFuotaTaskDocument(MulticastGroupId=input.MulticastGroupId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3637,7 +3632,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}/wireless-device", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}/wireless-device", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateWirelessDeviceWithFuotaTaskDocument(WirelessDeviceId=input.WirelessDeviceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3648,7 +3643,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/multicast-groups/{Id}/wireless-device", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/multicast-groups/{Id}/wireless-device", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateWirelessDeviceWithMulticastGroupDocument(WirelessDeviceId=input.WirelessDeviceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3659,7 +3654,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-devices/{Id}/thing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-devices/{Id}/thing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateWirelessDeviceWithThingDocument(ThingArn=input.ThingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3670,7 +3665,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateWirelessGatewayWithCertificateDocument(IotCertificateId=input.IotCertificateId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3681,7 +3676,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-gateways/{Id}/thing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/wireless-gateways/{Id}/thing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateWirelessGatewayWithThingDocument(ThingArn=input.ThingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3692,14 +3687,14 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # CreateDestination  POST /destinations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_destination(self, CreateDestinationRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + api_iotwireless_json_str(input.Name))
         parts.append("\"ExpressionType\":" + input.ExpressionType.to_json())
@@ -3724,7 +3719,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_device_profile(self, CreateDeviceProfileRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/device-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/device-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3751,7 +3746,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_fuota_task(self, CreateFuotaTaskRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/fuota-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/fuota-tasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3792,7 +3787,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_multicast_group(self, CreateMulticastGroupRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3817,7 +3812,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_network_analyzer_configuration(self, CreateNetworkAnalyzerConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-analyzer-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-analyzer-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + api_iotwireless_json_str(input.Name))
         if input.TraceContent.is_some():
@@ -3860,7 +3855,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_service_profile(self, CreateServiceProfileRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/service-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/service-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3884,7 +3879,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_wireless_device(self, CreateWirelessDeviceRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Type\":" + input.Type.to_json())
         if input.Name.is_some():
@@ -3919,7 +3914,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_wireless_gateway(self, CreateWirelessGatewayRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -3946,7 +3941,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWirelessGatewayTaskDocument(WirelessGatewayTaskDefinitionId=input.WirelessGatewayTaskDefinitionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -3955,7 +3950,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_wireless_gateway_task_definition(self, CreateWirelessGatewayTaskDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateway-task-definitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-gateway-task-definitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AutoCreateTasks\":" + json.dumps(JsonValue.Bool(input.AutoCreateTasks)))
         if input.Name.is_some():
@@ -3982,7 +3977,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteDeviceProfile  DELETE /device-profiles/{Id}
@@ -3991,7 +3986,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/device-profiles/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/device-profiles/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteFuotaTask  DELETE /fuota-tasks/{Id}
@@ -4000,7 +3995,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteMulticastGroup  DELETE /multicast-groups/{Id}
@@ -4009,7 +4004,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteNetworkAnalyzerConfiguration  DELETE /network-analyzer-configurations/{ConfigurationName}
@@ -4018,7 +4013,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationName"] = input.ConfigurationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteQueuedMessages  DELETE /wireless-devices/{Id}/data
@@ -4031,7 +4026,7 @@ struct IoT_WirelessClient:
         query["messageId"] = input.MessageId
         if input.WirelessDeviceType.is_some():
             query["WirelessDeviceType"] = input.WirelessDeviceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteServiceProfile  DELETE /service-profiles/{Id}
@@ -4040,7 +4035,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/service-profiles/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/service-profiles/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteWirelessDevice  DELETE /wireless-devices/{Id}
@@ -4049,7 +4044,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteWirelessDeviceImportTask  DELETE /wireless_device_import_task/{Id}
@@ -4058,7 +4053,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteWirelessGateway  DELETE /wireless-gateways/{Id}
@@ -4067,7 +4062,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteWirelessGatewayTask  DELETE /wireless-gateways/{Id}/tasks
@@ -4076,7 +4071,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeleteWirelessGatewayTaskDefinition  DELETE /wireless-gateway-task-definitions/{Id}
@@ -4085,7 +4080,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateway-task-definitions/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateway-task-definitions/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DeregisterWirelessDevice  PATCH /wireless-devices/{Identifier}/deregister
@@ -4097,7 +4092,7 @@ struct IoT_WirelessClient:
         dict[str, str] query = {}
         if input.WirelessDeviceType.is_some():
             query["WirelessDeviceType"] = input.WirelessDeviceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-devices/{Identifier}/deregister", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-devices/{Identifier}/deregister", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateAwsAccountFromPartnerAccount  DELETE /partner-accounts/{PartnerAccountId}
@@ -4108,7 +4103,7 @@ struct IoT_WirelessClient:
         labels["PartnerAccountId"] = input.PartnerAccountId
         dict[str, str] query = {}
         query["partnerType"] = input.PartnerType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateMulticastGroupFromFuotaTask  DELETE /fuota-tasks/{Id}/multicast-groups/{MulticastGroupId}
@@ -4118,7 +4113,7 @@ struct IoT_WirelessClient:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["MulticastGroupId"] = input.MulticastGroupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}/multicast-groups/{MulticastGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}/multicast-groups/{MulticastGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateWirelessDeviceFromFuotaTask  DELETE /fuota-tasks/{Id}/wireless-devices/{WirelessDeviceId}
@@ -4128,7 +4123,7 @@ struct IoT_WirelessClient:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["WirelessDeviceId"] = input.WirelessDeviceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}/wireless-devices/{WirelessDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/fuota-tasks/{Id}/wireless-devices/{WirelessDeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateWirelessDeviceFromMulticastGroup  DELETE /multicast-groups/{Id}/wireless-devices/{WirelessDeviceId}
@@ -4138,7 +4133,7 @@ struct IoT_WirelessClient:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["WirelessDeviceId"] = input.WirelessDeviceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}/wireless-devices/{WirelessDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/multicast-groups/{Id}/wireless-devices/{WirelessDeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateWirelessDeviceFromThing  DELETE /wireless-devices/{Id}/thing
@@ -4147,7 +4142,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}/thing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-devices/{Id}/thing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateWirelessGatewayFromCertificate  DELETE /wireless-gateways/{Id}/certificate
@@ -4156,7 +4151,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # DisassociateWirelessGatewayFromThing  DELETE /wireless-gateways/{Id}/thing
@@ -4165,7 +4160,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/thing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/wireless-gateways/{Id}/thing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetDestination  GET /destinations/{Name}
@@ -4174,7 +4169,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetDeviceProfile  GET /device-profiles/{Id}
@@ -4183,14 +4178,14 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/device-profiles/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/device-profiles/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetEventConfigurationByResourceTypes  GET /event-configurations-resource-types
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_event_configuration_by_resource_types(self) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations-resource-types", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations-resource-types", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetFuotaTask  GET /fuota-tasks/{Id}
@@ -4199,28 +4194,28 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetLogLevelsByResourceTypes  GET /log-levels
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_log_levels_by_resource_types(self) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/log-levels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/log-levels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetMetricConfiguration  GET /metric-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_metric_configuration(self) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetMetrics  POST /metrics
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_metrics(self, GetMetricsRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SummaryMetricQueries.is_some():
             auto u0 = input.SummaryMetricQueries.unwrap()
@@ -4237,7 +4232,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetMulticastGroupSession  GET /multicast-groups/{Id}/session
@@ -4246,7 +4241,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetNetworkAnalyzerConfiguration  GET /network-analyzer-configurations/{ConfigurationName}
@@ -4255,7 +4250,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationName"] = input.ConfigurationName
-        auto b = binding.HttpBinding(method="GET", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetPartnerAccount  GET /partner-accounts/{PartnerAccountId}
@@ -4266,7 +4261,7 @@ struct IoT_WirelessClient:
         labels["PartnerAccountId"] = input.PartnerAccountId
         dict[str, str] query = {}
         query["partnerType"] = input.PartnerType
-        auto b = binding.HttpBinding(method="GET", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetPosition  GET /positions/{ResourceIdentifier}
@@ -4277,7 +4272,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetPositionConfiguration  GET /position-configurations/{ResourceIdentifier}
@@ -4288,14 +4283,14 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/position-configurations/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/position-configurations/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetPositionEstimate  POST /position-estimate
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_position_estimate(self, GetPositionEstimateRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/position-estimate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/position-estimate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.WiFiAccessPoints.is_some():
             auto u0 = input.WiFiAccessPoints.unwrap()
@@ -4334,7 +4329,7 @@ struct IoT_WirelessClient:
         query["identifierType"] = input.IdentifierType
         if input.PartnerType.is_some():
             query["partnerType"] = input.PartnerType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations/{Identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations/{Identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetResourceLogLevel  GET /log-levels/{ResourceIdentifier}
@@ -4345,7 +4340,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetResourcePosition  GET /resource-positions/{ResourceIdentifier}
@@ -4356,7 +4351,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetServiceEndpoint  GET /service-endpoint
@@ -4366,7 +4361,7 @@ struct IoT_WirelessClient:
         dict[str, str] query = {}
         if input.ServiceType.is_some():
             query["serviceType"] = input.ServiceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/service-endpoint", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/service-endpoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetServiceProfile  GET /service-profiles/{Id}
@@ -4375,7 +4370,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/service-profiles/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/service-profiles/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessDevice  GET /wireless-devices/{Identifier}
@@ -4386,7 +4381,7 @@ struct IoT_WirelessClient:
         labels["Identifier"] = input.Identifier
         dict[str, str] query = {}
         query["identifierType"] = input.IdentifierType
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessDeviceImportTask  GET /wireless_device_import_task/{Id}
@@ -4395,7 +4390,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessDeviceStatistics  GET /wireless-devices/{Id}/statistics
@@ -4404,7 +4399,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.WirelessDeviceId
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Id}/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Id}/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGateway  GET /wireless-gateways/{Identifier}
@@ -4415,7 +4410,7 @@ struct IoT_WirelessClient:
         labels["Identifier"] = input.Identifier
         dict[str, str] query = {}
         query["identifierType"] = input.IdentifierType
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGatewayCertificate  GET /wireless-gateways/{Id}/certificate
@@ -4424,7 +4419,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/certificate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGatewayFirmwareInformation  GET /wireless-gateways/{Id}/firmware-information
@@ -4433,7 +4428,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/firmware-information", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/firmware-information", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGatewayStatistics  GET /wireless-gateways/{Id}/statistics
@@ -4442,7 +4437,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.WirelessGatewayId
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGatewayTask  GET /wireless-gateways/{Id}/tasks
@@ -4451,7 +4446,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways/{Id}/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # GetWirelessGatewayTaskDefinition  GET /wireless-gateway-task-definitions/{Id}
@@ -4460,7 +4455,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateway-task-definitions/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateway-task-definitions/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListDestinations  GET /destinations
@@ -4472,7 +4467,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/destinations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/destinations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListDeviceProfiles  GET /device-profiles
@@ -4486,7 +4481,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.DeviceProfileType.is_some():
             query["deviceProfileType"] = input.DeviceProfileType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/device-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/device-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListDevicesForWirelessDeviceImportTask  GET /wireless_device_import_task
@@ -4501,7 +4496,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_task", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_task", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListEventConfigurations  GET /event-configurations
@@ -4514,7 +4509,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListFuotaTasks  GET /fuota-tasks
@@ -4526,7 +4521,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListMulticastGroups  GET /multicast-groups
@@ -4538,7 +4533,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/multicast-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListMulticastGroupsByFuotaTask  GET /fuota-tasks/{Id}/multicast-groups
@@ -4552,7 +4547,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks/{Id}/multicast-groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/fuota-tasks/{Id}/multicast-groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListNetworkAnalyzerConfigurations  GET /network-analyzer-configurations
@@ -4564,7 +4559,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/network-analyzer-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/network-analyzer-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListPartnerAccounts  GET /partner-accounts
@@ -4576,7 +4571,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/partner-accounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/partner-accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListPositionConfigurations  GET /position-configurations
@@ -4590,7 +4585,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/position-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/position-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListQueuedMessages  GET /wireless-devices/{Id}/data
@@ -4606,7 +4601,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.WirelessDeviceType.is_some():
             query["WirelessDeviceType"] = input.WirelessDeviceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListServiceProfiles  GET /service-profiles
@@ -4618,7 +4613,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/service-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/service-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -4627,7 +4622,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListWirelessDeviceImportTasks  GET /wireless_device_import_tasks
@@ -4639,7 +4634,7 @@ struct IoT_WirelessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_tasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless_device_import_tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListWirelessDevices  GET /wireless-devices
@@ -4663,7 +4658,7 @@ struct IoT_WirelessClient:
             query["fuotaTaskId"] = input.FuotaTaskId.unwrap_or("")
         if input.MulticastGroupId.is_some():
             query["multicastGroupId"] = input.MulticastGroupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-devices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListWirelessGatewayTaskDefinitions  GET /wireless-gateway-task-definitions
@@ -4677,7 +4672,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.TaskDefinitionType.is_some():
             query["taskDefinitionType"] = input.TaskDefinitionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateway-task-definitions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateway-task-definitions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ListWirelessGateways  GET /wireless-gateways
@@ -4689,7 +4684,7 @@ struct IoT_WirelessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/wireless-gateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # PutPositionConfiguration  PUT /position-configurations/{ResourceIdentifier}
@@ -4700,7 +4695,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="PUT", path_template="/position-configurations/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/position-configurations/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutPositionConfigurationDocument(Solvers=input.Solvers, Destination=input.Destination)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4713,7 +4708,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="PUT", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourceLogLevelDocument(LogLevel=input.LogLevel)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4722,7 +4717,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reset_all_resource_log_levels(self) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/log-levels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/log-levels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # ResetResourceLogLevel  DELETE /log-levels/{ResourceIdentifier}
@@ -4733,7 +4728,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/log-levels/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # SendDataToMulticastGroup  POST /multicast-groups/{Id}/data
@@ -4742,7 +4737,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups/{Id}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups/{Id}/data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendDataToMulticastGroupDocument(PayloadData=input.PayloadData, WirelessMetadata=input.WirelessMetadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4753,7 +4748,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices/{Id}/data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TransmitMode\":" + str(input.TransmitMode))
         parts.append("\"PayloadData\":" + api_iotwireless_json_str(input.PayloadData))
@@ -4769,7 +4764,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueryString.is_some():
             auto u0 = input.QueryString.unwrap()
@@ -4789,7 +4784,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/multicast-groups/{Id}/bulk", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueryString.is_some():
             auto u0 = input.QueryString.unwrap()
@@ -4809,7 +4804,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartFuotaTaskDocument(LoRaWAN=input.LoRaWAN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4820,7 +4815,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/multicast-groups/{Id}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMulticastGroupSessionDocument(LoRaWAN=input.LoRaWAN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4829,7 +4824,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_single_wireless_device_import_task(self, StartSingleWirelessDeviceImportTaskRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless_single_device_import_task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless_single_device_import_task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DestinationName\":" + api_iotwireless_json_str(input.DestinationName))
         if input.ClientRequestToken.is_some():
@@ -4855,7 +4850,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_wireless_device_import_task(self, StartWirelessDeviceImportTaskRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless_device_import_task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless_device_import_task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DestinationName\":" + api_iotwireless_json_str(input.DestinationName))
         if input.ClientRequestToken.is_some():
@@ -4880,7 +4875,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -4895,7 +4890,18 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices/{Id}/test", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/wireless-devices/{Id}/test", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
+
+    # UntagResource  DELETE /tags
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_iotwireless_service(), self.region, host)
 
     # UpdateDestination  PATCH /destinations/{Name}
@@ -4904,7 +4910,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/destinations/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDestinationDocument(ExpressionType=input.ExpressionType, Expression=input.Expression, Description=input.Description, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4913,7 +4919,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_event_configuration_by_resource_types(self, UpdateEventConfigurationByResourceTypesRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/event-configurations-resource-types", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/event-configurations-resource-types", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventConfigurationByResourceTypesDocument(DeviceRegistrationState=input.DeviceRegistrationState, Proximity=input.Proximity, Join=input.Join, ConnectionStatus=input.ConnectionStatus, MessageDeliveryStatus=input.MessageDeliveryStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4924,7 +4930,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/fuota-tasks/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFuotaTaskDocument(Name=input.Name, Description=input.Description, LoRaWAN=input.LoRaWAN, FirmwareUpdateImage=input.FirmwareUpdateImage, FirmwareUpdateRole=input.FirmwareUpdateRole, RedundancyPercent=input.RedundancyPercent, FragmentSizeBytes=input.FragmentSizeBytes, FragmentIntervalMS=input.FragmentIntervalMS, Descriptor=input.Descriptor)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4933,7 +4939,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_log_levels_by_resource_types(self, UpdateLogLevelsByResourceTypesRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/log-levels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/log-levels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DefaultLogLevel.is_some():
             auto u0 = input.DefaultLogLevel.unwrap()
@@ -4963,7 +4969,7 @@ struct IoT_WirelessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_metric_configuration(self, UpdateMetricConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/metric-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMetricConfigurationDocument(SummaryMetric=input.SummaryMetric)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -4974,7 +4980,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/multicast-groups/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -4994,7 +5000,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationName"] = input.ConfigurationName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/network-analyzer-configurations/{ConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TraceContent.is_some():
             auto u0 = input.TraceContent.unwrap()
@@ -5049,7 +5055,7 @@ struct IoT_WirelessClient:
         labels["PartnerAccountId"] = input.PartnerAccountId
         dict[str, str] query = {}
         query["partnerType"] = input.PartnerType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/partner-accounts/{PartnerAccountId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePartnerAccountDocument(Sidewalk=input.Sidewalk)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -5062,7 +5068,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Position:
@@ -5081,7 +5087,7 @@ struct IoT_WirelessClient:
         query["identifierType"] = input.IdentifierType
         if input.PartnerType.is_some():
             query["partnerType"] = input.PartnerType.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/event-configurations/{Identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/event-configurations/{Identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourceEventConfigurationDocument(DeviceRegistrationState=input.DeviceRegistrationState, Proximity=input.Proximity, Join=input.Join, ConnectionStatus=input.ConnectionStatus, MessageDeliveryStatus=input.MessageDeliveryStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -5094,7 +5100,7 @@ struct IoT_WirelessClient:
         labels["ResourceIdentifier"] = input.ResourceIdentifier
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resource-positions/{ResourceIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.GeoJsonPayload.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
 
@@ -5104,7 +5110,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-devices/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-devices/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DestinationName.is_some():
             auto u0 = input.DestinationName.unwrap()
@@ -5133,7 +5139,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless_device_import_task/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWirelessDeviceImportTaskDocument(Sidewalk=input.Sidewalk)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_iotwireless_service(), self.region, host)
@@ -5144,7 +5150,7 @@ struct IoT_WirelessClient:
         auto host = endpoints.regional_host(api_iotwireless_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-gateways/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/wireless-gateways/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()

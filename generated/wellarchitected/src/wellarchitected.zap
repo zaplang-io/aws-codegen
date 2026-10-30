@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 95 operations — 93 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 95 operations — 95 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   267 structs (143 @derive(Json)), 52 enums, 7 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2799,12 +2799,6 @@ def wellarchitected_error_from_code(str code) -> WellArchitectedError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetConsolidatedReport (httpQuery `IncludeSharedResources` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3118,6 +3112,12 @@ def workload_discovery_config_to_json(WorkloadDiscoveryConfig v) -> str:
         parts.append("\"WorkloadResourceDefinition\":" + wellarchitected_json_arr(e2))
     return wellarchitected_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def wellarchitected_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound WellArchitected client: credentials + region, threaded into every operation.
 struct WellArchitectedClient:
     core.Credentials creds
@@ -3129,7 +3129,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateLenses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateLenses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.LensAliases:
@@ -3144,7 +3144,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateProfiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/associateProfiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ProfileArns:
@@ -3159,7 +3159,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/contexts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/contexts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3176,7 +3176,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/goals", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/goals", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3196,7 +3196,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_agent_profile(self, CreateAgentProfileRequest input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + wellarchitected_json_str(input.name))
         if input.displayName.is_some():
@@ -3238,7 +3238,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="POST", path_template="/lenses/{LensAlias}/shares", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/lenses/{LensAlias}/shares", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateLensShareDocument(SharedWith=input.SharedWith, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3249,7 +3249,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="POST", path_template="/lenses/{LensAlias}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/lenses/{LensAlias}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateLensVersionDocument(LensVersion=input.LensVersion, IsMajorVersion=input.IsMajorVersion, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3260,7 +3260,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/milestones", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/milestones", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMilestoneDocument(MilestoneName=input.MilestoneName, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3269,7 +3269,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_profile(self, CreateProfileInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProfileName\":" + wellarchitected_json_str(input.ProfileName))
         parts.append("\"ProfileDescription\":" + wellarchitected_json_str(input.ProfileDescription))
@@ -3293,7 +3293,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileArn"] = input.ProfileArn
-        auto b = binding.HttpBinding(method="POST", path_template="/profiles/{ProfileArn}/shares", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profiles/{ProfileArn}/shares", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProfileShareDocument(SharedWith=input.SharedWith, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3302,7 +3302,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_review_template(self, CreateReviewTemplateInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reviewTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reviewTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TemplateName\":" + wellarchitected_json_str(input.TemplateName))
         parts.append("\"Description\":" + wellarchitected_json_str(input.Description))
@@ -3329,7 +3329,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="POST", path_template="/templates/shares/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/templates/shares/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTemplateShareDocument(SharedWith=input.SharedWith, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3338,7 +3338,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_workload(self, CreateWorkloadInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"WorkloadName\":" + wellarchitected_json_str(input.WorkloadName))
         parts.append("\"Description\":" + wellarchitected_json_str(input.Description))
@@ -3426,7 +3426,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/shares", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/shares", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkloadShareDocument(SharedWith=input.SharedWith, PermissionType=input.PermissionType, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3438,7 +3438,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteAgentGoal  DELETE /api/v1/agent-profiles/{profileArn}/goals/{id}
@@ -3448,7 +3448,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteAgentProfile  DELETE /api/v1/agent-profiles/{profileArn}
@@ -3457,7 +3457,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteLens  DELETE /lenses/{LensAlias}
@@ -3469,7 +3469,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
         query["LensStatus"] = input.LensStatus
-        auto b = binding.HttpBinding(method="DELETE", path_template="/lenses/{LensAlias}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/lenses/{LensAlias}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteLensShare  DELETE /lenses/{LensAlias}/shares/{ShareId}
@@ -3481,7 +3481,7 @@ struct WellArchitectedClient:
         labels["LensAlias"] = input.LensAlias
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/lenses/{LensAlias}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/lenses/{LensAlias}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteProfile  DELETE /profiles/{ProfileArn}
@@ -3492,7 +3492,7 @@ struct WellArchitectedClient:
         labels["ProfileArn"] = input.ProfileArn
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteProfileShare  DELETE /profiles/{ProfileArn}/shares/{ShareId}
@@ -3504,7 +3504,7 @@ struct WellArchitectedClient:
         labels["ProfileArn"] = input.ProfileArn
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profiles/{ProfileArn}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profiles/{ProfileArn}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteReviewTemplate  DELETE /reviewTemplates/{TemplateArn}
@@ -3515,7 +3515,7 @@ struct WellArchitectedClient:
         labels["TemplateArn"] = input.TemplateArn
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteTemplateShare  DELETE /templates/shares/{TemplateArn}/{ShareId}
@@ -3527,7 +3527,7 @@ struct WellArchitectedClient:
         labels["TemplateArn"] = input.TemplateArn
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/shares/{TemplateArn}/{ShareId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/shares/{TemplateArn}/{ShareId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteWorkload  DELETE /workloads/{WorkloadId}
@@ -3538,7 +3538,7 @@ struct WellArchitectedClient:
         labels["WorkloadId"] = input.WorkloadId
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DeleteWorkloadShare  DELETE /workloads/{WorkloadId}/shares/{ShareId}
@@ -3550,7 +3550,7 @@ struct WellArchitectedClient:
         labels["WorkloadId"] = input.WorkloadId
         dict[str, str] query = {}
         query["ClientRequestToken"] = input.ClientRequestToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workloads/{WorkloadId}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workloads/{WorkloadId}/shares/{ShareId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # DisassociateLenses  PATCH /workloads/{WorkloadId}/disassociateLenses
@@ -3559,7 +3559,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateLenses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateLenses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.LensAliases:
@@ -3574,7 +3574,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateProfiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/disassociateProfiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ProfileArns:
@@ -3592,7 +3592,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.LensVersion.is_some():
             query["LensVersion"] = input.LensVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/export", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/export", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAgentContext  GET /api/v1/agent-profiles/{profileArn}/contexts/{id}
@@ -3602,7 +3602,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAgentGoal  GET /api/v1/agent-profiles/{profileArn}/goals/{id}
@@ -3612,7 +3612,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAgentProfile  GET /api/v1/agent-profiles/{profileArn}
@@ -3621,7 +3621,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAgentRecommendation  GET /api/v1/agent-recommendations/{recommendationArn}
@@ -3633,7 +3633,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.remediationType.is_some():
             query["remediationType"] = input.remediationType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-recommendations/{recommendationArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-recommendations/{recommendationArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAgentRecommendationGeneration  GET /api/v1/agent-profiles/{profileArn}/generations/{generationId}
@@ -3643,7 +3643,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["generationId"] = input.generationId
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/generations/{generationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/generations/{generationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetAnswer  GET /workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}
@@ -3657,14 +3657,30 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.MilestoneNumber.is_some():
             query["MilestoneNumber"] = str(input.MilestoneNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
+
+    # GetConsolidatedReport  GET /consolidatedReport
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
+    def get_consolidated_report(self, GetConsolidatedReportInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] query = {}
+        query["Format"] = input.Format
+        if input.IncludeSharedResources.is_some():
+            auto qt0 = wellarchitected_bind_bool(input.IncludeSharedResources.unwrap_or(False))
+            query["IncludeSharedResources"] = qt0
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/consolidatedReport", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetGlobalSettings  GET /global-settings
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_global_settings(self) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/global-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetLens  GET /lenses/{LensAlias}
@@ -3676,7 +3692,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.LensVersion.is_some():
             query["LensVersion"] = input.LensVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetLensReview  GET /workloads/{WorkloadId}/lensReviews/{LensAlias}
@@ -3689,7 +3705,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.MilestoneNumber.is_some():
             query["MilestoneNumber"] = str(input.MilestoneNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetLensReviewReport  GET /workloads/{WorkloadId}/lensReviews/{LensAlias}/report
@@ -3702,7 +3718,7 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.MilestoneNumber.is_some():
             query["MilestoneNumber"] = str(input.MilestoneNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/report", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/report", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetLensVersionDifference  GET /lenses/{LensAlias}/versionDifference
@@ -3716,7 +3732,7 @@ struct WellArchitectedClient:
             query["BaseLensVersion"] = input.BaseLensVersion.unwrap_or("")
         if input.TargetLensVersion.is_some():
             query["TargetLensVersion"] = input.TargetLensVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/versionDifference", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/versionDifference", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetMilestone  GET /workloads/{WorkloadId}/milestones/{MilestoneNumber}
@@ -3726,7 +3742,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
         labels["MilestoneNumber"] = str(input.MilestoneNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/milestones/{MilestoneNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/milestones/{MilestoneNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetProfile  GET /profiles/{ProfileArn}
@@ -3738,14 +3754,14 @@ struct WellArchitectedClient:
         dict[str, str] query = {}
         if input.ProfileVersion.is_some():
             query["ProfileVersion"] = input.ProfileVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetProfileTemplate  GET /profileTemplate
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_profile_template(self) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/profileTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetReviewTemplate  GET /reviewTemplates/{TemplateArn}
@@ -3754,7 +3770,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetReviewTemplateAnswer  GET /reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}
@@ -3765,7 +3781,7 @@ struct WellArchitectedClient:
         labels["TemplateArn"] = input.TemplateArn
         labels["LensAlias"] = input.LensAlias
         labels["QuestionId"] = input.QuestionId
-        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetReviewTemplateLensReview  GET /reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}
@@ -3775,7 +3791,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # GetWorkload  GET /workloads/{WorkloadId}
@@ -3784,14 +3800,14 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ImportLens  PUT /importLens
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def import_lens(self, ImportLensInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/importLens", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/importLens", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.LensAlias.is_some():
             auto u0 = input.LensAlias.unwrap()
@@ -3818,7 +3834,7 @@ struct WellArchitectedClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/contexts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/contexts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAgentGoals  GET /api/v1/agent-profiles/{profileArn}/goals
@@ -3832,7 +3848,7 @@ struct WellArchitectedClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/goals", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/goals", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAgentProfiles  GET /api/v1/agent-profiles
@@ -3844,7 +3860,7 @@ struct WellArchitectedClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAgentRecommendationGenerations  GET /api/v1/agent-profiles/{profileArn}/generations
@@ -3860,7 +3876,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["NextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/generations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/generations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAgentRecommendationItems  GET /api/v1/agent-recommendations/{recommendationArn}/items
@@ -3876,7 +3892,7 @@ struct WellArchitectedClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-recommendations/{recommendationArn}/items", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-recommendations/{recommendationArn}/items", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAgentRecommendations  GET /api/v1/agent-profiles/{profileArn}/recommendations
@@ -3894,7 +3910,7 @@ struct WellArchitectedClient:
             query["state"] = input.state.unwrap_or("")
         if input.pillar.is_some():
             query["pillar"] = input.pillar.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/recommendations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/agent-profiles/{profileArn}/recommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListAnswers  GET /workloads/{WorkloadId}/lensReviews/{LensAlias}/answers
@@ -3915,7 +3931,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.QuestionPriority.is_some():
             query["QuestionPriority"] = input.QuestionPriority.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListCheckDetails  POST /workloads/{WorkloadId}/checks
@@ -3924,7 +3940,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/checks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/checks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCheckDetailsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults, LensArn=input.LensArn, PillarId=input.PillarId, QuestionId=input.QuestionId, ChoiceId=input.ChoiceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3935,7 +3951,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/checkSummaries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/checkSummaries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCheckSummariesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults, LensArn=input.LensArn, PillarId=input.PillarId, QuestionId=input.QuestionId, ChoiceId=input.ChoiceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -3958,7 +3974,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.QuestionPriority.is_some():
             query["QuestionPriority"] = input.QuestionPriority.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/improvements", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/improvements", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListLensReviews  GET /workloads/{WorkloadId}/lensReviews
@@ -3974,7 +3990,7 @@ struct WellArchitectedClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/lensReviews", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListLensShares  GET /lenses/{LensAlias}/shares
@@ -3992,7 +4008,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.Status.is_some():
             query["Status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/shares", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/lenses/{LensAlias}/shares", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListLenses  GET /lenses
@@ -4010,7 +4026,7 @@ struct WellArchitectedClient:
             query["LensStatus"] = input.LensStatus.unwrap_or("")
         if input.LensName.is_some():
             query["LensName"] = input.LensName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/lenses", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/lenses", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListMilestones  POST /workloads/{WorkloadId}/milestonesSummaries
@@ -4019,7 +4035,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/milestonesSummaries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/milestonesSummaries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMilestonesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4028,7 +4044,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_notifications(self, ListNotificationsInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/notifications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/notifications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListNotificationsDocument(WorkloadId=input.WorkloadId, NextToken=input.NextToken, MaxResults=input.MaxResults, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4044,7 +4060,7 @@ struct WellArchitectedClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/profileNotifications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileNotifications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListProfileShares  GET /profiles/{ProfileArn}/shares
@@ -4062,7 +4078,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.Status.is_some():
             query["Status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/profiles/{ProfileArn}/shares", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profiles/{ProfileArn}/shares", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListProfiles  GET /profileSummaries
@@ -4078,7 +4094,7 @@ struct WellArchitectedClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/profileSummaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileSummaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListReviewTemplateAnswers  GET /reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers
@@ -4095,7 +4111,7 @@ struct WellArchitectedClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListReviewTemplates  GET /reviewTemplates
@@ -4107,7 +4123,7 @@ struct WellArchitectedClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reviewTemplates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListShareInvitations  GET /shareInvitations
@@ -4129,7 +4145,7 @@ struct WellArchitectedClient:
             query["ProfileNamePrefix"] = input.ProfileNamePrefix.unwrap_or("")
         if input.TemplateNamePrefix.is_some():
             query["TemplateNamePrefix"] = input.TemplateNamePrefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/shareInvitations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/shareInvitations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{WorkloadArn}
@@ -4138,7 +4154,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadArn"] = input.WorkloadArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListTemplateShares  GET /templates/shares/{TemplateArn}
@@ -4156,7 +4172,7 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.Status.is_some():
             query["Status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/shares/{TemplateArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/shares/{TemplateArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListWorkloadShares  GET /workloads/{WorkloadId}/shares
@@ -4174,14 +4190,14 @@ struct WellArchitectedClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.Status.is_some():
             query["Status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/shares", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloads/{WorkloadId}/shares", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
 
     # ListWorkloads  POST /workloadsSummaries
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_workloads(self, ListWorkloadsInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workloadsSummaries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloadsSummaries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkloadsDocument(WorkloadNamePrefix=input.WorkloadNamePrefix, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4192,7 +4208,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["recommendationArn"] = input.recommendationArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-recommendations/{recommendationArn}/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-recommendations/{recommendationArn}/feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAgentRecommendationFeedbackDocument(type=input.type, feedbackCategory=input.feedbackCategory, comments=input.comments)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4203,7 +4219,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/generations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/agent-profiles/{profileArn}/generations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.types:
@@ -4225,7 +4241,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadArn"] = input.WorkloadArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -4234,6 +4250,17 @@ struct WellArchitectedClient:
         auto bp = restjson.rest_json_document(b, wellarchitected_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{WorkloadArn}
+    # errors: InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(wellarchitected_service(), self.region)
+        dict[str, str] labels = {}
+        labels["WorkloadArn"] = input.WorkloadArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{WorkloadArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, wellarchitected_service(), self.region, host)
+
     # UpdateAgentContext  PUT /api/v1/agent-profiles/{profileArn}/contexts/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_agent_context(self, UpdateAgentContextRequest input) -> str:
@@ -4241,7 +4268,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/contexts/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4262,7 +4289,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}/goals/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4288,7 +4315,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["profileArn"] = input.profileArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/agent-profiles/{profileArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4329,7 +4356,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["recommendationArn"] = input.recommendationArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/agent-recommendations/{recommendationArn}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/agent-recommendations/{recommendationArn}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentRecommendationStatusDocument(status=input.status, updateReason=input.updateReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4342,7 +4369,7 @@ struct WellArchitectedClient:
         labels["WorkloadId"] = input.WorkloadId
         labels["LensAlias"] = input.LensAlias
         labels["QuestionId"] = input.QuestionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SelectedChoices.is_some():
             auto u0 = input.SelectedChoices.unwrap()
@@ -4372,7 +4399,7 @@ struct WellArchitectedClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def update_global_settings(self, UpdateGlobalSettingsInput input) -> str:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGlobalSettingsDocument(OrganizationSharingStatus=input.OrganizationSharingStatus, DiscoveryIntegrationStatus=input.DiscoveryIntegrationStatus, JiraConfiguration=input.JiraConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4383,7 +4410,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/updateIntegration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloads/{WorkloadId}/updateIntegration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIntegrationDocument(ClientRequestToken=input.ClientRequestToken, IntegratingService=input.IntegratingService)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4395,7 +4422,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.LensNotes.is_some():
             auto u0 = input.LensNotes.unwrap()
@@ -4418,7 +4445,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileArn"] = input.ProfileArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profiles/{ProfileArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ProfileDescription.is_some():
             auto u0 = input.ProfileDescription.unwrap()
@@ -4438,7 +4465,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TemplateName.is_some():
             auto u0 = input.TemplateName.unwrap()
@@ -4472,7 +4499,7 @@ struct WellArchitectedClient:
         labels["TemplateArn"] = input.TemplateArn
         labels["LensAlias"] = input.LensAlias
         labels["QuestionId"] = input.QuestionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/answers/{QuestionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SelectedChoices.is_some():
             auto u0 = input.SelectedChoices.unwrap()
@@ -4505,7 +4532,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.LensNotes.is_some():
             auto u0 = input.LensNotes.unwrap()
@@ -4525,7 +4552,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["ShareInvitationId"] = input.ShareInvitationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/shareInvitations/{ShareInvitationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/shareInvitations/{ShareInvitationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateShareInvitationDocument(ShareInvitationAction=input.ShareInvitationAction)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4536,7 +4563,7 @@ struct WellArchitectedClient:
         auto host = endpoints.regional_host(wellarchitected_service(), self.region)
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.WorkloadName.is_some():
             auto u0 = input.WorkloadName.unwrap()
@@ -4614,7 +4641,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["ShareId"] = input.ShareId
         labels["WorkloadId"] = input.WorkloadId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/shares/{ShareId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workloads/{WorkloadId}/shares/{ShareId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkloadShareDocument(PermissionType=input.PermissionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4626,7 +4653,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="PUT", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/upgrade", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workloads/{WorkloadId}/lensReviews/{LensAlias}/upgrade", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradeLensReviewDocument(MilestoneName=input.MilestoneName, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4638,7 +4665,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["WorkloadId"] = input.WorkloadId
         labels["ProfileArn"] = input.ProfileArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/workloads/{WorkloadId}/profiles/{ProfileArn}/upgrade", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workloads/{WorkloadId}/profiles/{ProfileArn}/upgrade", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradeProfileVersionDocument(MilestoneName=input.MilestoneName, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)
@@ -4650,7 +4677,7 @@ struct WellArchitectedClient:
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
         labels["LensAlias"] = input.LensAlias
-        auto b = binding.HttpBinding(method="PUT", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/upgrade", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/reviewTemplates/{TemplateArn}/lensReviews/{LensAlias}/upgrade", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpgradeReviewTemplateLensReviewDocument(ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, wellarchitected_service(), self.region, host)

@@ -1772,7 +1772,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["blueprintArn"] = input.blueprintArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/{blueprintArn}/copy-stage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/{blueprintArn}/copy-stage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CopyBlueprintStageDocument(sourceStage=input.sourceStage, targetStage=input.targetStage, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -1781,7 +1781,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_blueprint(self, CreateBlueprintRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"blueprintName\":" + bedrock_data_automation_json_str(input.blueprintName))
         parts.append("\"type\":" + input.type.to_json())
@@ -1810,7 +1810,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["blueprintArn"] = input.blueprintArn
-        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/{blueprintArn}/versions/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/{blueprintArn}/versions/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBlueprintVersionDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -1819,7 +1819,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_data_automation_library(self, CreateDataAutomationLibraryRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"libraryName\":" + bedrock_data_automation_json_str(input.libraryName))
         if input.libraryDescription.is_some():
@@ -1844,7 +1844,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_data_automation_project(self, CreateDataAutomationProjectRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"projectName\":" + bedrock_data_automation_json_str(input.projectName))
         if input.projectDescription.is_some():
@@ -1890,7 +1890,7 @@ struct Bedrock_Data_AutomationClient:
         dict[str, str] query = {}
         if input.blueprintVersion.is_some():
             query["blueprintVersion"] = input.blueprintVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # DeleteDataAutomationLibrary  DELETE /data-automation-libraries/{libraryArn}/
@@ -1899,7 +1899,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # DeleteDataAutomationProject  DELETE /data-automation-projects/{projectArn}/
@@ -1908,7 +1908,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["projectArn"] = input.projectArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # GetBlueprint  POST /blueprints/{blueprintArn}/
@@ -1917,7 +1917,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["blueprintArn"] = input.blueprintArn
-        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBlueprintDocument(blueprintVersion=input.blueprintVersion, blueprintStage=input.blueprintStage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -1928,7 +1928,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["invocationArn"] = input.invocationArn
-        auto b = binding.HttpBinding(method="POST", path_template="/getBlueprintOptimizationStatus/{invocationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getBlueprintOptimizationStatus/{invocationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # GetDataAutomationLibrary  POST /data-automation-libraries/{libraryArn}/
@@ -1937,7 +1937,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # GetDataAutomationLibraryEntity  POST /data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/{entityId}
@@ -1948,7 +1948,7 @@ struct Bedrock_Data_AutomationClient:
         labels["libraryArn"] = input.libraryArn
         labels["entityType"] = input.entityType
         labels["entityId"] = input.entityId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/{entityId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # GetDataAutomationLibraryIngestionJob  POST /data-automation-libraries/{libraryArn}/library-ingestion-jobs/{jobArn}
@@ -1958,7 +1958,7 @@ struct Bedrock_Data_AutomationClient:
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
         labels["jobArn"] = input.jobArn
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/{jobArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/{jobArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_data_automation_service(), self.region, host)
 
     # GetDataAutomationProject  POST /data-automation-projects/{projectArn}/
@@ -1967,7 +1967,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["projectArn"] = input.projectArn
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDataAutomationProjectDocument(projectStage=input.projectStage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -1976,7 +1976,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def invoke_blueprint_optimization_async(self, InvokeBlueprintOptimizationAsyncRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invokeBlueprintOptimizationAsync", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invokeBlueprintOptimizationAsync", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"blueprint\":" + input.blueprint.to_json())
         list[str] e0 = []
@@ -2003,7 +2003,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2028,7 +2028,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_blueprints(self, ListBlueprintsRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/blueprints/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListBlueprintsDocument(blueprintArn=input.blueprintArn, resourceOwner=input.resourceOwner, blueprintStageFilter=input.blueprintStageFilter, maxResults=input.maxResults, nextToken=input.nextToken, projectFilter=input.projectFilter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2037,7 +2037,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_data_automation_libraries(self, ListDataAutomationLibrariesRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataAutomationLibrariesDocument(maxResults=input.maxResults, nextToken=input.nextToken, projectFilter=input.projectFilter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2049,7 +2049,7 @@ struct Bedrock_Data_AutomationClient:
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
         labels["entityType"] = input.entityType
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/entityType/{entityType}/entities/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataAutomationLibraryEntitiesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2060,7 +2060,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-libraries/{libraryArn}/library-ingestion-jobs/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataAutomationLibraryIngestionJobsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2069,7 +2069,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_data_automation_projects(self, ListDataAutomationProjectsRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-projects/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-automation-projects/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataAutomationProjectsDocument(maxResults=input.maxResults, nextToken=input.nextToken, projectStageFilter=input.projectStageFilter, blueprintFilter=input.blueprintFilter, resourceOwner=input.resourceOwner, libraryFilter=input.libraryFilter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2078,7 +2078,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(resourceARN=input.resourceARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2087,7 +2087,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceARN\":" + bedrock_data_automation_json_str(input.resourceARN))
         list[str] e0 = []
@@ -2101,7 +2101,7 @@ struct Bedrock_Data_AutomationClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceARN\":" + bedrock_data_automation_json_str(input.resourceARN))
         list[str] e0 = []
@@ -2117,7 +2117,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["blueprintArn"] = input.blueprintArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/blueprints/{blueprintArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"schema\":" + bedrock_data_automation_json_str(input.schema))
         if input.blueprintStage.is_some():
@@ -2135,7 +2135,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["libraryArn"] = input.libraryArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-libraries/{libraryArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataAutomationLibraryDocument(libraryDescription=input.libraryDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_data_automation_service(), self.region, host)
@@ -2146,7 +2146,7 @@ struct Bedrock_Data_AutomationClient:
         auto host = endpoints.regional_host(bedrock_data_automation_service(), self.region)
         dict[str, str] labels = {}
         labels["projectArn"] = input.projectArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-automation-projects/{projectArn}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.projectStage.is_some():
             auto u0 = input.projectStage.unwrap()

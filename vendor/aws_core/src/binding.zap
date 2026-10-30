@@ -64,12 +64,17 @@ enum PayloadKind:
 #   * `headers` are member-bound headers (lowercase names). `prefix_header_prefix`
 #     + `prefix_headers` render httpPrefixHeaders: each entry becomes a header
 #     named `prefix + suffix`.
+#   * `multi_query` is the repeated-key query parameters (a list member bound to
+#     `httpQuery`, e.g. `?Tag=a&Tag=b`): a dict cannot hold a repeated key, so
+#     each key maps to the ordered list of its values, folded into the canonical
+#     query by `binding_canonical_query`.
 struct HttpBinding:
     str method
     str path_template
     dict[str, str] labels
     dict[str, str] greedy_labels
     dict[str, str] query
+    dict[str, list[str]] multi_query
     dict[str, str] headers
     str prefix_header_prefix
     dict[str, str] prefix_headers
@@ -87,6 +92,7 @@ def new_binding(str method, str path_template) -> HttpBinding:
         labels={},
         greedy_labels={},
         query={},
+        multi_query={},
         headers={},
         prefix_header_prefix="",
         prefix_headers={},
@@ -110,6 +116,7 @@ def with_payload(
         labels=b.labels,
         greedy_labels=b.greedy_labels,
         query=b.query,
+        multi_query=b.multi_query,
         headers=b.headers,
         prefix_header_prefix=b.prefix_header_prefix,
         prefix_headers=b.prefix_headers,
@@ -252,6 +259,39 @@ def canonical_uri_encoded(str wire_path_str, str service) -> str:
         return wire_path_str
     return url.quote_path(wire_path_str)
 
+# The SigV4 CanonicalQueryString for a binding's query, including repeated-key
+# parameters (a list member bound to httpQuery). When there are no repeated keys
+# this is exactly `url.canonical_query(query)`, so single-valued binding requests
+# are byte-identical to before. Otherwise every (key, value) pair — from the
+# single-valued `query` dict and from each value of every `multi_query` list —
+# is percent-encoded (`url.quote`, the same encoder url.canonical_query uses),
+# the "key=value" pairs are sorted, and joined with "&". AWS query parameter
+# names are identifiers (no "="/space), so sorting the encoded "key=value"
+# strings orders pairs the same as sorting by (encoded key, encoded value); and
+# a list's repeated keys are identical, so they sort by value. This canonical
+# string is used both to sign and as the wire query (see `binding_sign`).
+def binding_canonical_query(dict[str, str] query, dict[str, list[str]] multi) -> str:
+    if len(multi.keys()) == 0:
+        return url.canonical_query(query)
+    list[str] pairs = []
+    for k in query.keys():
+        Optional[str] v = query.get(k)
+        pairs.append(url.quote(k) + "=" + url.quote(v.unwrap_or("")))
+    for mk in multi.keys():
+        Optional[list[str]] vs = multi.get(mk)
+        for item in vs.unwrap_or([]):
+            pairs.append(url.quote(mk) + "=" + url.quote(item))
+    auto ordered = sorted(pairs)
+    auto out = ""
+    auto first = True
+    for p in ordered:
+        if first:
+            out = out + p
+            first = False
+        else:
+            out = out + "&" + p
+    return out
+
 # Sign a binding `Request` whose `path` is the already-encoded wire path, and
 # return ready-to-send HTTP/1.1 text. This is `core.sign_request` with exactly
 # one difference — the path is treated as pre-encoded (canonical URI via
@@ -265,6 +305,7 @@ def binding_sign(
     core.Request req,
     str amz_date,
     str date_stamp,
+    dict[str, list[str]] multi_query,
 ) -> str:
     auto to_sign = req.headers.copy()
     if creds.has_session:
@@ -275,7 +316,7 @@ def binding_sign(
     payload_sha = psha.unwrap_or(payload_sha)
 
     auto canon_uri_str = canonical_uri_encoded(req.path, req.service)
-    auto canon_q = url.canonical_query(req.query)
+    auto canon_q = binding_canonical_query(req.query, multi_query)
     auto canon = core.canonical_headers(to_sign)
     auto shead = core.signed_headers(to_sign)
     auto creq = core.canonical_request(

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 19 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 21 operations — 21 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   109 structs (88 @derive(Json)), 11 enums, 8 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -883,12 +883,6 @@ def kafkaconnect_error_from_code(str code) -> KafkaConnectError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   RestartConnector (httpQuery `onlyFailedTasks` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -947,6 +941,12 @@ def vpc_to_json(Vpc v) -> str:
     parts.append("\"subnets\":" + kafkaconnect_json_arr(e2))
     return kafkaconnect_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def kafkaconnect_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound KafkaConnect client: credentials + region, threaded into every operation.
 struct KafkaConnectClient:
     core.Credentials creds
@@ -956,7 +956,7 @@ struct KafkaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"capacity\":" + input.capacity.to_json())
         list[str] m0 = []
@@ -998,7 +998,7 @@ struct KafkaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_custom_plugin(self, CreateCustomPluginRequest input) -> str:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/custom-plugins", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/custom-plugins", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"contentType\":" + input.contentType.to_json())
         if input.description.is_some():
@@ -1019,7 +1019,7 @@ struct KafkaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_worker_configuration(self, CreateWorkerConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/worker-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/worker-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1044,7 +1044,7 @@ struct KafkaConnectClient:
         dict[str, str] query = {}
         if input.currentVersion.is_some():
             query["currentVersion"] = input.currentVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DeleteCustomPlugin  DELETE /v1/custom-plugins/{customPluginArn}
@@ -1053,7 +1053,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["customPluginArn"] = input.customPluginArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/custom-plugins/{customPluginArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/custom-plugins/{customPluginArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DeleteWorkerConfiguration  DELETE /v1/worker-configurations/{workerConfigurationArn}
@@ -1062,7 +1062,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["workerConfigurationArn"] = input.workerConfigurationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/worker-configurations/{workerConfigurationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/worker-configurations/{workerConfigurationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DescribeConnector  GET /v1/connectors/{connectorArn}
@@ -1071,7 +1071,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["connectorArn"] = input.connectorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DescribeConnectorOperation  GET /v1/connectorOperations/{connectorOperationArn}
@@ -1080,7 +1080,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["connectorOperationArn"] = input.connectorOperationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectorOperations/{connectorOperationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectorOperations/{connectorOperationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DescribeCustomPlugin  GET /v1/custom-plugins/{customPluginArn}
@@ -1089,7 +1089,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["customPluginArn"] = input.customPluginArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/custom-plugins/{customPluginArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/custom-plugins/{customPluginArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # DescribeWorkerConfiguration  GET /v1/worker-configurations/{workerConfigurationArn}
@@ -1098,7 +1098,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["workerConfigurationArn"] = input.workerConfigurationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/worker-configurations/{workerConfigurationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/worker-configurations/{workerConfigurationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ListConnectorOperations  GET /v1/connectors/{connectorArn}/operations
@@ -1112,7 +1112,7 @@ struct KafkaConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors/{connectorArn}/operations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors/{connectorArn}/operations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ListConnectors  GET /v1/connectors
@@ -1126,7 +1126,7 @@ struct KafkaConnectClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ListCustomPlugins  GET /v1/custom-plugins
@@ -1140,7 +1140,7 @@ struct KafkaConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.namePrefix.is_some():
             query["namePrefix"] = input.namePrefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/custom-plugins", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/custom-plugins", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -1149,7 +1149,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ListWorkerConfigurations  GET /v1/worker-configurations
@@ -1163,7 +1163,7 @@ struct KafkaConnectClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.namePrefix.is_some():
             query["namePrefix"] = input.namePrefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/worker-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/worker-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # PauseConnector  PUT /v1/connectors/{connectorArn}/pause
@@ -1172,7 +1172,20 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["connectorArn"] = input.connectorArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}/pause", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}/pause", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
+
+    # RestartConnector  POST /v1/connectors/{connectorArn}/restart
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def restart_connector(self, RestartConnectorRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["connectorArn"] = input.connectorArn
+        dict[str, str] query = {}
+        if input.onlyFailedTasks.is_some():
+            auto qt0 = kafkaconnect_bind_bool(input.onlyFailedTasks.unwrap_or(False))
+            query["onlyFailedTasks"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/connectors/{connectorArn}/restart", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # ResumeConnector  PUT /v1/connectors/{connectorArn}/resume
@@ -1181,7 +1194,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["connectorArn"] = input.connectorArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}/resume", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}/resume", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # TagResource  POST /v1/tags/{resourceArn}
@@ -1190,7 +1203,7 @@ struct KafkaConnectClient:
         auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1198,6 +1211,17 @@ struct KafkaConnectClient:
         parts.append("\"tags\":" + kafkaconnect_json_obj(m0))
         auto bp = restjson.rest_json_document(b, kafkaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kafkaconnect_service(), self.region, host)
+
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(kafkaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, kafkaconnect_service(), self.region, host)
 
     # UpdateConnector  PUT /v1/connectors/{connectorArn}
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
@@ -1207,7 +1231,7 @@ struct KafkaConnectClient:
         labels["connectorArn"] = input.connectorArn
         dict[str, str] query = {}
         query["currentVersion"] = input.currentVersion
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectors/{connectorArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.capacity.is_some():
             auto u0 = input.capacity.unwrap()

@@ -1224,7 +1224,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_listing(self, GetListingInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getListing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getListing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetListingDocument(locale=input.locale, listingId=input.listingId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1233,7 +1233,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_offer(self, GetOfferInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOffer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOffer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOfferDocument(locale=input.locale, offerId=input.offerId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1242,7 +1242,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_offer_set(self, GetOfferSetInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOfferSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOfferSet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOfferSetDocument(locale=input.locale, offerSetId=input.offerSetId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1251,7 +1251,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_offer_terms(self, GetOfferTermsInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOfferTerms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getOfferTerms", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOfferTermsDocument(locale=input.locale, offerId=input.offerId, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1260,7 +1260,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_product(self, GetProductInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getProduct", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/getProduct", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetProductDocument(locale=input.locale, productId=input.productId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1269,7 +1269,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_fulfillment_options(self, ListFulfillmentOptionsInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/listFulfillmentOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/listFulfillmentOptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFulfillmentOptionsDocument(locale=input.locale, productId=input.productId, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, discovery_marketplace_service(), self.region, host)
@@ -1278,7 +1278,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_purchase_options(self, ListPurchaseOptionsInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/listPurchaseOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/listPurchaseOptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.locale.is_some():
             auto u0 = input.locale.unwrap()
@@ -1302,7 +1302,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def search_facets(self, SearchFacetsInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchFacets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchFacets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.locale.is_some():
             auto u0 = input.locale.unwrap()
@@ -1332,7 +1332,7 @@ struct Marketplace_DiscoveryClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def search_listings(self, SearchListingsInput input) -> str:
         auto host = endpoints.regional_host(discovery_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchListings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-02-05/searchListings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.locale.is_some():
             auto u0 = input.locale.unwrap()

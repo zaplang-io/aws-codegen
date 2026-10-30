@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 11 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 12 operations — 12 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (35 @derive(Json)), 6 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -477,11 +477,6 @@ def backup_search_error_from_code(str code) -> BackupSearchError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -634,7 +629,7 @@ struct BackupSearchClient:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
         dict[str, str] labels = {}
         labels["SearchJobIdentifier"] = input.SearchJobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # GetSearchResultExportJob  GET /export-search-jobs/{ExportJobIdentifier}
@@ -643,7 +638,7 @@ struct BackupSearchClient:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
         dict[str, str] labels = {}
         labels["ExportJobIdentifier"] = input.ExportJobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/export-search-jobs/{ExportJobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/export-search-jobs/{ExportJobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # ListSearchJobBackups  GET /search-jobs/{SearchJobIdentifier}/backups
@@ -657,7 +652,7 @@ struct BackupSearchClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}/backups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}/backups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # ListSearchJobResults  GET /search-jobs/{SearchJobIdentifier}/search-results
@@ -671,7 +666,7 @@ struct BackupSearchClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}/search-results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs/{SearchJobIdentifier}/search-results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # ListSearchJobs  GET /search-jobs
@@ -685,7 +680,7 @@ struct BackupSearchClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # ListSearchResultExportJobs  GET /export-search-jobs
@@ -701,7 +696,7 @@ struct BackupSearchClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/export-search-jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/export-search-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -710,14 +705,14 @@ struct BackupSearchClient:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # StartSearchJob  PUT /search-jobs
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_search_job(self, StartSearchJobInput input) -> str:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -745,7 +740,7 @@ struct BackupSearchClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_search_result_export_job(self, StartSearchResultExportJobInput input) -> str:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/export-search-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/export-search-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SearchJobIdentifier\":" + backup_search_json_str(input.SearchJobIdentifier))
         parts.append("\"ExportSpecification\":" + input.ExportSpecification.to_json())
@@ -770,7 +765,7 @@ struct BackupSearchClient:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
         dict[str, str] labels = {}
         labels["SearchJobIdentifier"] = input.SearchJobIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs/{SearchJobIdentifier}/actions/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/search-jobs/{SearchJobIdentifier}/actions/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -779,7 +774,7 @@ struct BackupSearchClient:
         auto host = endpoints.regional_host(backup_search_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -787,6 +782,17 @@ struct BackupSearchClient:
         parts.append("\"Tags\":" + backup_search_json_obj(m0))
         auto bp = restjson.rest_json_document(b, backup_search_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, backup_search_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(backup_search_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, backup_search_service(), self.region, host)
 
     # Paginator for ListSearchJobBackups — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Results).

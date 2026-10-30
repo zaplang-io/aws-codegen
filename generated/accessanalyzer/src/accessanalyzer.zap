@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 39 operations — 37 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 39 operations — 39 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   168 structs (85 @derive(Json)), 32 enums, 9 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1613,12 +1613,6 @@ def access_analyzer_error_from_code(str code) -> AccessAnalyzerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetGeneratedPolicy (httpQuery `includeResourcePlaceholders` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2086,6 +2080,12 @@ def unused_access_configuration_to_json(UnusedAccessConfiguration v) -> str:
         parts.append("\"analysisRule\":" + analysis_rule_to_json(u1))
     return access_analyzer_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def access_analyzer_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound AccessAnalyzer client: credentials + region, threaded into every operation.
 struct AccessAnalyzerClient:
     core.Credentials creds
@@ -2095,7 +2095,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def apply_archive_rule(self, ApplyArchiveRuleRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/archive-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/archive-rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ApplyArchiveRuleDocument(analyzerArn=input.analyzerArn, ruleName=input.ruleName, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
@@ -2106,14 +2106,14 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # CheckAccessNotGranted  POST /policy/check-access-not-granted
     # errors: AccessDeniedException, InternalServerException, InvalidParameterException, ThrottlingException, UnprocessableEntityException, ValidationException
     def check_access_not_granted(self, CheckAccessNotGrantedRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-access-not-granted", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-access-not-granted", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyDocument\":" + access_analyzer_json_str(input.policyDocument))
         list[str] e0 = []
@@ -2128,7 +2128,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, InvalidParameterException, ThrottlingException, UnprocessableEntityException, ValidationException
     def check_no_new_access(self, CheckNoNewAccessRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-no-new-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-no-new-access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CheckNoNewAccessDocument(newPolicyDocument=input.newPolicyDocument, existingPolicyDocument=input.existingPolicyDocument, policyType=input.policyType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
@@ -2137,7 +2137,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, InvalidParameterException, ThrottlingException, UnprocessableEntityException, ValidationException
     def check_no_public_access(self, CheckNoPublicAccessRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-no-public-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/check-no-public-access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CheckNoPublicAccessDocument(policyDocument=input.policyDocument, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
@@ -2146,7 +2146,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_access_preview(self, CreateAccessPreviewRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/access-preview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/access-preview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
         list[str] m0 = []
@@ -2163,7 +2163,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_analyzer(self, CreateAnalyzerRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerName\":" + access_analyzer_json_str(input.analyzerName))
         parts.append("\"type\":" + input.type.to_json())
@@ -2194,7 +2194,7 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["analyzerName"] = input.analyzerName
-        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ruleName\":" + access_analyzer_json_str(input.ruleName))
         list[str] m0 = []
@@ -2211,7 +2211,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_linked_analyzer(self, CreateServiceLinkedAnalyzerRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/service-linked-analyzer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/service-linked-analyzer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + input.type.to_json())
         if input.archiveRules.is_some():
@@ -2238,7 +2238,7 @@ struct AccessAnalyzerClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # DeleteArchiveRule  DELETE /analyzer/{analyzerName}/archive-rule/{ruleName}
@@ -2251,7 +2251,7 @@ struct AccessAnalyzerClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # DeleteServiceLinkedAnalyzer  DELETE /service-linked-analyzer/{analyzerName}
@@ -2263,7 +2263,7 @@ struct AccessAnalyzerClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/service-linked-analyzer/{analyzerName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/service-linked-analyzer/{analyzerName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GenerateFindingRecommendation  POST /recommendation/{id}
@@ -2274,7 +2274,7 @@ struct AccessAnalyzerClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["analyzerArn"] = input.analyzerArn
-        auto b = binding.HttpBinding(method="POST", path_template="/recommendation/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendation/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetAccessPreview  GET /access-preview/{accessPreviewId}
@@ -2285,7 +2285,7 @@ struct AccessAnalyzerClient:
         labels["accessPreviewId"] = input.accessPreviewId
         dict[str, str] query = {}
         query["analyzerArn"] = input.analyzerArn
-        auto b = binding.HttpBinding(method="GET", path_template="/access-preview/{accessPreviewId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-preview/{accessPreviewId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetAnalyzedResource  GET /analyzed-resource
@@ -2295,7 +2295,7 @@ struct AccessAnalyzerClient:
         dict[str, str] query = {}
         query["analyzerArn"] = input.analyzerArn
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/analyzed-resource", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analyzed-resource", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetAnalyzer  GET /analyzer/{analyzerName}
@@ -2304,7 +2304,7 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["analyzerName"] = input.analyzerName
-        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetArchiveRule  GET /analyzer/{analyzerName}/archive-rule/{ruleName}
@@ -2314,7 +2314,7 @@ struct AccessAnalyzerClient:
         dict[str, str] labels = {}
         labels["analyzerName"] = input.analyzerName
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetFinding  GET /finding/{id}
@@ -2325,7 +2325,7 @@ struct AccessAnalyzerClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["analyzerArn"] = input.analyzerArn
-        auto b = binding.HttpBinding(method="GET", path_template="/finding/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/finding/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetFindingRecommendation  GET /recommendation/{id}
@@ -2340,7 +2340,7 @@ struct AccessAnalyzerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recommendation/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recommendation/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetFindingV2  GET /findingv2/{id}
@@ -2355,17 +2355,33 @@ struct AccessAnalyzerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/findingv2/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findingv2/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # GetFindingsStatistics  POST /analyzer/findings/statistics
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_findings_statistics(self, GetFindingsStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/analyzer/findings/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/analyzer/findings/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFindingsStatisticsDocument(analyzerArn=input.analyzerArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
+
+    # GetGeneratedPolicy  GET /policy/generation/{jobId}
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_generated_policy(self, GetGeneratedPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.includeResourcePlaceholders.is_some():
+            auto qt0 = access_analyzer_bind_bool(input.includeResourcePlaceholders.unwrap_or(False))
+            query["includeResourcePlaceholders"] = qt0
+        if input.includeServiceLevelTemplate.is_some():
+            auto qt1 = access_analyzer_bind_bool(input.includeServiceLevelTemplate.unwrap_or(False))
+            query["includeServiceLevelTemplate"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/policy/generation/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # ListAccessPreviewFindings  POST /access-preview/{accessPreviewId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2373,7 +2389,7 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["accessPreviewId"] = input.accessPreviewId
-        auto b = binding.HttpBinding(method="POST", path_template="/access-preview/{accessPreviewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/access-preview/{accessPreviewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
         if input.filter.is_some():
@@ -2401,14 +2417,14 @@ struct AccessAnalyzerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/access-preview", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-preview", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # ListAnalyzedResources  POST /analyzed-resource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_analyzed_resources(self, ListAnalyzedResourcesRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/analyzed-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/analyzed-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnalyzedResourcesDocument(analyzerArn=input.analyzerArn, resourceType=input.resourceType, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
@@ -2424,7 +2440,7 @@ struct AccessAnalyzerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/analyzer", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analyzer", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # ListArchiveRules  GET /analyzer/{analyzerName}/archive-rule
@@ -2438,14 +2454,14 @@ struct AccessAnalyzerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analyzer/{analyzerName}/archive-rule", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # ListFindings  POST /finding
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_findings(self, ListFindingsRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/finding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/finding", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
         if input.filter.is_some():
@@ -2470,7 +2486,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_findings_v2(self, ListFindingsV2Request input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findingv2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findingv2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
         if input.filter.is_some():
@@ -2502,7 +2518,7 @@ struct AccessAnalyzerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/policy/generation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy/generation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2511,14 +2527,14 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
 
     # StartPolicyGeneration  PUT /policy/generation
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_policy_generation(self, StartPolicyGenerationRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/policy/generation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyGenerationDetails\":" + input.policyGenerationDetails.to_json())
         if input.cloudTrailDetails.is_some():
@@ -2534,7 +2550,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_resource_scan(self, StartResourceScanRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resource/scan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource/scan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartResourceScanDocument(analyzerArn=input.analyzerArn, resourceArn=input.resourceArn, resourceOwnerAccount=input.resourceOwnerAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
@@ -2545,7 +2561,7 @@ struct AccessAnalyzerClient:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2554,13 +2570,24 @@ struct AccessAnalyzerClient:
         auto bp = restjson.rest_json_document(b, access_analyzer_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(access_analyzer_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, access_analyzer_service(), self.region, host)
+
     # UpdateAnalyzer  PUT /analyzer/{analyzerName}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_analyzer(self, UpdateAnalyzerRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
         dict[str, str] labels = {}
         labels["analyzerName"] = input.analyzerName
-        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.configuration.is_some():
             auto u0 = input.configuration.unwrap()
@@ -2575,7 +2602,7 @@ struct AccessAnalyzerClient:
         dict[str, str] labels = {}
         labels["analyzerName"] = input.analyzerName
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analyzer/{analyzerName}/archive-rule/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.filter.keys()):
@@ -2591,7 +2618,7 @@ struct AccessAnalyzerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_findings(self, UpdateFindingsRequest input) -> str:
         auto host = endpoints.regional_host(access_analyzer_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/finding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/finding", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"analyzerArn\":" + access_analyzer_json_str(input.analyzerArn))
         parts.append("\"status\":" + input.status.to_json())
@@ -2619,7 +2646,7 @@ struct AccessAnalyzerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/policy/validation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy/validation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidatePolicyDocument(locale=input.locale, policyDocument=input.policyDocument, policyType=input.policyType, validatePolicyResourceType=input.validatePolicyResourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, access_analyzer_service(), self.region, host)

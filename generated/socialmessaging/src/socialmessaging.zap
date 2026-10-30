@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 36 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 38 operations — 38 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   121 structs (80 @derive(Json)), 3 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -931,12 +931,6 @@ def social_messaging_error_from_code(str code) -> SocialMessagingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteWhatsAppMessageTemplate (httpQuery `deleteAllLanguages` has unsupported type bool)
-#   GetWhatsAppFlowPreview (httpQuery `invalidate` has unsupported type bool)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1197,6 +1191,12 @@ def whats_app_setup_finalization_to_json(WhatsAppSetupFinalization v) -> str:
         parts.append("\"waba\":" + waba_setup_finalization_to_json(u2))
     return social_messaging_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def social_messaging_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound SocialMessaging client: credentials + region, threaded into every operation.
 struct SocialMessagingClient:
     core.Credentials creds
@@ -1206,7 +1206,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedException, DependencyException, InvalidParametersException, LimitExceededException, ThrottledRequestException, ValidationException
     def associate_whats_app_business_account(self, AssociateWhatsAppBusinessAccountInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/signup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/signup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.signupCallback.is_some():
             auto u0 = input.signupCallback.unwrap()
@@ -1221,7 +1221,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_dataset(self, CreateWhatsAppDatasetInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/waba/dataset", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/waba/dataset", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWhatsAppDatasetDocument(id=input.id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1230,7 +1230,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_flow(self, CreateWhatsAppFlowInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"id\":" + social_messaging_json_str(input.id))
         parts.append("\"flowName\":" + social_messaging_json_str(input.flowName))
@@ -1257,7 +1257,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_message_template(self, CreateWhatsAppMessageTemplateInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/put", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/put", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWhatsAppMessageTemplateDocument(templateDefinition=input.templateDefinition, id=input.id)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1266,7 +1266,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_message_template_from_library(self, CreateWhatsAppMessageTemplateFromLibraryInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"metaLibraryTemplate\":" + meta_library_template_to_json(input.metaLibraryTemplate))
         parts.append("\"id\":" + social_messaging_json_str(input.id))
@@ -1277,7 +1277,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def create_whats_app_message_template_media(self, CreateWhatsAppMessageTemplateMediaInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/media", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/media", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWhatsAppMessageTemplateMediaDocument(id=input.id, sourceS3File=input.sourceS3File)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1289,7 +1289,7 @@ struct SocialMessagingClient:
         dict[str, str] query = {}
         query["id"] = input.id
         query["flowId"] = input.flowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/flow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/flow", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # DeleteWhatsAppMessageMedia  DELETE /v1/whatsapp/media
@@ -1299,14 +1299,29 @@ struct SocialMessagingClient:
         dict[str, str] query = {}
         query["mediaId"] = input.mediaId
         query["originationPhoneNumberId"] = input.originationPhoneNumberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/media", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/media", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
+
+    # DeleteWhatsAppMessageTemplate  DELETE /v1/whatsapp/template
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def delete_whats_app_message_template(self, DeleteWhatsAppMessageTemplateInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        dict[str, str] query = {}
+        if input.metaTemplateId.is_some():
+            query["metaTemplateId"] = input.metaTemplateId.unwrap_or("")
+        if input.deleteAllLanguages.is_some():
+            auto qt0 = social_messaging_bind_bool(input.deleteAllLanguages.unwrap_or(False))
+            query["deleteAllTemplates"] = qt0
+        query["id"] = input.id
+        query["templateName"] = input.templateName
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/template", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # DeprecateWhatsAppFlow  POST /v1/whatsapp/flow/deprecate
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def deprecate_whats_app_flow(self, DeprecateWhatsAppFlowInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/deprecate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/deprecate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeprecateWhatsAppFlowDocument(id=input.id, flowId=input.flowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1317,7 +1332,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/waba/disassociate", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/whatsapp/waba/disassociate", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # GetLinkedWhatsAppBusinessAccount  GET /v1/whatsapp/waba/details
@@ -1326,7 +1341,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/details", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/details", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # GetLinkedWhatsAppBusinessAccountPhoneNumber  GET /v1/whatsapp/waba/phone/details
@@ -1335,7 +1350,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/phone/details", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/phone/details", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # GetWhatsAppBusinessPublicKey  GET /v1/whatsapp/business-public-key
@@ -1344,14 +1359,14 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["originationPhoneNumberId"] = input.originationPhoneNumberId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/business-public-key", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/business-public-key", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # GetWhatsAppCallPermission  POST /v1/whatsapp/call/permission/get
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def get_whats_app_call_permission(self, GetWhatsAppCallPermissionInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/call/permission/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/call/permission/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWhatsAppCallPermissionDocument(originationPhoneNumberId=input.originationPhoneNumberId, destinationPhoneNumber=input.destinationPhoneNumber, endUserBsuid=input.endUserBsuid)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1363,14 +1378,27 @@ struct SocialMessagingClient:
         dict[str, str] query = {}
         query["id"] = input.id
         query["flowId"] = input.flowId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
+
+    # GetWhatsAppFlowPreview  GET /v1/whatsapp/flow/preview
+    # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
+    def get_whats_app_flow_preview(self, GetWhatsAppFlowPreviewInput input) -> str:
+        auto host = endpoints.regional_host(social_messaging_service(), self.region)
+        dict[str, str] query = {}
+        query["id"] = input.id
+        query["flowId"] = input.flowId
+        if input.invalidate.is_some():
+            auto qt0 = social_messaging_bind_bool(input.invalidate.unwrap_or(False))
+            query["invalidate"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow/preview", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # GetWhatsAppMessageMedia  POST /v1/whatsapp/media/get
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def get_whats_app_message_media(self, GetWhatsAppMessageMediaInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"mediaId\":" + social_messaging_json_str(input.mediaId))
         parts.append("\"originationPhoneNumberId\":" + social_messaging_json_str(input.originationPhoneNumberId))
@@ -1398,7 +1426,7 @@ struct SocialMessagingClient:
             query["templateName"] = input.templateName.unwrap_or("")
         if input.templateLanguageCode.is_some():
             query["templateLanguageCode"] = input.templateLanguageCode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/template", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/template", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListLinkedWhatsAppBusinessAccounts  GET /v1/whatsapp/waba/list
@@ -1410,7 +1438,7 @@ struct SocialMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/waba/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/list
@@ -1419,7 +1447,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListWhatsAppFlowAssets  GET /v1/whatsapp/flow/assets
@@ -1433,7 +1461,7 @@ struct SocialMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow/assets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow/assets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListWhatsAppFlows  GET /v1/whatsapp/flow/list
@@ -1446,7 +1474,7 @@ struct SocialMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/flow/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListWhatsAppMessageTemplates  GET /v1/whatsapp/template/list
@@ -1459,7 +1487,7 @@ struct SocialMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/template/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/whatsapp/template/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, social_messaging_service(), self.region, host)
 
     # ListWhatsAppTemplateLibrary  POST /v1/whatsapp/template/library
@@ -1468,7 +1496,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/library", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template/library", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1489,7 +1517,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def post_whats_app_message_media(self, PostWhatsAppMessageMediaInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/media", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"originationPhoneNumberId\":" + social_messaging_json_str(input.originationPhoneNumberId))
         if input.sourceS3PresignedUrl.is_some():
@@ -1505,7 +1533,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def publish_whats_app_flow(self, PublishWhatsAppFlowInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/publish", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/publish", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishWhatsAppFlowDocument(id=input.id, flowId=input.flowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1514,7 +1542,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
     def put_whats_app_business_account_event_destinations(self, PutWhatsAppBusinessAccountEventDestinationsInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/eventdestinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/eventdestinations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"id\":" + social_messaging_json_str(input.id))
         list[str] e0 = []
@@ -1528,7 +1556,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def put_whats_app_business_public_key(self, PutWhatsAppBusinessPublicKeyInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/business-public-key", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/business-public-key", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutWhatsAppBusinessPublicKeyDocument(originationPhoneNumberId=input.originationPhoneNumberId, businessPublicKey=input.businessPublicKey, kmsKeyArn=input.kmsKeyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1537,7 +1565,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, ConflictException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def send_whats_app_call_event(self, SendWhatsAppCallEventInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/call/event", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/call/event", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendWhatsAppCallEventDocument(originationPhoneNumberId=input.originationPhoneNumberId, metaApiVersion=input.metaApiVersion, callEvent=input.callEvent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1546,7 +1574,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def send_whats_app_conversion_event(self, SendWhatsAppConversionEventInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/waba/dataset/events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/waba/dataset/events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendWhatsAppConversionEventDocument(id=input.id, datasetId=input.datasetId, eventData=input.eventData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1555,7 +1583,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def send_whats_app_message(self, SendWhatsAppMessageInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/send", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendWhatsAppMessageDocument(originationPhoneNumberId=input.originationPhoneNumberId, message=input.message, metaApiVersion=input.metaApiVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1564,7 +1592,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
     def tag_resource(self, TagResourceInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + social_messaging_json_str(input.resourceArn))
         list[str] e0 = []
@@ -1578,7 +1606,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParametersException, ThrottledRequestException, ValidationException
     def untag_resource(self, UntagResourceInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + social_messaging_json_str(input.resourceArn))
         list[str] e0 = []
@@ -1594,7 +1622,7 @@ struct SocialMessagingClient:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
         dict[str, str] query = {}
         query["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/phone", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/whatsapp/waba/phone", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"callSettings\":" + whats_app_call_settings_to_json(input.callSettings))
         auto bp = restjson.rest_json_document(b, social_messaging_json_obj(parts))
@@ -1604,7 +1632,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def update_whats_app_flow(self, UpdateWhatsAppFlowInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"id\":" + social_messaging_json_str(input.id))
         parts.append("\"flowId\":" + social_messaging_json_str(input.flowId))
@@ -1630,7 +1658,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def update_whats_app_flow_assets(self, UpdateWhatsAppFlowAssetsInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/assets/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/flow/assets/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWhatsAppFlowAssetsDocument(id=input.id, flowId=input.flowId, flowJson=input.flowJson)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)
@@ -1639,7 +1667,7 @@ struct SocialMessagingClient:
     # errors: AccessDeniedByMetaException, AccessDeniedException, DependencyException, InternalServiceException, InvalidParametersException, ResourceNotFoundException, ThrottledRequestException, ValidationException
     def update_whats_app_message_template(self, UpdateWhatsAppMessageTemplateInput input) -> str:
         auto host = endpoints.regional_host(social_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/whatsapp/template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWhatsAppMessageTemplateDocument(id=input.id, metaTemplateId=input.metaTemplateId, templateName=input.templateName, templateLanguageCode=input.templateLanguageCode, parameterFormat=input.parameterFormat, templateCategory=input.templateCategory, templateComponents=input.templateComponents, ctaUrlLinkTrackingOptedOut=input.ctaUrlLinkTrackingOptedOut)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, social_messaging_service(), self.region, host)

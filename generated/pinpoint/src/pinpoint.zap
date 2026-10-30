@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 122 operations — 92 with a generated method,
-#   30 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 122 operations — 96 with a generated method,
+#   26 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   459 structs (254 @derive(Json)), 28 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Pinpoint rest-json protocol: SigV4 service "mobiletargeting" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -3806,26 +3807,22 @@ def pinpoint_error_from_code(str code) -> PinpointError:
 #   CreateSegment (httpPayload member `WriteSegmentRequest` is a non-derivable structure)
 #   CreateSmsTemplate (httpPayload member `SMSTemplateRequest` is a non-derivable structure)
 #   CreateVoiceTemplate (httpPayload member `VoiceTemplateRequest` is a non-derivable structure)
-#   GetApplicationDateRangeKpi (httpQuery `EndTime` has unsupported type DateTime)
-#   GetCampaignDateRangeKpi (httpQuery `EndTime` has unsupported type DateTime)
-#   GetJourneyDateRangeKpi (httpQuery `EndTime` has unsupported type DateTime)
 #   PutEvents (httpPayload member `EventsRequest` is a non-derivable structure)
 #   RemoveAttributes (httpPayload member `UpdateAttributesRequest` is a non-derivable structure)
 #   SendMessages (httpPayload member `MessageRequest` is a non-derivable structure)
 #   SendUsersMessages (httpPayload member `SendUsersMessageRequest` is a non-derivable structure)
 #   TagResource (httpPayload member `TagsModel` is a non-derivable structure)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 #   UpdateCampaign (httpPayload member `WriteCampaignRequest` is a non-derivable structure)
-#   UpdateEmailTemplate (httpQuery `CreateNewVersion` has unsupported type bool)
+#   UpdateEmailTemplate (httpPayload member `EmailTemplateRequest` is a non-derivable structure)
 #   UpdateEndpoint (httpPayload member `EndpointRequest` is a non-derivable structure)
 #   UpdateEndpointsBatch (httpPayload member `EndpointBatchRequest` is a non-derivable structure)
-#   UpdateInAppTemplate (httpQuery `CreateNewVersion` has unsupported type bool)
+#   UpdateInAppTemplate (httpPayload member `InAppTemplateRequest` is a non-derivable structure)
 #   UpdateJourney (httpPayload member `WriteJourneyRequest` is a non-derivable structure)
-#   UpdatePushTemplate (httpQuery `CreateNewVersion` has unsupported type bool)
+#   UpdatePushTemplate (httpPayload member `PushNotificationTemplateRequest` is a non-derivable structure)
 #   UpdateRecommenderConfiguration (httpPayload member `UpdateRecommenderConfiguration` is a non-derivable structure)
 #   UpdateSegment (httpPayload member `WriteSegmentRequest` is a non-derivable structure)
-#   UpdateSmsTemplate (httpQuery `CreateNewVersion` has unsupported type bool)
-#   UpdateVoiceTemplate (httpQuery `CreateNewVersion` has unsupported type bool)
+#   UpdateSmsTemplate (httpPayload member `SMSTemplateRequest` is a non-derivable structure)
+#   UpdateVoiceTemplate (httpPayload member `VoiceTemplateRequest` is a non-derivable structure)
 
 # A bound Pinpoint client: credentials + region, threaded into every operation.
 struct PinpointClient:
@@ -3838,7 +3835,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/jobs/export", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/jobs/export", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.ExportJobRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -3848,7 +3845,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/jobs/import", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/jobs/import", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.ImportJobRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -3858,7 +3855,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteApnsChannel  DELETE /v1/apps/{application-id}/channels/apns
@@ -3867,7 +3864,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteApnsSandboxChannel  DELETE /v1/apps/{application-id}/channels/apns_sandbox
@@ -3876,7 +3873,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteApnsVoipChannel  DELETE /v1/apps/{application-id}/channels/apns_voip
@@ -3885,7 +3882,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteApnsVoipSandboxChannel  DELETE /v1/apps/{application-id}/channels/apns_voip_sandbox
@@ -3894,7 +3891,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteApp  DELETE /v1/apps/{application-id}
@@ -3903,7 +3900,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteBaiduChannel  DELETE /v1/apps/{application-id}/channels/baidu
@@ -3912,7 +3909,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteCampaign  DELETE /v1/apps/{application-id}/campaigns/{campaign-id}
@@ -3922,7 +3919,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["campaign-id"] = input.CampaignId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteEmailChannel  DELETE /v1/apps/{application-id}/channels/email
@@ -3931,7 +3928,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteEmailTemplate  DELETE /v1/templates/{template-name}/email
@@ -3943,7 +3940,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteEndpoint  DELETE /v1/apps/{application-id}/endpoints/{endpoint-id}
@@ -3953,7 +3950,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["endpoint-id"] = input.EndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteEventStream  DELETE /v1/apps/{application-id}/eventstream
@@ -3962,7 +3959,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteGcmChannel  DELETE /v1/apps/{application-id}/channels/gcm
@@ -3971,7 +3968,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteInAppTemplate  DELETE /v1/templates/{template-name}/inapp
@@ -3983,7 +3980,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteJourney  DELETE /v1/apps/{application-id}/journeys/{journey-id}
@@ -3993,7 +3990,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["journey-id"] = input.JourneyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/journeys/{journey-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/journeys/{journey-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeletePushTemplate  DELETE /v1/templates/{template-name}/push
@@ -4005,7 +4002,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteRecommenderConfiguration  DELETE /v1/recommenders/{recommender-id}
@@ -4014,7 +4011,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["recommender-id"] = input.RecommenderId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/recommenders/{recommender-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/recommenders/{recommender-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteSegment  DELETE /v1/apps/{application-id}/segments/{segment-id}
@@ -4024,7 +4021,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["segment-id"] = input.SegmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/segments/{segment-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/segments/{segment-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteSmsChannel  DELETE /v1/apps/{application-id}/channels/sms
@@ -4033,7 +4030,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteSmsTemplate  DELETE /v1/templates/{template-name}/sms
@@ -4045,7 +4042,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteUserEndpoints  DELETE /v1/apps/{application-id}/users/{user-id}
@@ -4055,7 +4052,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["user-id"] = input.UserId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/users/{user-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/users/{user-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteVoiceChannel  DELETE /v1/apps/{application-id}/channels/voice
@@ -4064,7 +4061,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # DeleteVoiceTemplate  DELETE /v1/templates/{template-name}/voice
@@ -4076,7 +4073,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetAdmChannel  GET /v1/apps/{application-id}/channels/adm
@@ -4085,7 +4082,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApnsChannel  GET /v1/apps/{application-id}/channels/apns
@@ -4094,7 +4091,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApnsSandboxChannel  GET /v1/apps/{application-id}/channels/apns_sandbox
@@ -4103,7 +4100,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApnsVoipChannel  GET /v1/apps/{application-id}/channels/apns_voip
@@ -4112,7 +4109,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApnsVoipSandboxChannel  GET /v1/apps/{application-id}/channels/apns_voip_sandbox
@@ -4121,7 +4118,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApp  GET /v1/apps/{application-id}
@@ -4130,7 +4127,28 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
+
+    # GetApplicationDateRangeKpi  GET /v1/apps/{application-id}/kpis/daterange/{kpi-name}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def get_application_date_range_kpi(self, GetApplicationDateRangeKpiRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["kpi-name"] = input.KpiName
+        dict[str, str] query = {}
+        if input.EndTime.is_some():
+            auto qt0 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["end-time"] = qt0
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.PageSize.is_some():
+            query["page-size"] = input.PageSize.unwrap_or("")
+        if input.StartTime.is_some():
+            auto qt1 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["start-time"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/kpis/daterange/{kpi-name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApplicationSettings  GET /v1/apps/{application-id}/settings
@@ -4139,7 +4157,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetApps  GET /v1/apps
@@ -4151,7 +4169,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetBaiduChannel  GET /v1/apps/{application-id}/channels/baidu
@@ -4160,7 +4178,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetCampaign  GET /v1/apps/{application-id}/campaigns/{campaign-id}
@@ -4170,7 +4188,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["campaign-id"] = input.CampaignId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetCampaignActivities  GET /v1/apps/{application-id}/campaigns/{campaign-id}/activities
@@ -4185,7 +4203,29 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/activities", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/activities", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
+
+    # GetCampaignDateRangeKpi  GET /v1/apps/{application-id}/campaigns/{campaign-id}/kpis/daterange/{kpi-name}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def get_campaign_date_range_kpi(self, GetCampaignDateRangeKpiRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["campaign-id"] = input.CampaignId
+        labels["kpi-name"] = input.KpiName
+        dict[str, str] query = {}
+        if input.EndTime.is_some():
+            auto qt0 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["end-time"] = qt0
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.PageSize.is_some():
+            query["page-size"] = input.PageSize.unwrap_or("")
+        if input.StartTime.is_some():
+            auto qt1 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["start-time"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/kpis/daterange/{kpi-name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetCampaignVersion  GET /v1/apps/{application-id}/campaigns/{campaign-id}/versions/{version}
@@ -4196,7 +4236,7 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         labels["campaign-id"] = input.CampaignId
         labels["version"] = input.Version
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetCampaignVersions  GET /v1/apps/{application-id}/campaigns/{campaign-id}/versions
@@ -4211,7 +4251,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetCampaigns  GET /v1/apps/{application-id}/campaigns
@@ -4225,7 +4265,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/campaigns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetChannels  GET /v1/apps/{application-id}/channels
@@ -4234,7 +4274,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetEmailChannel  GET /v1/apps/{application-id}/channels/email
@@ -4243,7 +4283,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetEmailTemplate  GET /v1/templates/{template-name}/email
@@ -4255,7 +4295,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetEndpoint  GET /v1/apps/{application-id}/endpoints/{endpoint-id}
@@ -4265,7 +4305,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["endpoint-id"] = input.EndpointId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetEventStream  GET /v1/apps/{application-id}/eventstream
@@ -4274,7 +4314,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetExportJob  GET /v1/apps/{application-id}/jobs/export/{job-id}
@@ -4284,7 +4324,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["job-id"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/export/{job-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/export/{job-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetExportJobs  GET /v1/apps/{application-id}/jobs/export
@@ -4298,7 +4338,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/export", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/export", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetGcmChannel  GET /v1/apps/{application-id}/channels/gcm
@@ -4307,7 +4347,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetImportJob  GET /v1/apps/{application-id}/jobs/import/{job-id}
@@ -4317,7 +4357,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["job-id"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/import/{job-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/import/{job-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetImportJobs  GET /v1/apps/{application-id}/jobs/import
@@ -4331,7 +4371,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/import", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/jobs/import", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetInAppMessages  GET /v1/apps/{application-id}/endpoints/{endpoint-id}/inappmessages
@@ -4341,7 +4381,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["endpoint-id"] = input.EndpointId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}/inappmessages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}/inappmessages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetInAppTemplate  GET /v1/templates/{template-name}/inapp
@@ -4353,7 +4393,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourney  GET /v1/apps/{application-id}/journeys/{journey-id}
@@ -4363,7 +4403,29 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["journey-id"] = input.JourneyId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
+
+    # GetJourneyDateRangeKpi  GET /v1/apps/{application-id}/journeys/{journey-id}/kpis/daterange/{kpi-name}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def get_journey_date_range_kpi(self, GetJourneyDateRangeKpiRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["journey-id"] = input.JourneyId
+        labels["kpi-name"] = input.KpiName
+        dict[str, str] query = {}
+        if input.EndTime.is_some():
+            auto qt0 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["end-time"] = qt0
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.PageSize.is_some():
+            query["page-size"] = input.PageSize.unwrap_or("")
+        if input.StartTime.is_some():
+            auto qt1 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["start-time"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/kpis/daterange/{kpi-name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourneyExecutionActivityMetrics  GET /v1/apps/{application-id}/journeys/{journey-id}/activities/{journey-activity-id}/execution-metrics
@@ -4379,7 +4441,7 @@ struct PinpointClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["page-size"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/activities/{journey-activity-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/activities/{journey-activity-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourneyExecutionMetrics  GET /v1/apps/{application-id}/journeys/{journey-id}/execution-metrics
@@ -4394,7 +4456,7 @@ struct PinpointClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["page-size"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourneyRunExecutionActivityMetrics  GET /v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/activities/{journey-activity-id}/execution-metrics
@@ -4411,7 +4473,7 @@ struct PinpointClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["page-size"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/activities/{journey-activity-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/activities/{journey-activity-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourneyRunExecutionMetrics  GET /v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/execution-metrics
@@ -4427,7 +4489,7 @@ struct PinpointClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["page-size"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs/{run-id}/execution-metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetJourneyRuns  GET /v1/apps/{application-id}/journeys/{journey-id}/runs
@@ -4442,7 +4504,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys/{journey-id}/runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetPushTemplate  GET /v1/templates/{template-name}/push
@@ -4454,7 +4516,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetRecommenderConfiguration  GET /v1/recommenders/{recommender-id}
@@ -4463,7 +4525,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["recommender-id"] = input.RecommenderId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommenders/{recommender-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommenders/{recommender-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetRecommenderConfigurations  GET /v1/recommenders
@@ -4475,7 +4537,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommenders", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommenders", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegment  GET /v1/apps/{application-id}/segments/{segment-id}
@@ -4485,7 +4547,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["segment-id"] = input.SegmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegmentExportJobs  GET /v1/apps/{application-id}/segments/{segment-id}/jobs/export
@@ -4500,7 +4562,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/jobs/export", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/jobs/export", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegmentImportJobs  GET /v1/apps/{application-id}/segments/{segment-id}/jobs/import
@@ -4515,7 +4577,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/jobs/import", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/jobs/import", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegmentVersion  GET /v1/apps/{application-id}/segments/{segment-id}/versions/{version}
@@ -4526,7 +4588,7 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         labels["segment-id"] = input.SegmentId
         labels["version"] = input.Version
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegmentVersions  GET /v1/apps/{application-id}/segments/{segment-id}/versions
@@ -4541,7 +4603,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments/{segment-id}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSegments  GET /v1/apps/{application-id}/segments
@@ -4555,7 +4617,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/segments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSmsChannel  GET /v1/apps/{application-id}/channels/sms
@@ -4564,7 +4626,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetSmsTemplate  GET /v1/templates/{template-name}/sms
@@ -4576,7 +4638,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetUserEndpoints  GET /v1/apps/{application-id}/users/{user-id}
@@ -4586,7 +4648,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["user-id"] = input.UserId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/users/{user-id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/users/{user-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetVoiceChannel  GET /v1/apps/{application-id}/channels/voice
@@ -4595,7 +4657,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # GetVoiceTemplate  GET /v1/templates/{template-name}/voice
@@ -4607,7 +4669,7 @@ struct PinpointClient:
         dict[str, str] query = {}
         if input.Version.is_some():
             query["version"] = input.Version.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # ListJourneys  GET /v1/apps/{application-id}/journeys
@@ -4621,7 +4683,7 @@ struct PinpointClient:
             query["page-size"] = input.PageSize.unwrap_or("")
         if input.Token.is_some():
             query["token"] = input.Token.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/apps/{application-id}/journeys", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resource-arn}
@@ -4629,7 +4691,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # ListTemplateVersions  GET /v1/templates/{template-name}/{template-type}/versions
@@ -4644,7 +4706,7 @@ struct PinpointClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["page-size"] = input.PageSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/{template-type}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates/{template-name}/{template-type}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # ListTemplates  GET /v1/templates
@@ -4660,14 +4722,14 @@ struct PinpointClient:
             query["prefix"] = input.Prefix.unwrap_or("")
         if input.TemplateType.is_some():
             query["template-type"] = input.TemplateType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # PhoneNumberValidate  POST /v1/phone/number/validate
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
     def phone_number_validate(self, PhoneNumberValidateRequest input) -> str:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/phone/number/validate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/phone/number/validate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.NumberValidateRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4677,7 +4739,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/eventstream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.WriteEventStream.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4687,9 +4749,19 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/otp", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/otp", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.SendOTPMessageRequestParameters.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UntagResource  DELETE /v1/tags/{resource-arn}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pinpoint_service(), self.region, host)
 
     # UpdateAdmChannel  PUT /v1/apps/{application-id}/channels/adm
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
@@ -4697,7 +4769,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/adm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.ADMChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4707,7 +4779,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.APNSChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4717,7 +4789,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.APNSSandboxChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4727,7 +4799,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_voip", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.APNSVoipChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4737,7 +4809,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/apns_voip_sandbox", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.APNSVoipSandboxChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4747,7 +4819,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.WriteApplicationSettingsRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4757,7 +4829,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/baidu", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.BaiduChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4767,7 +4839,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/email", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.EmailChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4777,7 +4849,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.GCMChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4788,7 +4860,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
         labels["journey-id"] = input.JourneyId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/journeys/{journey-id}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/journeys/{journey-id}/state", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.JourneyStateRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4798,7 +4870,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.SMSChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4809,7 +4881,7 @@ struct PinpointClient:
         dict[str, str] labels = {}
         labels["template-name"] = input.TemplateName
         labels["template-type"] = input.TemplateType
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/{template-type}/active-version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/{template-type}/active-version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.TemplateActiveVersionRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4819,7 +4891,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.VoiceChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
@@ -4829,7 +4901,7 @@ struct PinpointClient:
         auto host = endpoints.regional_host(pinpoint_service(), self.region)
         dict[str, str] labels = {}
         labels["application-id"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/verify-otp", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/verify-otp", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.VerifyOTPMessageRequestParameters.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 

@@ -351,9 +351,10 @@ fn checked_in_s3_output_is_current() {
 #[test]
 fn s3_restxml_contract_shape() {
     let (src, cov) = generate_with_sidecar("s3", "2006-03-01");
-    // The pinned S3 model (botocore 1.43.121): 116 ops. 73 generate; the rest are
-    // document-skipped for v0 emitter limits (DateTime / bool header + query
-    // bindings, optional httpPayload structs, lists of non-scalars). Bumping the
+    // The pinned S3 model (botocore 1.43.121): 116 ops. Most generate; the rest
+    // are document-skipped for v0 emitter limits that remain after #425 bound the
+    // bool/timestamp/list[str] slots (optional httpPayload structs (#427),
+    // list[str]/list[enum] headers, non-derivable payloads). Bumping the
     // pin can move these — update this count and keep the floors as the contract.
     assert_eq!(cov.operations_total, 116);
     assert!(
@@ -382,10 +383,22 @@ fn s3_restxml_contract_shape() {
     assert!(src.contains(
         "restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
     ));
-    // The ticket's named ops are v0-skipped, each with a documented reason.
-    assert!(src.contains("GetObject (httpHeader `IfModifiedSince` has unsupported type DateTime)"));
-    assert!(src.contains("PutObject (httpHeader `BucketKeyEnabled` has unsupported type bool)"));
-    assert!(src.contains("ListObjectsV2 (httpQuery `FetchOwner` has unsupported type bool)"));
+    // zaplang-io/zap#425 bound the bool/timestamp/list[str] URI/query/header
+    // types, so ops formerly skipped for a `DateTime` header (GetObject's
+    // `IfModifiedSince`) or a bool header (PutObject's `BucketKeyEnabled`) now
+    // generate a method.
+    assert!(src.contains("def get_object(self, GetObjectRequest input) -> str:"));
+    assert!(src.contains("def put_object(self, PutObjectRequest input) -> str:"));
+    // GetObject's timestamp headers render with the RFC-822 (HTTP-date) default.
+    assert!(src.contains(
+        "datetime.strftime(input.IfModifiedSince.unwrap(), \"%a, %d %b %Y %H:%M:%S GMT\")"
+    ));
+    // Residual #425 skips remain for the deferred sub-cases: a list[str] bound to
+    // a header (ListObjectsV2's `OptionalObjectAttributes`) and an optional
+    // httpPayload structure (#427, CreateBucket).
+    assert!(src.contains(
+        "ListObjectsV2 (httpHeader `OptionalObjectAttributes` has unsupported type list[str])"
+    ));
     assert!(
         src.contains("CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional")
     );

@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 10 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 12 operations — 12 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   42 structs (23 @derive(Json)), 10 enums, 6 error variants.
-#   5 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The TrustedAdvisor rest-json protocol: SigV4 service "trustedadvisor" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -594,17 +595,6 @@ def trustedadvisor_error_from_code(str code) -> TrustedAdvisorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListOrganizationRecommendations (httpQuery `afterLastUpdatedAt` has unsupported type DateTime)
-#   ListRecommendations (httpQuery `afterLastUpdatedAt` has unsupported type DateTime)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListOrganizationRecommendations (operation not generated)
-#   ListRecommendations (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -631,7 +621,7 @@ struct TrustedAdvisorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def batch_update_recommendation_resource_exclusion(self, BatchUpdateRecommendationResourceExclusionRequest input) -> str:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/batch-update-recommendation-resource-exclusion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/batch-update-recommendation-resource-exclusion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.recommendationResourceExclusions:
@@ -645,8 +635,9 @@ struct TrustedAdvisorClient:
     def get_organization_recommendation(self, GetOrganizationRecommendationRequest input) -> str:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         dict[str, str] labels = {}
-        labels["organizationRecommendationIdentifier"] = input.organizationRecommendationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.organizationRecommendationIdentifier
+        labels["organizationRecommendationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # GetRecommendation  GET /v1/recommendations/{recommendationIdentifier}
@@ -658,7 +649,7 @@ struct TrustedAdvisorClient:
         dict[str, str] query = {}
         if input.language.is_some():
             query["language"] = input.language.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations/{recommendationIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations/{recommendationIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # ListChecks  GET /v1/checks
@@ -678,7 +669,7 @@ struct TrustedAdvisorClient:
             query["source"] = input.source.unwrap_or("")
         if input.language.is_some():
             query["language"] = input.language.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/checks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/checks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # ListOrganizationRecommendationAccounts  GET /v1/organization-recommendations/{organizationRecommendationIdentifier}/accounts
@@ -686,7 +677,8 @@ struct TrustedAdvisorClient:
     def list_organization_recommendation_accounts(self, ListOrganizationRecommendationAccountsRequest input) -> str:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         dict[str, str] labels = {}
-        labels["organizationRecommendationIdentifier"] = input.organizationRecommendationIdentifier
+        auto qt0 = input.organizationRecommendationIdentifier
+        labels["organizationRecommendationIdentifier"] = qt0
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
@@ -694,7 +686,7 @@ struct TrustedAdvisorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.affectedAccountId.is_some():
             query["affectedAccountId"] = input.affectedAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/accounts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/accounts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # ListOrganizationRecommendationResources  GET /v1/organization-recommendations/{organizationRecommendationIdentifier}/resources
@@ -702,7 +694,8 @@ struct TrustedAdvisorClient:
     def list_organization_recommendation_resources(self, ListOrganizationRecommendationResourcesRequest input) -> str:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         dict[str, str] labels = {}
-        labels["organizationRecommendationIdentifier"] = input.organizationRecommendationIdentifier
+        auto qt0 = input.organizationRecommendationIdentifier
+        labels["organizationRecommendationIdentifier"] = qt0
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
@@ -716,7 +709,37 @@ struct TrustedAdvisorClient:
             query["regionCode"] = input.regionCode.unwrap_or("")
         if input.affectedAccountId.is_some():
             query["affectedAccountId"] = input.affectedAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
+
+    # ListOrganizationRecommendations  GET /v1/organization-recommendations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_organization_recommendations(self, ListOrganizationRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.type.is_some():
+            query["type"] = input.type.unwrap_or("")
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        if input.pillar.is_some():
+            query["pillar"] = input.pillar.unwrap_or("")
+        if input.awsService.is_some():
+            query["awsService"] = input.awsService.unwrap_or("")
+        if input.source.is_some():
+            query["source"] = input.source.unwrap_or("")
+        if input.checkIdentifier.is_some():
+            query["checkIdentifier"] = input.checkIdentifier.unwrap_or("")
+        if input.afterLastUpdatedAt.is_some():
+            auto qt0 = datetime.strftime(input.afterLastUpdatedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["afterLastUpdatedAt"] = qt0
+        if input.beforeLastUpdatedAt.is_some():
+            auto qt1 = datetime.strftime(input.beforeLastUpdatedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["beforeLastUpdatedAt"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/organization-recommendations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # ListRecommendationResources  GET /v1/recommendations/{recommendationIdentifier}/resources
@@ -738,7 +761,39 @@ struct TrustedAdvisorClient:
             query["regionCode"] = input.regionCode.unwrap_or("")
         if input.language.is_some():
             query["language"] = input.language.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations/{recommendationIdentifier}/resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations/{recommendationIdentifier}/resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
+
+    # ListRecommendations  GET /v1/recommendations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_recommendations(self, ListRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.type.is_some():
+            query["type"] = input.type.unwrap_or("")
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        if input.pillar.is_some():
+            query["pillar"] = input.pillar.unwrap_or("")
+        if input.awsService.is_some():
+            query["awsService"] = input.awsService.unwrap_or("")
+        if input.source.is_some():
+            query["source"] = input.source.unwrap_or("")
+        if input.checkIdentifier.is_some():
+            query["checkIdentifier"] = input.checkIdentifier.unwrap_or("")
+        if input.afterLastUpdatedAt.is_some():
+            auto qt0 = datetime.strftime(input.afterLastUpdatedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["afterLastUpdatedAt"] = qt0
+        if input.beforeLastUpdatedAt.is_some():
+            auto qt1 = datetime.strftime(input.beforeLastUpdatedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["beforeLastUpdatedAt"] = qt1
+        if input.language.is_some():
+            query["language"] = input.language.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # ListRecommendationsForResource  GET /v1/recommendations-for-resource/{awsResourceArn}
@@ -760,7 +815,7 @@ struct TrustedAdvisorClient:
             query["checkArn"] = input.checkArn.unwrap_or("")
         if input.language.is_some():
             query["language"] = input.language.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations-for-resource/{awsResourceArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/recommendations-for-resource/{awsResourceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, trustedadvisor_service(), self.region, host)
 
     # UpdateOrganizationRecommendationLifecycle  PUT /v1/organization-recommendations/{organizationRecommendationIdentifier}/lifecycle
@@ -768,8 +823,9 @@ struct TrustedAdvisorClient:
     def update_organization_recommendation_lifecycle(self, UpdateOrganizationRecommendationLifecycleRequest input) -> str:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         dict[str, str] labels = {}
-        labels["organizationRecommendationIdentifier"] = input.organizationRecommendationIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/lifecycle", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.organizationRecommendationIdentifier
+        labels["organizationRecommendationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/organization-recommendations/{organizationRecommendationIdentifier}/lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationRecommendationLifecycleDocument(lifecycleStage=input.lifecycleStage, updateReason=input.updateReason, updateReasonCode=input.updateReasonCode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, trustedadvisor_service(), self.region, host)
@@ -780,7 +836,7 @@ struct TrustedAdvisorClient:
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         dict[str, str] labels = {}
         labels["recommendationIdentifier"] = input.recommendationIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/recommendations/{recommendationIdentifier}/lifecycle", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/recommendations/{recommendationIdentifier}/lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecommendationLifecycleDocument(lifecycleStage=input.lifecycleStage, updateReason=input.updateReason, updateReasonCode=input.updateReasonCode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, trustedadvisor_service(), self.region, host)
@@ -824,12 +880,38 @@ struct TrustedAdvisorClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListOrganizationRecommendations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: organizationRecommendationSummaries).
+    def paginate_list_organization_recommendations(self, ListOrganizationRecommendationsRequest input):
+        auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
+        while True:
+            auto raw = self.list_organization_recommendations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListRecommendationResources — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: recommendationResourceSummaries).
     def paginate_list_recommendation_resources(self, ListRecommendationResourcesRequest input):
         auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
         while True:
             auto raw = self.list_recommendation_resources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListRecommendations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: recommendationSummaries).
+    def paginate_list_recommendations(self, ListRecommendationsRequest input):
+        auto host = endpoints.regional_host(trustedadvisor_service(), self.region)
+        while True:
+            auto raw = self.list_recommendations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

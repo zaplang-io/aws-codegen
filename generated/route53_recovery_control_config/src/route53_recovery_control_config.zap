@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 24 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (46 @derive(Json)), 3 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -525,11 +525,6 @@ def route53_recovery_control_config_error_from_code(str code) -> Route53_Recover
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -634,7 +629,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_cluster(self, CreateClusterRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -656,7 +651,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_control_panel(self, CreateControlPanelRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/controlpanel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/controlpanel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -676,7 +671,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_routing_control(self, CreateRoutingControlRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/routingcontrol", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routingcontrol", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRoutingControlDocument(ClientToken=input.ClientToken, ClusterArn=input.ClusterArn, ControlPanelArn=input.ControlPanelArn, RoutingControlName=input.RoutingControlName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
@@ -685,7 +680,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: InternalServerException, ValidationException
     def create_safety_rule(self, CreateSafetyRuleRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/safetyrule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/safetyrule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AssertionRule.is_some():
             auto u0 = input.AssertionRule.unwrap()
@@ -711,7 +706,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ClusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{ClusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{ClusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DeleteControlPanel  DELETE /controlpanel/{ControlPanelArn}
@@ -720,7 +715,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ControlPanelArn"] = input.ControlPanelArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/controlpanel/{ControlPanelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/controlpanel/{ControlPanelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DeleteRoutingControl  DELETE /routingcontrol/{RoutingControlArn}
@@ -729,7 +724,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["RoutingControlArn"] = input.RoutingControlArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/routingcontrol/{RoutingControlArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/routingcontrol/{RoutingControlArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DeleteSafetyRule  DELETE /safetyrule/{SafetyRuleArn}
@@ -738,7 +733,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["SafetyRuleArn"] = input.SafetyRuleArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/safetyrule/{SafetyRuleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/safetyrule/{SafetyRuleArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DescribeCluster  GET /cluster/{ClusterArn}
@@ -747,7 +742,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ClusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{ClusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{ClusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DescribeControlPanel  GET /controlpanel/{ControlPanelArn}
@@ -756,7 +751,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ControlPanelArn"] = input.ControlPanelArn
-        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DescribeRoutingControl  GET /routingcontrol/{RoutingControlArn}
@@ -765,7 +760,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["RoutingControlArn"] = input.RoutingControlArn
-        auto b = binding.HttpBinding(method="GET", path_template="/routingcontrol/{RoutingControlArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routingcontrol/{RoutingControlArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # DescribeSafetyRule  GET /safetyrule/{SafetyRuleArn}
@@ -774,7 +769,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["SafetyRuleArn"] = input.SafetyRuleArn
-        auto b = binding.HttpBinding(method="GET", path_template="/safetyrule/{SafetyRuleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/safetyrule/{SafetyRuleArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcePolicy/{ResourceArn}
@@ -783,7 +778,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcePolicy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListAssociatedRoute53HealthChecks  GET /routingcontrol/{RoutingControlArn}/associatedRoute53HealthChecks
@@ -797,7 +792,7 @@ struct Route53_Recovery_Control_ConfigClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/routingcontrol/{RoutingControlArn}/associatedRoute53HealthChecks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routingcontrol/{RoutingControlArn}/associatedRoute53HealthChecks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListClusters  GET /cluster
@@ -809,7 +804,7 @@ struct Route53_Recovery_Control_ConfigClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListControlPanels  GET /controlpanels
@@ -823,7 +818,7 @@ struct Route53_Recovery_Control_ConfigClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/controlpanels", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controlpanels", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListRoutingControls  GET /controlpanel/{ControlPanelArn}/routingcontrols
@@ -837,7 +832,7 @@ struct Route53_Recovery_Control_ConfigClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}/routingcontrols", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}/routingcontrols", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListSafetyRules  GET /controlpanel/{ControlPanelArn}/safetyrules
@@ -851,7 +846,7 @@ struct Route53_Recovery_Control_ConfigClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}/safetyrules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controlpanel/{ControlPanelArn}/safetyrules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -860,7 +855,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -869,7 +864,7 @@ struct Route53_Recovery_Control_ConfigClient:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -878,11 +873,22 @@ struct Route53_Recovery_Control_ConfigClient:
         auto bp = restjson.rest_json_document(b, route53_recovery_control_config_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["TagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, route53_recovery_control_config_service(), self.region, host)
+
     # UpdateCluster  PUT /cluster
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cluster(self, UpdateClusterRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cluster", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClusterDocument(ClusterArn=input.ClusterArn, NetworkType=input.NetworkType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
@@ -891,7 +897,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_control_panel(self, UpdateControlPanelRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/controlpanel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/controlpanel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateControlPanelDocument(ControlPanelArn=input.ControlPanelArn, ControlPanelName=input.ControlPanelName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
@@ -900,7 +906,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_routing_control(self, UpdateRoutingControlRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/routingcontrol", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/routingcontrol", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoutingControlDocument(RoutingControlArn=input.RoutingControlArn, RoutingControlName=input.RoutingControlName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)
@@ -909,7 +915,7 @@ struct Route53_Recovery_Control_ConfigClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def update_safety_rule(self, UpdateSafetyRuleRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_control_config_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/safetyrule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/safetyrule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSafetyRuleDocument(AssertionRuleUpdate=input.AssertionRuleUpdate, GatingRuleUpdate=input.GatingRuleUpdate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_control_config_service(), self.region, host)

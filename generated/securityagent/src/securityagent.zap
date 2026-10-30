@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 95 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 96 operations — 96 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   334 structs (194 @derive(Json)), 46 enums, 7 error variants.
 #   23 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3298,11 +3298,6 @@ def securityagent_error_from_code(str code) -> SecurityAgentError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4105,7 +4100,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def add_artifact(self, AddArtifactInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AddArtifact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AddArtifact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddArtifactDocument(agentSpaceId=input.agentSpaceId, artifactContent=input.artifactContent, artifactType=input.artifactType, fileName=input.fileName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4114,7 +4109,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def batch_create_security_requirements(self, BatchCreateSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchCreateSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchCreateSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packId\":" + securityagent_json_str(input.packId))
         list[str] e0 = []
@@ -4127,7 +4122,7 @@ struct SecurityAgentClient:
     # BatchDeleteCodeReviews  POST /BatchDeleteCodeReviews
     def batch_delete_code_reviews(self, BatchDeleteCodeReviewsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteCodeReviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteCodeReviews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.codeReviewIds:
@@ -4140,7 +4135,7 @@ struct SecurityAgentClient:
     # BatchDeletePentests  POST /BatchDeletePentests
     def batch_delete_pentests(self, BatchDeletePentestsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeletePentests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeletePentests", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.pentestIds:
@@ -4154,7 +4149,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_delete_security_requirements(self, BatchDeleteSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packId\":" + securityagent_json_str(input.packId))
         list[str] e0 = []
@@ -4167,7 +4162,7 @@ struct SecurityAgentClient:
     # BatchDeleteThreatModels  POST /BatchDeleteThreatModels
     def batch_delete_threat_models(self, BatchDeleteThreatModelsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteThreatModels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDeleteThreatModels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.threatModelIds:
@@ -4181,7 +4176,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def batch_disassociate_finding_issue(self, BatchDisassociateFindingIssueInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDisassociateFindingIssue", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDisassociateFindingIssue", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         if input.pentestJobId.is_some():
@@ -4201,7 +4196,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def batch_export_findings(self, BatchExportFindingsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchExportFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchExportFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         if input.pentestJobId.is_some():
@@ -4221,7 +4216,7 @@ struct SecurityAgentClient:
     # BatchGetAgentSpaces  POST /BatchGetAgentSpaces
     def batch_get_agent_spaces(self, BatchGetAgentSpacesInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetAgentSpaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetAgentSpaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.agentSpaceIds:
@@ -4234,7 +4229,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_artifact_metadata(self, BatchGetArtifactMetadataInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetArtifactMetadata", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetArtifactMetadata", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         list[str] e0 = []
@@ -4247,7 +4242,7 @@ struct SecurityAgentClient:
     # BatchGetCodeReviewJobTasks  POST /BatchGetCodeReviewJobTasks
     def batch_get_code_review_job_tasks(self, BatchGetCodeReviewJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         list[str] e0 = []
@@ -4260,7 +4255,7 @@ struct SecurityAgentClient:
     # BatchGetCodeReviewJobs  POST /BatchGetCodeReviewJobs
     def batch_get_code_review_jobs(self, BatchGetCodeReviewJobsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviewJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.codeReviewJobIds:
@@ -4273,7 +4268,7 @@ struct SecurityAgentClient:
     # BatchGetCodeReviews  POST /BatchGetCodeReviews
     def batch_get_code_reviews(self, BatchGetCodeReviewsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetCodeReviews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.codeReviewIds:
@@ -4286,7 +4281,7 @@ struct SecurityAgentClient:
     # BatchGetFindings  POST /BatchGetFindings
     def batch_get_findings(self, BatchGetFindingsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingIds:
@@ -4299,7 +4294,7 @@ struct SecurityAgentClient:
     # BatchGetPentestJobTasks  POST /BatchGetPentestJobTasks
     def batch_get_pentest_job_tasks(self, BatchGetPentestJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         list[str] e0 = []
@@ -4312,7 +4307,7 @@ struct SecurityAgentClient:
     # BatchGetPentestJobs  POST /BatchGetPentestJobs
     def batch_get_pentest_jobs(self, BatchGetPentestJobsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentestJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.pentestJobIds:
@@ -4325,7 +4320,7 @@ struct SecurityAgentClient:
     # BatchGetPentests  POST /BatchGetPentests
     def batch_get_pentests(self, BatchGetPentestsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetPentests", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.pentestIds:
@@ -4339,7 +4334,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_security_requirements(self, BatchGetSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packId\":" + securityagent_json_str(input.packId))
         list[str] e0 = []
@@ -4352,7 +4347,7 @@ struct SecurityAgentClient:
     # BatchGetTargetDomains  POST /BatchGetTargetDomains
     def batch_get_target_domains(self, BatchGetTargetDomainsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTargetDomains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetTargetDomains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targetDomainIds:
@@ -4364,7 +4359,7 @@ struct SecurityAgentClient:
     # BatchGetThreatModelJobTasks  POST /BatchGetThreatModelJobTasks
     def batch_get_threat_model_job_tasks(self, BatchGetThreatModelJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         list[str] e0 = []
@@ -4377,7 +4372,7 @@ struct SecurityAgentClient:
     # BatchGetThreatModelJobs  POST /BatchGetThreatModelJobs
     def batch_get_threat_model_jobs(self, BatchGetThreatModelJobsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModelJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.threatModelJobIds:
@@ -4390,7 +4385,7 @@ struct SecurityAgentClient:
     # BatchGetThreatModels  POST /BatchGetThreatModels
     def batch_get_threat_models(self, BatchGetThreatModelsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreatModels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.threatModelIds:
@@ -4403,7 +4398,7 @@ struct SecurityAgentClient:
     # BatchGetThreats  POST /BatchGetThreats
     def batch_get_threats(self, BatchGetThreatsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreats", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetThreats", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.threatIds:
@@ -4417,7 +4412,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_update_security_requirements(self, BatchUpdateSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchUpdateSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchUpdateSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packId\":" + securityagent_json_str(input.packId))
         list[str] e0 = []
@@ -4430,7 +4425,7 @@ struct SecurityAgentClient:
     # CreateAgentSpace  POST /CreateAgentSpace
     def create_agent_space(self, CreateAgentSpaceInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateAgentSpace", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateAgentSpace", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + securityagent_json_str(input.name))
         if input.description.is_some():
@@ -4463,7 +4458,7 @@ struct SecurityAgentClient:
     # CreateApplication  POST /CreateApplication
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.idcInstanceArn.is_some():
             auto u0 = input.idcInstanceArn.unwrap()
@@ -4486,7 +4481,7 @@ struct SecurityAgentClient:
     # CreateCodeReview  POST /CreateCodeReview
     def create_code_review(self, CreateCodeReviewInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateCodeReview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateCodeReview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"title\":" + securityagent_json_str(input.title))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -4519,7 +4514,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_integration(self, CreateIntegrationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"provider\":" + input.provider.to_json())
         parts.append("\"input\":" + input.input.to_json())
@@ -4542,7 +4537,7 @@ struct SecurityAgentClient:
     # CreateMembership  POST /CreateMembership
     def create_membership(self, CreateMembershipRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateMembership", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateMembership", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMembershipDocument(applicationId=input.applicationId, agentSpaceId=input.agentSpaceId, membershipId=input.membershipId, memberType=input.memberType, config=input.config)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4550,7 +4545,7 @@ struct SecurityAgentClient:
     # CreatePentest  POST /CreatePentest
     def create_pentest(self, CreatePentestInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreatePentest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePentest", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"title\":" + securityagent_json_str(input.title))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -4606,7 +4601,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_private_connection(self, CreatePrivateConnectionInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreatePrivateConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePrivateConnection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"privateConnectionName\":" + securityagent_json_str(input.privateConnectionName))
         parts.append("\"mode\":" + private_connection_mode_to_json(input.mode))
@@ -4623,7 +4618,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_security_requirement_pack(self, CreateSecurityRequirementPackInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSecurityRequirementPack", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + securityagent_json_str(input.name))
         if input.description.is_some():
@@ -4647,7 +4642,7 @@ struct SecurityAgentClient:
     # CreateTargetDomain  POST /CreateTargetDomain
     def create_target_domain(self, CreateTargetDomainInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTargetDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"targetDomainName\":" + securityagent_json_str(input.targetDomainName))
         parts.append("\"verificationMethod\":" + input.verificationMethod.to_json())
@@ -4663,7 +4658,7 @@ struct SecurityAgentClient:
     # CreateThreat  POST /CreateThreat
     def create_threat(self, CreateThreatInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreat", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         parts.append("\"threatJobId\":" + securityagent_json_str(input.threatJobId))
@@ -4727,7 +4722,7 @@ struct SecurityAgentClient:
     # CreateThreatModel  POST /CreateThreatModel
     def create_threat_model(self, CreateThreatModelInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreatModel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateThreatModel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"title\":" + securityagent_json_str(input.title))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -4756,7 +4751,7 @@ struct SecurityAgentClient:
     # DeleteAgentSpace  POST /DeleteAgentSpace
     def delete_agent_space(self, DeleteAgentSpaceInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteAgentSpace", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteAgentSpace", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAgentSpaceDocument(agentSpaceId=input.agentSpaceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4764,7 +4759,7 @@ struct SecurityAgentClient:
     # DeleteApplication  POST /DeleteApplication
     def delete_application(self, DeleteApplicationRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteApplicationDocument(applicationId=input.applicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4773,7 +4768,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_artifact(self, DeleteArtifactInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteArtifact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteArtifact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteArtifactDocument(agentSpaceId=input.agentSpaceId, artifactId=input.artifactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4782,7 +4777,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_integration(self, DeleteIntegrationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIntegrationDocument(integrationId=input.integrationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4790,7 +4785,7 @@ struct SecurityAgentClient:
     # DeleteMembership  POST /DeleteMembership
     def delete_membership(self, DeleteMembershipRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteMembership", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteMembership", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteMembershipDocument(applicationId=input.applicationId, agentSpaceId=input.agentSpaceId, membershipId=input.membershipId, memberType=input.memberType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4799,7 +4794,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_private_connection(self, DeletePrivateConnectionInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeletePrivateConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeletePrivateConnection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePrivateConnectionDocument(privateConnectionName=input.privateConnectionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4808,7 +4803,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_security_requirement_pack(self, DeleteSecurityRequirementPackInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSecurityRequirementPack", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSecurityRequirementPackDocument(packId=input.packId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4816,7 +4811,7 @@ struct SecurityAgentClient:
     # DeleteTargetDomain  POST /DeleteTargetDomain
     def delete_target_domain(self, DeleteTargetDomainInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTargetDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTargetDomainDocument(targetDomainId=input.targetDomainId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4825,7 +4820,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_private_connection(self, DescribePrivateConnectionInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribePrivateConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribePrivateConnection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribePrivateConnectionDocument(privateConnectionName=input.privateConnectionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4833,7 +4828,7 @@ struct SecurityAgentClient:
     # GetApplication  POST /GetApplication
     def get_application(self, GetApplicationRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetApplicationDocument(applicationId=input.applicationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4842,7 +4837,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_artifact(self, GetArtifactInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetArtifact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetArtifact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetArtifactDocument(agentSpaceId=input.agentSpaceId, artifactId=input.artifactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4851,7 +4846,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_integration(self, GetIntegrationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIntegrationDocument(integrationId=input.integrationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4860,7 +4855,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_security_requirement_pack(self, GetSecurityRequirementPackInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetSecurityRequirementPack", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSecurityRequirementPackDocument(packId=input.packId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4869,7 +4864,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def import_security_requirements(self, ImportSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ImportSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"packId\":" + securityagent_json_str(input.packId))
         parts.append("\"input\":" + import_source_to_json(input.input))
@@ -4880,7 +4875,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def initiate_provider_registration(self, InitiateProviderRegistrationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/oauth2/provider/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/oauth2/provider/register", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = InitiateProviderRegistrationDocument(provider=input.provider, targetUrl=input.targetUrl, organizationName=input.organizationName, clientId=input.clientId, clientSecret=input.clientSecret)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4888,7 +4883,7 @@ struct SecurityAgentClient:
     # ListActorMessages  POST /ListActorMessages
     def list_actor_messages(self, ListActorMessagesInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListActorMessages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListActorMessages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListActorMessagesDocument(maxResults=input.maxResults, nextToken=input.nextToken, agentSpaceId=input.agentSpaceId, pentestId=input.pentestId, actorIdentifier=input.actorIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4896,7 +4891,7 @@ struct SecurityAgentClient:
     # ListAgentSpaces  POST /ListAgentSpaces
     def list_agent_spaces(self, ListAgentSpacesInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListAgentSpaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListAgentSpaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentSpacesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4904,7 +4899,7 @@ struct SecurityAgentClient:
     # ListApplications  POST /ListApplications
     def list_applications(self, ListApplicationsRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListApplications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListApplicationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4913,7 +4908,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_artifacts(self, ListArtifactsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListArtifacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListArtifacts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListArtifactsDocument(agentSpaceId=input.agentSpaceId, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4921,7 +4916,7 @@ struct SecurityAgentClient:
     # ListCodeReviewJobTasks  POST /ListCodeReviewJobTasks
     def list_code_review_job_tasks(self, ListCodeReviewJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviewJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviewJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCodeReviewJobTasksDocument(agentSpaceId=input.agentSpaceId, maxResults=input.maxResults, codeReviewJobId=input.codeReviewJobId, stepName=input.stepName, categoryName=input.categoryName, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4929,7 +4924,7 @@ struct SecurityAgentClient:
     # ListCodeReviewJobsForCodeReview  POST /ListCodeReviewJobsForCodeReview
     def list_code_review_jobs_for_code_review(self, ListCodeReviewJobsForCodeReviewInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviewJobsForCodeReview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviewJobsForCodeReview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCodeReviewJobsForCodeReviewDocument(maxResults=input.maxResults, codeReviewId=input.codeReviewId, agentSpaceId=input.agentSpaceId, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4937,7 +4932,7 @@ struct SecurityAgentClient:
     # ListCodeReviews  POST /ListCodeReviews
     def list_code_reviews(self, ListCodeReviewsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviews", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListCodeReviews", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCodeReviewsDocument(maxResults=input.maxResults, nextToken=input.nextToken, agentSpaceId=input.agentSpaceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4945,7 +4940,7 @@ struct SecurityAgentClient:
     # ListDiscoveredEndpoints  POST /ListDiscoveredEndpoints
     def list_discovered_endpoints(self, ListDiscoveredEndpointsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListDiscoveredEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListDiscoveredEndpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDiscoveredEndpointsDocument(maxResults=input.maxResults, pentestJobId=input.pentestJobId, agentSpaceId=input.agentSpaceId, prefix=input.prefix, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4953,7 +4948,7 @@ struct SecurityAgentClient:
     # ListFindings  POST /ListFindings
     def list_findings(self, ListFindingsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFindingsDocument(maxResults=input.maxResults, pentestJobId=input.pentestJobId, codeReviewJobId=input.codeReviewJobId, agentSpaceId=input.agentSpaceId, nextToken=input.nextToken, riskType=input.riskType, riskLevel=input.riskLevel, status=input.status, confidence=input.confidence, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4962,7 +4957,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_integrated_resources(self, ListIntegratedResourcesInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIntegratedResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIntegratedResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIntegratedResourcesDocument(agentSpaceId=input.agentSpaceId, integrationId=input.integrationId, resourceType=input.resourceType, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4971,7 +4966,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_integrations(self, ListIntegrationsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListIntegrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIntegrationsDocument(filter=input.filter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4979,7 +4974,7 @@ struct SecurityAgentClient:
     # ListMemberships  POST /ListMemberships
     def list_memberships(self, ListMembershipsRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListMemberships", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListMemberships", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMembershipsDocument(applicationId=input.applicationId, agentSpaceId=input.agentSpaceId, memberType=input.memberType, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4987,7 +4982,7 @@ struct SecurityAgentClient:
     # ListPentestJobTasks  POST /ListPentestJobTasks
     def list_pentest_job_tasks(self, ListPentestJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPentestJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPentestJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPentestJobTasksDocument(agentSpaceId=input.agentSpaceId, maxResults=input.maxResults, pentestJobId=input.pentestJobId, stepName=input.stepName, categoryName=input.categoryName, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -4995,7 +4990,7 @@ struct SecurityAgentClient:
     # ListPentestJobsForPentest  POST /ListPentestJobsForPentest
     def list_pentest_jobs_for_pentest(self, ListPentestJobsForPentestInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPentestJobsForPentest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPentestJobsForPentest", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPentestJobsForPentestDocument(maxResults=input.maxResults, pentestId=input.pentestId, agentSpaceId=input.agentSpaceId, nextToken=input.nextToken, jobType=input.jobType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5003,7 +4998,7 @@ struct SecurityAgentClient:
     # ListPentests  POST /ListPentests
     def list_pentests(self, ListPentestsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPentests", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPentests", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPentestsDocument(maxResults=input.maxResults, nextToken=input.nextToken, agentSpaceId=input.agentSpaceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5012,7 +5007,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_private_connections(self, ListPrivateConnectionsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPrivateConnections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPrivateConnections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPrivateConnectionsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5021,7 +5016,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_security_requirement_packs(self, ListSecurityRequirementPacksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSecurityRequirementPacks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSecurityRequirementPacks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSecurityRequirementPacksDocument(filter=input.filter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5030,7 +5025,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_security_requirements(self, ListSecurityRequirementsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSecurityRequirements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSecurityRequirements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSecurityRequirementsDocument(packId=input.packId, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5040,13 +5035,13 @@ struct SecurityAgentClient:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, securityagent_service(), self.region, host)
 
     # ListTargetDomains  POST /ListTargetDomains
     def list_target_domains(self, ListTargetDomainsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTargetDomains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTargetDomains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTargetDomainsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5054,7 +5049,7 @@ struct SecurityAgentClient:
     # ListThreatModelJobTasks  POST /ListThreatModelJobTasks
     def list_threat_model_job_tasks(self, ListThreatModelJobTasksInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModelJobTasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModelJobTasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListThreatModelJobTasksDocument(agentSpaceId=input.agentSpaceId, maxResults=input.maxResults, threatModelJobId=input.threatModelJobId, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5062,7 +5057,7 @@ struct SecurityAgentClient:
     # ListThreatModelJobs  POST /ListThreatModelJobs
     def list_threat_model_jobs(self, ListThreatModelJobsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModelJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModelJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListThreatModelJobsDocument(maxResults=input.maxResults, threatModelId=input.threatModelId, agentSpaceId=input.agentSpaceId, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5070,7 +5065,7 @@ struct SecurityAgentClient:
     # ListThreatModels  POST /ListThreatModels
     def list_threat_models(self, ListThreatModelsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListThreatModels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListThreatModelsDocument(maxResults=input.maxResults, nextToken=input.nextToken, agentSpaceId=input.agentSpaceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5078,7 +5073,7 @@ struct SecurityAgentClient:
     # ListThreats  POST /ListThreats
     def list_threats(self, ListThreatsInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListThreats", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListThreats", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListThreatsDocument(threatJobId=input.threatJobId, agentSpaceId=input.agentSpaceId, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5086,7 +5081,7 @@ struct SecurityAgentClient:
     # StartCodeRemediation  POST /StartCodeRemediation
     def start_code_remediation(self, StartCodeRemediationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartCodeRemediation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartCodeRemediation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         if input.pentestJobId.is_some():
@@ -5105,7 +5100,7 @@ struct SecurityAgentClient:
     # StartCodeReviewJob  POST /StartCodeReviewJob
     def start_code_review_job(self, StartCodeReviewJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartCodeReviewJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartCodeReviewJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartCodeReviewJobDocument(agentSpaceId=input.agentSpaceId, codeReviewId=input.codeReviewId, diffSource=input.diffSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5113,7 +5108,7 @@ struct SecurityAgentClient:
     # StartPentestJob  POST /StartPentestJob
     def start_pentest_job(self, StartPentestJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartPentestJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartPentestJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         parts.append("\"pentestId\":" + securityagent_json_str(input.pentestId))
@@ -5138,7 +5133,7 @@ struct SecurityAgentClient:
     # StartThreatModelJob  POST /StartThreatModelJob
     def start_threat_model_job(self, StartThreatModelJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartThreatModelJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartThreatModelJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartThreatModelJobDocument(agentSpaceId=input.agentSpaceId, threatModelId=input.threatModelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5146,7 +5141,7 @@ struct SecurityAgentClient:
     # StopCodeReviewJob  POST /StopCodeReviewJob
     def stop_code_review_job(self, StopCodeReviewJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopCodeReviewJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopCodeReviewJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopCodeReviewJobDocument(agentSpaceId=input.agentSpaceId, codeReviewJobId=input.codeReviewJobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5154,7 +5149,7 @@ struct SecurityAgentClient:
     # StopPentestJob  POST /StopPentestJob
     def stop_pentest_job(self, StopPentestJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopPentestJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopPentestJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopPentestJobDocument(agentSpaceId=input.agentSpaceId, pentestJobId=input.pentestJobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5162,7 +5157,7 @@ struct SecurityAgentClient:
     # StopThreatModelJob  POST /StopThreatModelJob
     def stop_threat_model_job(self, StopThreatModelJobInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopThreatModelJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopThreatModelJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopThreatModelJobDocument(agentSpaceId=input.agentSpaceId, threatModelJobId=input.threatModelJobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5172,7 +5167,7 @@ struct SecurityAgentClient:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -5181,10 +5176,20 @@ struct SecurityAgentClient:
         auto bp = restjson.rest_json_document(b, securityagent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(securityagent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, securityagent_service(), self.region, host)
+
     # UpdateAgentSpace  POST /UpdateAgentSpace
     def update_agent_space(self, UpdateAgentSpaceInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAgentSpace", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAgentSpace", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         if input.name.is_some():
@@ -5211,7 +5216,7 @@ struct SecurityAgentClient:
     # UpdateApplication  POST /UpdateApplication
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(applicationId=input.applicationId, roleArn=input.roleArn, defaultKmsKeyId=input.defaultKmsKeyId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5219,7 +5224,7 @@ struct SecurityAgentClient:
     # UpdateCodeReview  POST /UpdateCodeReview
     def update_code_review(self, UpdateCodeReviewInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCodeReview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCodeReview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"codeReviewId\":" + securityagent_json_str(input.codeReviewId))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -5256,7 +5261,7 @@ struct SecurityAgentClient:
     # UpdateFinding  POST /UpdateFinding
     def update_finding(self, UpdateFindingInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFinding", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFinding", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFindingDocument(findingId=input.findingId, agentSpaceId=input.agentSpaceId, name=input.name, description=input.description, riskType=input.riskType, riskLevel=input.riskLevel, riskScore=input.riskScore, attackScript=input.attackScript, reasoning=input.reasoning, status=input.status, customerNote=input.customerNote)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5265,7 +5270,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_integrated_resources(self, UpdateIntegratedResourcesInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegratedResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegratedResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
         parts.append("\"integrationId\":" + securityagent_json_str(input.integrationId))
@@ -5280,7 +5285,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_integration(self, UpdateIntegrationInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIntegrationDocument(integrationId=input.integrationId, webhookAction=input.webhookAction)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5288,7 +5293,7 @@ struct SecurityAgentClient:
     # UpdatePentest  POST /UpdatePentest
     def update_pentest(self, UpdatePentestInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePentest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePentest", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"pentestId\":" + securityagent_json_str(input.pentestId))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -5347,7 +5352,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_private_connection_certificate(self, UpdatePrivateConnectionCertificateInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePrivateConnectionCertificate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePrivateConnectionCertificate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePrivateConnectionCertificateDocument(privateConnectionName=input.privateConnectionName, certificate=input.certificate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5356,7 +5361,7 @@ struct SecurityAgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_security_requirement_pack(self, UpdateSecurityRequirementPackInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSecurityRequirementPack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSecurityRequirementPack", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSecurityRequirementPackDocument(packId=input.packId, name=input.name, description=input.description, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5364,7 +5369,7 @@ struct SecurityAgentClient:
     # UpdateTargetDomain  POST /UpdateTargetDomain
     def update_target_domain(self, UpdateTargetDomainInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTargetDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTargetDomainDocument(targetDomainId=input.targetDomainId, verificationMethod=input.verificationMethod)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)
@@ -5372,7 +5377,7 @@ struct SecurityAgentClient:
     # UpdateThreat  POST /UpdateThreat
     def update_threat(self, UpdateThreatInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreat", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"threatId\":" + securityagent_json_str(input.threatId))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -5433,7 +5438,7 @@ struct SecurityAgentClient:
     # UpdateThreatModel  POST /UpdateThreatModel
     def update_threat_model(self, UpdateThreatModelInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreatModel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateThreatModel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"threatModelId\":" + securityagent_json_str(input.threatModelId))
         parts.append("\"agentSpaceId\":" + securityagent_json_str(input.agentSpaceId))
@@ -5467,7 +5472,7 @@ struct SecurityAgentClient:
     # VerifyTargetDomain  POST /VerifyTargetDomain
     def verify_target_domain(self, VerifyTargetDomainInput input) -> str:
         auto host = endpoints.regional_host(securityagent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/VerifyTargetDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/VerifyTargetDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyTargetDomainDocument(targetDomainId=input.targetDomainId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, securityagent_service(), self.region, host)

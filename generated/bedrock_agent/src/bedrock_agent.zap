@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 86 operations — 80 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 86 operations — 86 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   441 structs (281 @derive(Json)), 65 enums, 7 error variants.
 #   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3843,16 +3843,6 @@ def bedrock_agent_error_from_code(str code) -> Bedrock_AgentError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteAgent (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   DeleteAgentActionGroup (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   DeleteAgentVersion (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   DeleteFlow (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   DeleteFlowVersion (httpQuery `skipResourceInUseCheck` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4981,6 +4971,12 @@ def web_source_configuration_to_json(WebSourceConfiguration v) -> str:
     parts.append("\"urlConfiguration\":" + url_configuration_to_json(v.urlConfiguration))
     return bedrock_agent_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def bedrock_agent_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Bedrock_Agent client: credentials + region, threaded into every operation.
 struct Bedrock_AgentClient:
     core.Credentials creds
@@ -4993,7 +4989,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateAgentCollaboratorDocument(agentDescriptor=input.agentDescriptor, collaboratorName=input.collaboratorName, collaborationInstruction=input.collaborationInstruction, relayConversationHistory=input.relayConversationHistory, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5005,7 +5001,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateAgentKnowledgeBaseDocument(knowledgeBaseId=input.knowledgeBaseId, description=input.description, knowledgeBaseState=input.knowledgeBaseState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5014,7 +5010,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_agent(self, CreateAgentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentName\":" + bedrock_agent_json_str(input.agentName))
         if input.clientToken.is_some():
@@ -5072,7 +5068,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"actionGroupName\":" + bedrock_agent_json_str(input.actionGroupName))
         if input.clientToken.is_some():
@@ -5111,7 +5107,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentaliases/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentaliases/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentAliasName\":" + bedrock_agent_json_str(input.agentAliasName))
         if input.clientToken.is_some():
@@ -5141,7 +5137,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5167,7 +5163,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_flow(self, CreateFlowRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/flows/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flows/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -5198,7 +5194,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/aliases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/aliases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -5229,7 +5225,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFlowVersionDocument(description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5238,7 +5234,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_knowledge_base(self, CreateKnowledgeBaseRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5265,7 +5261,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_prompt(self, CreatePromptRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prompts/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prompts/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -5301,7 +5297,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["promptIdentifier"] = input.promptIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/prompts/{promptIdentifier}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prompts/{promptIdentifier}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -5322,7 +5318,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_retrieval_instruction(self, CreateRetrievalInstructionRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/retrievalinstructions/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/retrievalinstructions/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5350,7 +5346,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["retrievalInstructionId"] = input.retrievalInstructionId
-        auto b = binding.HttpBinding(method="POST", path_template="/retrievalinstructions/{retrievalInstructionId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/retrievalinstructions/{retrievalInstructionId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRetrievalInstructionVersionDocument(description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5361,7 +5357,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5390,6 +5386,34 @@ struct Bedrock_AgentClient:
         auto bp = restjson.rest_json_document(b, bedrock_agent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
 
+    # DeleteAgent  DELETE /agents/{agentId}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_agent(self, DeleteAgentRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentId"] = input.agentId
+        dict[str, str] query = {}
+        if input.skipResourceInUseCheck.is_some():
+            auto qt0 = bedrock_agent_bind_bool(input.skipResourceInUseCheck.unwrap_or(False))
+            query["skipResourceInUseCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
+    # DeleteAgentActionGroup  DELETE /agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_agent_action_group(self, DeleteAgentActionGroupRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentId"] = input.agentId
+        labels["agentVersion"] = input.agentVersion
+        labels["actionGroupId"] = input.actionGroupId
+        dict[str, str] query = {}
+        if input.skipResourceInUseCheck.is_some():
+            auto qt0 = bedrock_agent_bind_bool(input.skipResourceInUseCheck.unwrap_or(False))
+            query["skipResourceInUseCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
     # DeleteAgentAlias  DELETE /agents/{agentId}/agentaliases/{agentAliasId}/
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_agent_alias(self, DeleteAgentAliasRequest input) -> str:
@@ -5397,7 +5421,21 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentAliasId"] = input.agentAliasId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
+    # DeleteAgentVersion  DELETE /agents/{agentId}/agentversions/{agentVersion}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_agent_version(self, DeleteAgentVersionRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["agentId"] = input.agentId
+        labels["agentVersion"] = input.agentVersion
+        dict[str, str] query = {}
+        if input.skipResourceInUseCheck.is_some():
+            auto qt0 = bedrock_agent_bind_bool(input.skipResourceInUseCheck.unwrap_or(False))
+            query["skipResourceInUseCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteDataSource  DELETE /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}
@@ -5407,7 +5445,20 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
+    # DeleteFlow  DELETE /flows/{flowIdentifier}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_flow(self, DeleteFlowRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["flowIdentifier"] = input.flowIdentifier
+        dict[str, str] query = {}
+        if input.skipResourceInUseCheck.is_some():
+            auto qt0 = bedrock_agent_bind_bool(input.skipResourceInUseCheck.unwrap_or(False))
+            query["skipResourceInUseCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteFlowAlias  DELETE /flows/{flowIdentifier}/aliases/{aliasIdentifier}
@@ -5417,7 +5468,21 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
         labels["aliasIdentifier"] = input.aliasIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
+    # DeleteFlowVersion  DELETE /flows/{flowIdentifier}/versions/{flowVersion}/
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_flow_version(self, DeleteFlowVersionRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["flowIdentifier"] = input.flowIdentifier
+        labels["flowVersion"] = input.flowVersion
+        dict[str, str] query = {}
+        if input.skipResourceInUseCheck.is_some():
+            auto qt0 = bedrock_agent_bind_bool(input.skipResourceInUseCheck.unwrap_or(False))
+            query["skipResourceInUseCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/flows/{flowIdentifier}/versions/{flowVersion}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteKnowledgeBase  DELETE /knowledgebases/{knowledgeBaseId}
@@ -5426,7 +5491,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteKnowledgeBaseDocuments  POST /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/deleteDocuments
@@ -5436,7 +5501,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/deleteDocuments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/deleteDocuments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5457,7 +5522,7 @@ struct Bedrock_AgentClient:
         dict[str, str] query = {}
         if input.promptVersion.is_some():
             query["promptVersion"] = input.promptVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resourcepolicy/{resourceArn}
@@ -5469,7 +5534,7 @@ struct Bedrock_AgentClient:
         dict[str, str] query = {}
         if input.expectedRevisionId.is_some():
             query["expectedRevisionId"] = input.expectedRevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteRetrievalInstruction  DELETE /retrievalinstructions/{retrievalInstructionId}
@@ -5480,8 +5545,9 @@ struct Bedrock_AgentClient:
         labels["retrievalInstructionId"] = input.retrievalInstructionId
         dict[str, str] query = {}
         if input.retrievalInstructionVersion.is_some():
-            query["retrievalInstructionVersion"] = input.retrievalInstructionVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.retrievalInstructionVersion.unwrap_or("")
+            query["retrievalInstructionVersion"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DeleteVpcConfiguration  DELETE /knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}
@@ -5491,7 +5557,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["vpcConfigurationId"] = input.vpcConfigurationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DisassociateAgentCollaborator  DELETE /agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/
@@ -5502,7 +5568,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["collaboratorId"] = input.collaboratorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # DisassociateAgentKnowledgeBase  DELETE /agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/
@@ -5513,7 +5579,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgent  GET /agents/{agentId}/
@@ -5522,7 +5588,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgentActionGroup  GET /agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/
@@ -5533,7 +5599,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["actionGroupId"] = input.actionGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgentAlias  GET /agents/{agentId}/agentaliases/{agentAliasId}/
@@ -5543,7 +5609,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentAliasId"] = input.agentAliasId
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgentCollaborator  GET /agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/
@@ -5554,7 +5620,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["collaboratorId"] = input.collaboratorId
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgentKnowledgeBase  GET /agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/
@@ -5565,7 +5631,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetAgentVersion  GET /agents/{agentId}/agentversions/{agentVersion}/
@@ -5575,7 +5641,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agents/{agentId}/agentversions/{agentVersion}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetDataSource  GET /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}
@@ -5585,7 +5651,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetFlow  GET /flows/{flowIdentifier}/
@@ -5597,7 +5663,7 @@ struct Bedrock_AgentClient:
         dict[str, str] query = {}
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetFlowAlias  GET /flows/{flowIdentifier}/aliases/{aliasIdentifier}
@@ -5607,7 +5673,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
         labels["aliasIdentifier"] = input.aliasIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetFlowVersion  GET /flows/{flowIdentifier}/versions/{flowVersion}/
@@ -5620,7 +5686,7 @@ struct Bedrock_AgentClient:
         dict[str, str] query = {}
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/versions/{flowVersion}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/versions/{flowVersion}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetIngestionJob  GET /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}
@@ -5631,7 +5697,7 @@ struct Bedrock_AgentClient:
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
         labels["ingestionJobId"] = input.ingestionJobId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetKnowledgeBase  GET /knowledgebases/{knowledgeBaseId}
@@ -5640,7 +5706,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetKnowledgeBaseDocuments  POST /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/getDocuments
@@ -5650,7 +5716,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/getDocuments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/getDocuments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.documentIdentifiers:
@@ -5670,7 +5736,7 @@ struct Bedrock_AgentClient:
             query["promptVersion"] = input.promptVersion.unwrap_or("")
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcepolicy/{resourceArn}
@@ -5679,7 +5745,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetRetrievalInstruction  GET /retrievalinstructions/{retrievalInstructionId}
@@ -5690,8 +5756,9 @@ struct Bedrock_AgentClient:
         labels["retrievalInstructionId"] = input.retrievalInstructionId
         dict[str, str] query = {}
         if input.retrievalInstructionVersion.is_some():
-            query["retrievalInstructionVersion"] = input.retrievalInstructionVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.retrievalInstructionVersion.unwrap_or("")
+            query["retrievalInstructionVersion"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # GetVpcConfiguration  GET /knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}
@@ -5701,7 +5768,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["vpcConfigurationId"] = input.vpcConfigurationId
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # IngestKnowledgeBaseDocuments  PUT /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents
@@ -5711,7 +5778,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5730,7 +5797,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentActionGroupsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5741,7 +5808,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentaliases/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentaliases/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentAliasesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5753,7 +5820,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentCollaboratorsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5765,7 +5832,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentKnowledgeBasesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5776,7 +5843,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/agentversions/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentVersionsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5785,7 +5852,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_agents(self, ListAgentsRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAgentsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5796,7 +5863,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataSourcesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5812,7 +5879,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListFlowVersions  GET /flows/{flowIdentifier}/versions
@@ -5826,7 +5893,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/{flowIdentifier}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListFlows  GET /flows/
@@ -5838,7 +5905,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/flows/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flows/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListIngestionJobs  POST /knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/
@@ -5848,7 +5915,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -5875,7 +5942,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListKnowledgeBaseDocumentsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5884,7 +5951,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_knowledge_bases(self, ListKnowledgeBasesRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListKnowledgeBasesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5900,7 +5967,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prompts/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompts/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListRetrievalInstructionVersions  GET /retrievalinstructions/{retrievalInstructionId}/versions
@@ -5914,7 +5981,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/{retrievalInstructionId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/{retrievalInstructionId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListRetrievalInstructions  GET /retrievalinstructions/
@@ -5928,7 +5995,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/retrievalinstructions/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -5937,7 +6004,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # ListVpcConfigurations  GET /knowledgebases/{knowledgeBaseId}/vpcconfigurations/
@@ -5953,7 +6020,7 @@ struct Bedrock_AgentClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/knowledgebases/{knowledgeBaseId}/vpcconfigurations/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # PrepareAgent  POST /agents/{agentId}/
@@ -5962,7 +6029,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # PrepareFlow  POST /flows/{flowIdentifier}/
@@ -5971,7 +6038,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # PutResourcePolicy  PUT /resourcepolicy/{resourceArn}
@@ -5980,7 +6047,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy, expectedRevisionId=input.expectedRevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -5992,7 +6059,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartIngestionJobDocument(clientToken=input.clientToken, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -6005,7 +6072,7 @@ struct Bedrock_AgentClient:
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
         labels["ingestionJobId"] = input.ingestionJobId
-        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -6014,7 +6081,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -6023,13 +6090,24 @@ struct Bedrock_AgentClient:
         auto bp = restjson.rest_json_document(b, bedrock_agent_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agent_service(), self.region, host)
+
     # UpdateAgent  PUT /agents/{agentId}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_agent(self, UpdateAgentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentName\":" + bedrock_agent_json_str(input.agentName))
         if input.instruction.is_some():
@@ -6075,7 +6153,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["actionGroupId"] = input.actionGroupId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/actiongroups/{actionGroupId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"actionGroupName\":" + bedrock_agent_json_str(input.actionGroupName))
         if input.description.is_some():
@@ -6112,7 +6190,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["agentAliasId"] = input.agentAliasId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentaliases/{agentAliasId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentAliasName\":" + bedrock_agent_json_str(input.agentAliasName))
         if input.description.is_some():
@@ -6138,7 +6216,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["collaboratorId"] = input.collaboratorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentCollaboratorDocument(agentDescriptor=input.agentDescriptor, collaboratorName=input.collaboratorName, collaborationInstruction=input.collaborationInstruction, relayConversationHistory=input.relayConversationHistory)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -6151,7 +6229,7 @@ struct Bedrock_AgentClient:
         labels["agentId"] = input.agentId
         labels["agentVersion"] = input.agentVersion
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agents/{agentId}/agentversions/{agentVersion}/knowledgebases/{knowledgeBaseId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentKnowledgeBaseDocument(description=input.description, knowledgeBaseState=input.knowledgeBaseState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -6163,7 +6241,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -6188,7 +6266,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/flows/{flowIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -6211,7 +6289,7 @@ struct Bedrock_AgentClient:
         dict[str, str] labels = {}
         labels["flowIdentifier"] = input.flowIdentifier
         labels["aliasIdentifier"] = input.aliasIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/flows/{flowIdentifier}/aliases/{aliasIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -6233,7 +6311,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["knowledgeBaseId"] = input.knowledgeBaseId
-        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/knowledgebases/{knowledgeBaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -6253,7 +6331,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["promptIdentifier"] = input.promptIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prompts/{promptIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agent_json_str(input.name))
         if input.description.is_some():
@@ -6280,7 +6358,7 @@ struct Bedrock_AgentClient:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
         dict[str, str] labels = {}
         labels["retrievalInstructionId"] = input.retrievalInstructionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/retrievalinstructions/{retrievalInstructionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRetrievalInstructionDocument(instruction=input.instruction, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agent_service(), self.region, host)
@@ -6289,7 +6367,7 @@ struct Bedrock_AgentClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def validate_flow_definition(self, ValidateFlowDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agent_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/flows/validate-definition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flows/validate-definition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"definition\":" + flow_definition_to_json(input.definition))
         auto bp = restjson.rest_json_document(b, bedrock_agent_json_obj(parts))

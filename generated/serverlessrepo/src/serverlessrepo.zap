@@ -672,7 +672,7 @@ struct ServerlessApplicationRepositoryClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, TooManyRequestsException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"author\":" + serverlessrepo_json_str(input.Author))
         parts.append("\"description\":" + serverlessrepo_json_str(input.Description))
@@ -726,7 +726,7 @@ struct ServerlessApplicationRepositoryClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
         labels["semanticVersion"] = input.SemanticVersion
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/versions/{semanticVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/versions/{semanticVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApplicationVersionDocument(SourceCodeArchiveUrl=input.SourceCodeArchiveUrl, SourceCodeUrl=input.SourceCodeUrl, TemplateBody=input.TemplateBody, TemplateUrl=input.TemplateUrl)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
@@ -737,7 +737,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/changesets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/changesets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Capabilities.is_some():
             auto u0 = input.Capabilities.unwrap()
@@ -797,7 +797,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/templates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/templates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCloudFormationTemplateDocument(SemanticVersion=input.SemanticVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
@@ -808,7 +808,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # GetApplication  GET /applications/{applicationId}
@@ -820,7 +820,7 @@ struct ServerlessApplicationRepositoryClient:
         dict[str, str] query = {}
         if input.SemanticVersion.is_some():
             query["semanticVersion"] = input.SemanticVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # GetApplicationPolicy  GET /applications/{applicationId}/policy
@@ -829,7 +829,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # GetCloudFormationTemplate  GET /applications/{applicationId}/templates/{templateId}
@@ -839,7 +839,7 @@ struct ServerlessApplicationRepositoryClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
         labels["templateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/templates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # ListApplicationDependencies  GET /applications/{applicationId}/dependencies
@@ -855,7 +855,7 @@ struct ServerlessApplicationRepositoryClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.SemanticVersion.is_some():
             query["semanticVersion"] = input.SemanticVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dependencies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dependencies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # ListApplicationVersions  GET /applications/{applicationId}/versions
@@ -869,7 +869,7 @@ struct ServerlessApplicationRepositoryClient:
             query["maxItems"] = str(input.MaxItems.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -881,7 +881,7 @@ struct ServerlessApplicationRepositoryClient:
             query["maxItems"] = str(input.MaxItems.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, serverlessrepo_service(), self.region, host)
 
     # PutApplicationPolicy  PUT /applications/{applicationId}/policy
@@ -890,7 +890,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Statements:
@@ -905,7 +905,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/unshare", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/unshare", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnshareApplicationDocument(OrganizationId=input.OrganizationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, serverlessrepo_service(), self.region, host)
@@ -916,7 +916,7 @@ struct ServerlessApplicationRepositoryClient:
         auto host = endpoints.regional_host(serverlessrepo_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Author.is_some():
             auto u0 = input.Author.unwrap()

@@ -651,7 +651,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/AddGroupMember", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/AddGroupMember", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddGroupMemberDocument(ClientToken=input.ClientToken, GroupName=input.GroupName, MemberName=input.MemberName, MemberRealm=input.MemberRealm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -662,7 +662,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/CreateGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/CreateGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -689,7 +689,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/CreateUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/CreateUser", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -719,7 +719,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/DeleteGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/DeleteGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteGroupDocument(ClientToken=input.ClientToken, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -730,7 +730,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/DeleteUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/DeleteUser", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteUserDocument(ClientToken=input.ClientToken, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -741,7 +741,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/DescribeGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/DescribeGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.OtherAttributes.is_some():
             auto u0 = input.OtherAttributes.unwrap()
@@ -762,7 +762,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/DescribeUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/DescribeUser", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.OtherAttributes.is_some():
             auto u0 = input.OtherAttributes.unwrap()
@@ -783,7 +783,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/DisableUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/DisableUser", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableUserDocument(ClientToken=input.ClientToken, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -794,7 +794,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/ListGroupMembers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/ListGroupMembers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGroupMembersDocument(MaxResults=input.MaxResults, MemberRealm=input.MemberRealm, NextToken=input.NextToken, Realm=input.Realm, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -805,7 +805,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/ListGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/ListGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGroupsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, Realm=input.Realm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -816,7 +816,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/ListGroupsForMember", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/ListGroupsForMember", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGroupsForMemberDocument(MaxResults=input.MaxResults, MemberRealm=input.MemberRealm, NextToken=input.NextToken, Realm=input.Realm, SAMAccountName=input.SAMAccountName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -827,7 +827,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/ListUsers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/ListUsers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListUsersDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, Realm=input.Realm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -838,7 +838,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/RemoveGroupMember", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GroupMemberships/RemoveGroupMember", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveGroupMemberDocument(ClientToken=input.ClientToken, GroupName=input.GroupName, MemberName=input.MemberName, MemberRealm=input.MemberRealm)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ds_data_service(), self.region, host)
@@ -849,7 +849,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/SearchGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/SearchGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -874,7 +874,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/SearchUsers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/SearchUsers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -899,7 +899,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Groups/UpdateGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Groups/UpdateGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -929,7 +929,7 @@ struct Directory_Service_DataClient:
         auto host = endpoints.regional_host(ds_data_service(), self.region)
         dict[str, str] query = {}
         query["DirectoryId"] = input.DirectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/Users/UpdateUser", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Users/UpdateUser", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()

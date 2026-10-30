@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 33 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 34 operations — 34 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   124 structs (67 @derive(Json)), 14 enums, 7 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1130,11 +1130,6 @@ def billingconductor_error_from_code(str code) -> billingconductorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1496,7 +1491,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def associate_accounts(self, AssociateAccountsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associate-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associate-accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         list[str] e0 = []
@@ -1510,7 +1505,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def associate_pricing_rules(self, AssociatePricingRulesInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/associate-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/associate-pricing-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         list[str] e0 = []
@@ -1524,7 +1519,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def batch_associate_resources_to_custom_line_item(self, BatchAssociateResourcesToCustomLineItemInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/batch-associate-resources-to-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/batch-associate-resources-to-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TargetArn\":" + billingconductor_json_str(input.TargetArn))
         list[str] e0 = []
@@ -1541,7 +1536,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_disassociate_resources_from_custom_line_item(self, BatchDisassociateResourcesFromCustomLineItemInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/batch-disassociate-resources-from-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/batch-disassociate-resources-from-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TargetArn\":" + billingconductor_json_str(input.TargetArn))
         list[str] e0 = []
@@ -1561,7 +1556,7 @@ struct billingconductorClient:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/create-billing-group", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-billing-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + billingconductor_json_str(input.Name))
         parts.append("\"AccountGrouping\":" + account_grouping_to_json(input.AccountGrouping))
@@ -1588,7 +1583,7 @@ struct billingconductorClient:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-line-item", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + billingconductor_json_str(input.Name))
         parts.append("\"Description\":" + billingconductor_json_str(input.Description))
@@ -1622,7 +1617,7 @@ struct billingconductorClient:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-plan", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-plan", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + billingconductor_json_str(input.Name))
         if input.Description.is_some():
@@ -1650,7 +1645,7 @@ struct billingconductorClient:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-rule", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-pricing-rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + billingconductor_json_str(input.Name))
         if input.Description.is_some():
@@ -1689,7 +1684,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def delete_billing_group(self, DeleteBillingGroupInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-billing-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-billing-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteBillingGroupDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1698,7 +1693,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def delete_custom_line_item(self, DeleteCustomLineItemInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCustomLineItemDocument(Arn=input.Arn, BillingPeriodRange=input.BillingPeriodRange)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1707,7 +1702,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def delete_pricing_plan(self, DeletePricingPlanInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-pricing-plan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-pricing-plan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePricingPlanDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1716,7 +1711,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def delete_pricing_rule(self, DeletePricingRuleInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-pricing-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-pricing-rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePricingRuleDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1725,7 +1720,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disassociate_accounts(self, DisassociateAccountsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         list[str] e0 = []
@@ -1739,7 +1734,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disassociate_pricing_rules(self, DisassociatePricingRulesInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/disassociate-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/disassociate-pricing-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         list[str] e0 = []
@@ -1753,7 +1748,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_billing_group_cost_report(self, GetBillingGroupCostReportInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-billing-group-cost-report", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-billing-group-cost-report", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         if input.BillingPeriodRange.is_some():
@@ -1778,7 +1773,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_billing_transfer_preference(self, GetBillingTransferPreferenceInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-billing-transfer-preference", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-billing-transfer-preference", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBillingTransferPreferenceDocument(ResponsibilityTransferArn=input.ResponsibilityTransferArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1787,7 +1782,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_account_associations(self, ListAccountAssociationsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-account-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-account-associations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1805,7 +1800,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_billing_group_cost_reports(self, ListBillingGroupCostReportsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-group-cost-reports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-group-cost-reports", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1826,7 +1821,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_billing_groups(self, ListBillingGroupsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-billing-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1847,7 +1842,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_custom_line_item_versions(self, ListCustomLineItemVersionsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-line-item-versions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-line-item-versions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCustomLineItemVersionsDocument(Arn=input.Arn, MaxResults=input.MaxResults, NextToken=input.NextToken, Filters=input.Filters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1856,7 +1851,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_custom_line_items(self, ListCustomLineItemsInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-line-items", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-line-items", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1877,7 +1872,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_pricing_plans(self, ListPricingPlansInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1898,7 +1893,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_pricing_plans_associated_with_pricing_rule(self, ListPricingPlansAssociatedWithPricingRuleInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans-associated-with-pricing-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-plans-associated-with-pricing-rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPricingPlansAssociatedWithPricingRuleDocument(BillingPeriod=input.BillingPeriod, PricingRuleArn=input.PricingRuleArn, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1907,7 +1902,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_pricing_rules(self, ListPricingRulesInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.BillingPeriod.is_some():
             auto u0 = input.BillingPeriod.unwrap()
@@ -1928,7 +1923,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_pricing_rules_associated_to_pricing_plan(self, ListPricingRulesAssociatedToPricingPlanInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-rules-associated-to-pricing-plan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-pricing-rules-associated-to-pricing-plan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPricingRulesAssociatedToPricingPlanDocument(BillingPeriod=input.BillingPeriod, PricingPlanArn=input.PricingPlanArn, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1937,7 +1932,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_resources_associated_to_custom_line_item(self, ListResourcesAssociatedToCustomLineItemInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-resources-associated-to-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-resources-associated-to-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourcesAssociatedToCustomLineItemDocument(BillingPeriod=input.BillingPeriod, Arn=input.Arn, MaxResults=input.MaxResults, NextToken=input.NextToken, Filters=input.Filters)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1948,7 +1943,7 @@ struct billingconductorClient:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, billingconductor_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -1957,7 +1952,7 @@ struct billingconductorClient:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1966,11 +1961,22 @@ struct billingconductorClient:
         auto bp = restjson.rest_json_document(b, billingconductor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(billingconductor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, billingconductor_service(), self.region, host)
+
     # UpdateBillingGroup  POST /update-billing-group
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_billing_group(self, UpdateBillingGroupInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-billing-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-billing-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBillingGroupDocument(Arn=input.Arn, Name=input.Name, Status=input.Status, ComputationPreference=input.ComputationPreference, Description=input.Description, AccountGrouping=input.AccountGrouping)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1982,7 +1988,7 @@ struct billingconductorClient:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["X-Amzn-Client-Token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/update-billing-transfer-preference", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/update-billing-transfer-preference", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBillingTransferPreferenceDocument(ResponsibilityTransferArn=input.ResponsibilityTransferArn, AutoBillingTransferBillingGroupCreation=input.AutoBillingTransferBillingGroupCreation)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -1991,7 +1997,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_custom_line_item(self, UpdateCustomLineItemInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-line-item", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-line-item", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         if input.Name.is_some():
@@ -2013,7 +2019,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_pricing_plan(self, UpdatePricingPlanInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/update-pricing-plan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/update-pricing-plan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePricingPlanDocument(Arn=input.Arn, Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, billingconductor_service(), self.region, host)
@@ -2022,7 +2028,7 @@ struct billingconductorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_pricing_rule(self, UpdatePricingRuleInput input) -> str:
         auto host = endpoints.regional_host(billingconductor_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/update-pricing-rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/update-pricing-rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Arn\":" + billingconductor_json_str(input.Arn))
         if input.Name.is_some():

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 102 operations — 97 with a generated method,
-#   5 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 102 operations — 99 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   385 structs (261 @derive(Json)), 76 enums, 15 error variants.
 #   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3518,9 +3518,7 @@ def es_error_from_code(str code) -> OpenSearchError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateDomain (document member `LogPublishingOptions: dict[LogType, LogPublishingOption]` is not serializable)
-#   DescribeDryRunProgress (httpQuery `LoadDryRunConfig` has unsupported type bool)
 #   ListApplications (httpQuery `statuses` has unsupported type list[ApplicationStatus])
-#   ListInstanceTypeDetails (httpQuery `RetrieveAZs` has unsupported type bool)
 #   UpdateDomainConfig (document member `LogPublishingOptions: dict[LogType, LogPublishingOption]` is not serializable)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
@@ -3848,6 +3846,12 @@ def vpc_options_to_json(VPCOptions v) -> str:
         parts.append("\"EgressEnabled\":" + json.dumps(JsonValue.Bool(u4)))
     return es_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def es_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound OpenSearch client: credentials + region, threaded into every operation.
 struct OpenSearchClient:
     core.Credentials creds
@@ -3859,7 +3863,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # AddDataSource  POST /2021-01-01/opensearch/domain/{DomainName}/dataSource
@@ -3868,7 +3872,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddDataSourceDocument(Name=input.Name, DataSourceType=input.DataSourceType, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -3877,7 +3881,7 @@ struct OpenSearchClient:
     # errors: BaseException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def add_direct_query_data_source(self, AddDirectQueryDataSourceRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/directQueryDataSource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/directQueryDataSource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DataSourceName\":" + es_json_str(input.DataSourceName))
         parts.append("\"DataSourceType\":" + input.DataSourceType.to_json())
@@ -3908,7 +3912,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/addPeer", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/addPeer", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddReplicationPeerDocument(PeerDomainArn=input.PeerDomainArn, DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -3917,7 +3921,7 @@ struct OpenSearchClient:
     # errors: BaseException, InternalException, LimitExceededException, ValidationException
     def add_tags(self, AddTagsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ARN\":" + es_json_str(input.ARN))
         list[str] e0 = []
@@ -3934,7 +3938,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/associate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/associate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.PrerequisitePackageIDList.is_some():
             auto u0 = input.PrerequisitePackageIDList.unwrap()
@@ -3952,7 +3956,7 @@ struct OpenSearchClient:
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def associate_packages(self, AssociatePackagesRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/associateMultiple", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/associateMultiple", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.PackageList:
@@ -3968,7 +3972,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/attachDataSource", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/attachDataSource", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AttachDataSourceDocument(dataSourceArn=input.dataSourceArn, workspaceId=input.workspaceId, workspaceConfiguration=input.workspaceConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -3979,7 +3983,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/authorizeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/authorizeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Account.is_some():
             auto u0 = input.Account.unwrap()
@@ -3999,7 +4003,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/config/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/config/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelDomainConfigChangeDocument(DryRun=input.DryRun)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4008,7 +4012,7 @@ struct OpenSearchClient:
     # errors: BaseException, InternalException, ResourceNotFoundException, ValidationException
     def cancel_service_software_update(self, CancelServiceSoftwareUpdateRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/cancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelServiceSoftwareUpdateDocument(DomainName=input.DomainName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4017,7 +4021,7 @@ struct OpenSearchClient:
     # errors: DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def compare_domain_configuration(self, CompareDomainConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/compareDomainConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/compareDomainConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceDomainArn\":" + es_json_str(input.SourceDomainArn))
         parts.append("\"TargetDomainArn\":" + es_json_str(input.TargetDomainArn))
@@ -4032,7 +4036,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, BaseException, ConflictException, DisabledOperationException, InternalException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4071,7 +4075,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/index", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/index", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateIndexDocument(IndexName=input.IndexName, IndexSchema=input.IndexSchema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4080,7 +4084,7 @@ struct OpenSearchClient:
     # errors: DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException
     def create_outbound_connection(self, CreateOutboundConnectionRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/outboundConnection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/outboundConnection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateOutboundConnectionDocument(LocalDomainInfo=input.LocalDomainInfo, RemoteDomainInfo=input.RemoteDomainInfo, ConnectionAlias=input.ConnectionAlias, ConnectionMode=input.ConnectionMode, ConnectionProperties=input.ConnectionProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4089,7 +4093,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceAlreadyExistsException, ValidationException
     def create_package(self, CreatePackageRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePackageDocument(PackageName=input.PackageName, PackageType=input.PackageType, PackageDescription=input.PackageDescription, PackageSource=input.PackageSource, PackageConfiguration=input.PackageConfiguration, EngineVersion=input.EngineVersion, PackageVendingOptions=input.PackageVendingOptions, PackageEncryptionOptions=input.PackageEncryptionOptions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4098,7 +4102,7 @@ struct OpenSearchClient:
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, LimitExceededException, ValidationException
     def create_vpc_endpoint(self, CreateVpcEndpointRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DomainArn\":" + es_json_str(input.DomainArn))
         parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
@@ -4114,7 +4118,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteDataSource  DELETE /2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}
@@ -4124,7 +4128,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["DataSourceName"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteDirectQueryDataSource  DELETE /2021-01-01/opensearch/directQueryDataSource/{DataSourceName}
@@ -4133,7 +4137,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSourceName"] = input.DataSourceName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteDomain  DELETE /2021-01-01/opensearch/domain/{DomainName}
@@ -4142,7 +4146,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteInboundConnection  DELETE /2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}
@@ -4151,7 +4155,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteIndex  DELETE /2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}
@@ -4161,7 +4165,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteOutboundConnection  DELETE /2021-01-01/opensearch/cc/outboundConnection/{ConnectionId}
@@ -4170,7 +4174,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/cc/outboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/cc/outboundConnection/{ConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeletePackage  DELETE /2021-01-01/packages/{PackageID}
@@ -4179,7 +4183,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/packages/{PackageID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/packages/{PackageID}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeleteVpcEndpoint  DELETE /2021-01-01/opensearch/vpcEndpoints/{VpcEndpointId}
@@ -4188,7 +4192,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["VpcEndpointId"] = input.VpcEndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/vpcEndpoints/{VpcEndpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/vpcEndpoints/{VpcEndpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DeregisterCapability  DELETE /2021-01-01/opensearch/application/{ApplicationId}/capability/deregister/{CapabilityName}
@@ -4198,7 +4202,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.applicationId
         labels["CapabilityName"] = input.capabilityName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/deregister/{CapabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/deregister/{CapabilityName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDataSourceAttachment  POST /2021-01-01/opensearch/application/{id}/describeDataSourceAttachment
@@ -4207,7 +4211,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/describeDataSourceAttachment", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/describeDataSourceAttachment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeDataSourceAttachmentDocument(dataSourceArn=input.dataSourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4218,7 +4222,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainAutoTunes  GET /2021-01-01/opensearch/domain/{DomainName}/autoTunes
@@ -4232,7 +4236,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/autoTunes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/autoTunes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainChangeProgress  GET /2021-01-01/opensearch/domain/{DomainName}/progress
@@ -4244,7 +4248,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.ChangeId.is_some():
             query["changeid"] = input.ChangeId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/progress", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/progress", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainConfig  GET /2021-01-01/opensearch/domain/{DomainName}/config
@@ -4253,7 +4257,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainHealth  GET /2021-01-01/opensearch/domain/{DomainName}/health
@@ -4262,7 +4266,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/health", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/health", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainNodes  GET /2021-01-01/opensearch/domain/{DomainName}/nodes
@@ -4271,7 +4275,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/nodes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/nodes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomainReplication  GET /2021-01-01/opensearch/domain/{DomainName}/replication
@@ -4280,14 +4284,14 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeDomains  POST /2021-01-01/opensearch/domain-info
     # errors: BaseException, InternalException, ValidationException
     def describe_domains(self, DescribeDomainsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain-info", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain-info", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DomainNames:
@@ -4296,11 +4300,26 @@ struct OpenSearchClient:
         auto bp = restjson.rest_json_document(b, es_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
 
+    # DescribeDryRunProgress  GET /2021-01-01/opensearch/domain/{DomainName}/dryRun
+    # errors: BaseException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
+    def describe_dry_run_progress(self, DescribeDryRunProgressRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        dict[str, str] query = {}
+        if input.DryRunId.is_some():
+            query["dryRunId"] = input.DryRunId.unwrap_or("")
+        if input.LoadDryRunConfig.is_some():
+            auto qt0 = es_bind_bool(input.LoadDryRunConfig.unwrap_or(False))
+            query["loadDryRunConfig"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/dryRun", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
+
     # DescribeInboundConnections  POST /2021-01-01/opensearch/cc/inboundConnection/search
     # errors: DisabledOperationException, InvalidPaginationTokenException
     def describe_inbound_connections(self, DescribeInboundConnectionsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/inboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/inboundConnection/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -4321,7 +4340,7 @@ struct OpenSearchClient:
     # errors: BaseException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def describe_insight_details(self, DescribeInsightDetailsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insight-details", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insight-details", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeInsightDetailsDocument(Entity=input.Entity, InsightId=input.InsightId, ShowHtmlContent=input.ShowHtmlContent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4336,14 +4355,14 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.DomainName.is_some():
             query["domainName"] = input.DomainName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/instanceTypeLimits/{EngineVersion}/{InstanceType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/instanceTypeLimits/{EngineVersion}/{InstanceType}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeOutboundConnections  POST /2021-01-01/opensearch/cc/outboundConnection/search
     # errors: DisabledOperationException, InvalidPaginationTokenException
     def describe_outbound_connections(self, DescribeOutboundConnectionsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/outboundConnection/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/cc/outboundConnection/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -4364,7 +4383,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, BaseException, InternalException, ResourceNotFoundException, ValidationException
     def describe_packages(self, DescribePackagesRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -4392,7 +4411,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/reservedInstanceOfferings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/reservedInstanceOfferings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeReservedInstances  GET /2021-01-01/opensearch/reservedInstances
@@ -4406,14 +4425,14 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/reservedInstances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/reservedInstances", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DescribeVpcEndpoints  POST /2021-01-01/opensearch/vpcEndpoints/describe
     # errors: BaseException, DisabledOperationException, InternalException, ValidationException
     def describe_vpc_endpoints(self, DescribeVpcEndpointsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.VpcEndpointIds:
@@ -4428,7 +4447,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/detachDataSource", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/detachDataSource", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DetachDataSourceDocument(dataSourceArn=input.dataSourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4440,14 +4459,14 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["PackageID"] = input.PackageID
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/dissociate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/dissociate/{PackageID}/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # DissociatePackages  POST /2021-01-01/packages/dissociateMultiple
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def dissociate_packages(self, DissociatePackagesRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/dissociateMultiple", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/dissociateMultiple", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.PackageList:
@@ -4463,7 +4482,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/failover", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/failover", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = FailoverReplicationDocument(PeerDomainArn=input.PeerDomainArn, AllowDataLoss=input.AllowDataLoss)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4474,7 +4493,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetCapability  GET /2021-01-01/opensearch/application/{ApplicationId}/capability/{CapabilityName}
@@ -4484,7 +4503,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.applicationId
         labels["CapabilityName"] = input.capabilityName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/{CapabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/{CapabilityName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetCompatibleVersions  GET /2021-01-01/opensearch/compatibleVersions
@@ -4494,7 +4513,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.DomainName.is_some():
             query["domainName"] = input.DomainName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/compatibleVersions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/compatibleVersions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetDataSource  GET /2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}
@@ -4504,14 +4523,14 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["DataSourceName"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetDefaultApplicationSetting  GET /2021-01-01/opensearch/defaultApplicationSetting
     # errors: AccessDeniedException, InternalException, ResourceNotFoundException, ValidationException
     def get_default_application_setting(self) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/defaultApplicationSetting", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/defaultApplicationSetting", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetDirectQueryDataSource  GET /2021-01-01/opensearch/directQueryDataSource/{DataSourceName}
@@ -4520,7 +4539,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSourceName"] = input.DataSourceName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetDomainMaintenanceStatus  GET /2021-01-01/opensearch/domain/{DomainName}/domainMaintenance
@@ -4531,7 +4550,7 @@ struct OpenSearchClient:
         labels["DomainName"] = input.DomainName
         dict[str, str] query = {}
         query["maintenanceId"] = input.MaintenanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenance", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenance", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetIndex  GET /2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}
@@ -4541,7 +4560,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetMigration  GET /2021-01-01/opensearch/app-migrations/{migrationId}
@@ -4550,7 +4569,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["migrationId"] = input.migrationId
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/app-migrations/{migrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/app-migrations/{migrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetPackageVersionHistory  GET /2021-01-01/packages/{PackageID}/history
@@ -4564,7 +4583,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/packages/{PackageID}/history", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/packages/{PackageID}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetUpgradeHistory  GET /2021-01-01/opensearch/upgradeDomain/{DomainName}/history
@@ -4578,7 +4597,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/upgradeDomain/{DomainName}/history", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/upgradeDomain/{DomainName}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # GetUpgradeStatus  GET /2021-01-01/opensearch/upgradeDomain/{DomainName}/status
@@ -4587,14 +4606,14 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/upgradeDomain/{DomainName}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/upgradeDomain/{DomainName}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # InsightFeedback  POST /2021-01-01/opensearch/insight-feedback
     # errors: BaseException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def insight_feedback(self, InsightFeedbackRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insight-feedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insight-feedback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = InsightFeedbackDocument(Entity=input.Entity, InsightId=input.InsightId, Thumbs=input.Thumbs, FeedbackText=input.FeedbackText)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4605,7 +4624,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/listDataSourceAttachments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{id}/listDataSourceAttachments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataSourceAttachmentsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4616,7 +4635,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDirectQueryDataSources  GET /2021-01-01/opensearch/directQueryDataSource
@@ -4626,7 +4645,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nexttoken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/directQueryDataSource", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/directQueryDataSource", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDomainMaintenances  GET /2021-01-01/opensearch/domain/{DomainName}/domainMaintenances
@@ -4644,7 +4663,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenances", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenances", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDomainNames  GET /2021-01-01/domain
@@ -4654,7 +4673,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.EngineType.is_some():
             query["engineType"] = input.EngineType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/domain", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/domain", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListDomainsForPackage  GET /2021-01-01/packages/{PackageID}/domains
@@ -4668,17 +4687,37 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/packages/{PackageID}/domains", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/packages/{PackageID}/domains", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListInsights  POST /2021-01-01/opensearch/insights
     # errors: BaseException, DisabledOperationException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def list_insights(self, ListInsightsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInsightsDocument(Entity=input.Entity, TimeRange=input.TimeRange, SortOrder=input.SortOrder, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
+
+    # ListInstanceTypeDetails  GET /2021-01-01/opensearch/instanceTypeDetails/{EngineVersion}
+    # errors: BaseException, InternalException, ResourceNotFoundException, ValidationException
+    def list_instance_type_details(self, ListInstanceTypeDetailsRequest input) -> str:
+        auto host = endpoints.regional_host(es_service(), self.region)
+        dict[str, str] labels = {}
+        labels["EngineVersion"] = input.EngineVersion
+        dict[str, str] query = {}
+        if input.DomainName.is_some():
+            query["domainName"] = input.DomainName.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.RetrieveAZs.is_some():
+            query["retrieveAZs"] = es_bind_bool(input.RetrieveAZs.unwrap_or(False))
+        if input.InstanceType.is_some():
+            query["instanceType"] = input.InstanceType.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/instanceTypeDetails/{EngineVersion}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListMigrations  GET /2021-01-01/opensearch/app-migrations
     # errors: AccessDeniedException, DisabledOperationException, InternalException, ValidationException
@@ -4692,7 +4731,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/app-migrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/app-migrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListPackagesForDomain  GET /2021-01-01/domain/{DomainName}/packages
@@ -4706,7 +4745,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/domain/{DomainName}/packages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/domain/{DomainName}/packages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListScheduledActions  GET /2021-01-01/opensearch/domain/{DomainName}/scheduledActions
@@ -4720,7 +4759,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/scheduledActions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/scheduledActions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListTags  GET /2021-01-01/tags/
@@ -4729,7 +4768,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.ARN
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/tags/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/tags/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVersions  GET /2021-01-01/opensearch/versions
@@ -4741,7 +4780,7 @@ struct OpenSearchClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpointAccess  GET /2021-01-01/opensearch/domain/{DomainName}/listVpcEndpointAccess
@@ -4753,7 +4792,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/listVpcEndpointAccess", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/listVpcEndpointAccess", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpoints  GET /2021-01-01/opensearch/vpcEndpoints
@@ -4763,7 +4802,7 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/vpcEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/vpcEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # ListVpcEndpointsForDomain  GET /2021-01-01/opensearch/domain/{DomainName}/vpcEndpoints
@@ -4775,14 +4814,14 @@ struct OpenSearchClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/vpcEndpoints", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-01-01/opensearch/domain/{DomainName}/vpcEndpoints", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # PurchaseReservedInstanceOffering  POST /2021-01-01/opensearch/purchaseReservedInstanceOffering
     # errors: DisabledOperationException, InternalException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
     def purchase_reserved_instance_offering(self, PurchaseReservedInstanceOfferingRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/purchaseReservedInstanceOffering", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/purchaseReservedInstanceOffering", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PurchaseReservedInstanceOfferingDocument(ReservedInstanceOfferingId=input.ReservedInstanceOfferingId, ReservationName=input.ReservationName, InstanceCount=input.InstanceCount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4791,7 +4830,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, InternalException, ResourceNotFoundException, ValidationException
     def put_default_application_setting(self, PutDefaultApplicationSettingRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/defaultApplicationSetting", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/defaultApplicationSetting", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDefaultApplicationSettingDocument(applicationArn=input.applicationArn, setAsDefault=input.setAsDefault)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4802,7 +4841,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/register", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/application/{ApplicationId}/capability/register", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterCapabilityDocument(capabilityName=input.capabilityName, capabilityConfig=input.capabilityConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4813,7 +4852,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/cc/inboundConnection/{ConnectionId}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, es_service(), self.region, host)
 
     # RemoveReplicationPeer  POST /2021-01-01/opensearch/domain/{DomainName}/replication/removePeer
@@ -4822,7 +4861,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/removePeer", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/removePeer", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveReplicationPeerDocument(PeerDomainArn=input.PeerDomainArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4831,7 +4870,7 @@ struct OpenSearchClient:
     # errors: BaseException, InternalException, ValidationException
     def remove_tags(self, RemoveTagsRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/tags-removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/tags-removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ARN\":" + es_json_str(input.ARN))
         list[str] e0 = []
@@ -4847,7 +4886,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/revokeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/revokeVpcEndpointAccess", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Account.is_some():
             auto u0 = input.Account.unwrap()
@@ -4865,7 +4904,7 @@ struct OpenSearchClient:
     # errors: BaseException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def rollback_service_software_update(self, RollbackServiceSoftwareUpdateRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/rollback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/rollback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RollbackServiceSoftwareUpdateDocument(DomainName=input.DomainName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4876,7 +4915,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenance", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/domainMaintenance", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDomainMaintenanceDocument(Action=input.Action, NodeId=input.NodeId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4885,7 +4924,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def start_migration(self, StartMigrationRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/app-migrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/app-migrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"applicationId\":" + es_json_str(input.applicationId))
         parts.append("\"migrationOptions\":" + migration_options_to_json(input.migrationOptions))
@@ -4899,7 +4938,7 @@ struct OpenSearchClient:
     # errors: BaseException, InternalException, ResourceNotFoundException, ValidationException
     def start_service_software_update(self, StartServiceSoftwareUpdateRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/serviceSoftwareUpdate/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartServiceSoftwareUpdateDocument(DomainName=input.DomainName, ScheduleAt=input.ScheduleAt, DesiredStartTime=input.DesiredStartTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4910,7 +4949,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/switchover", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/domain/{DomainName}/replication/switchover", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SwitchoverReplicationDocument(PeerDomainArn=input.PeerDomainArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4921,7 +4960,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/application/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.dataSources.is_some():
             auto u0 = input.dataSources.unwrap()
@@ -4948,7 +4987,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["DataSourceName"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataSourceDocument(DataSourceType=input.DataSourceType, Description=input.Description, Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4959,7 +4998,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSourceName"] = input.DataSourceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/directQueryDataSource/{DataSourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DataSourceType\":" + input.DataSourceType.to_json())
         if input.Description.is_some():
@@ -4984,7 +5023,7 @@ struct OpenSearchClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIndexDocument(IndexSchema=input.IndexSchema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -4993,7 +5032,7 @@ struct OpenSearchClient:
     # errors: AccessDeniedException, BaseException, InternalException, LimitExceededException, ResourceNotFoundException, ValidationException
     def update_package(self, UpdatePackageRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageDocument(PackageID=input.PackageID, PackageSource=input.PackageSource, PackageDescription=input.PackageDescription, CommitMessage=input.CommitMessage, PackageConfiguration=input.PackageConfiguration, PackageEncryptionOptions=input.PackageEncryptionOptions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -5002,7 +5041,7 @@ struct OpenSearchClient:
     # errors: BaseException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def update_package_scope(self, UpdatePackageScopeRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/updateScope", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/packages/updateScope", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PackageID\":" + es_json_str(input.PackageID))
         parts.append("\"Operation\":" + input.Operation.to_json())
@@ -5019,7 +5058,7 @@ struct OpenSearchClient:
         auto host = endpoints.regional_host(es_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/scheduledAction/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-01-01/opensearch/domain/{DomainName}/scheduledAction/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateScheduledActionDocument(ActionID=input.ActionID, ActionType=input.ActionType, ScheduleAt=input.ScheduleAt, DesiredStartTime=input.DesiredStartTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, es_service(), self.region, host)
@@ -5028,7 +5067,7 @@ struct OpenSearchClient:
     # errors: BaseException, ConflictException, DisabledOperationException, InternalException, ResourceNotFoundException, ValidationException
     def update_vpc_endpoint(self, UpdateVpcEndpointRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/vpcEndpoints/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"VpcEndpointId\":" + es_json_str(input.VpcEndpointId))
         parts.append("\"VpcOptions\":" + vpc_options_to_json(input.VpcOptions))
@@ -5039,7 +5078,7 @@ struct OpenSearchClient:
     # errors: BaseException, DisabledOperationException, InternalException, ResourceAlreadyExistsException, ResourceNotFoundException, ValidationException
     def upgrade_domain(self, UpgradeDomainRequest input) -> str:
         auto host = endpoints.regional_host(es_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/upgradeDomain", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-01-01/opensearch/upgradeDomain", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DomainName\":" + es_json_str(input.DomainName))
         parts.append("\"TargetVersion\":" + es_json_str(input.TargetVersion))
