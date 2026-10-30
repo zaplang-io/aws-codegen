@@ -90,3 +90,55 @@ is untouched and still passes for every service; the only generated-output chang
 is module-qualified call sites (and the `emit_hoisted` 88-column rule now hoisting
 a few calls whose qualified prefix crosses the width — still canonical by
 construction).
+
+## D-0003 — Model bumps are automated into a review-only PR (2026-10-30)
+
+**Status:** accepted. Implements #363 on top of #6 (the pinned-botocore source of
+truth + the `model-sync` drift check).
+
+**Context.** botocore moves constantly; the "Bump all models" procedure
+(README > Model sourcing) is mechanical — bump the pin in three files, re-run
+`tools/sync-models.py`, `make generate`, review the diff — but doing it by hand
+means it lags, and a stale pin silently ages the whole generated SDK. #6 already
+made the pin a single declarative source of truth and added the drift guard; what
+was missing was something to *propose* the bump on a schedule.
+
+**Decision.** A scheduled GitHub Actions workflow
+(`.github/workflows/model-bump.yml`, weekly cron + `workflow_dispatch`) prepares
+the bump and opens a pull request for human review. It **never merges and never
+auto-approves**; the maintainer merges aws-codegen PRs by hand (consistent with
+D-0001 — the generated clients are the product, so a model bump is a product
+change that gets reviewed).
+
+- **The PR's own CI is the validator, not the bump workflow.** The workflow only
+  produces the PR (bump the pin → `sync-models.py` → `make generate` → commit). The
+  existing *CI gate* (determinism regen + byte-diff oracles) and the *model-sync
+  drift check* run on the PR exactly as for a hand-made bump, so the automation
+  needs no fidelity logic of its own and cannot wave a bad bump through.
+- **Host-tooling only; no Docker.** Python (stdlib) + `cargo` (preinstalled on the
+  runner) + `git`/`gh`. Raw `git`+`gh` rather than a third-party PR action, to keep
+  the trust surface at zero new dependencies and the logic fully auditable in-repo.
+  (Local Docker is off-limits on the maintainer's host, and the CI gate is
+  deliberately hermetic — the bump workflow is the one extra place, alongside
+  `model-sync`, that fetches botocore from the network.)
+- **Idempotent and non-spammy.** A fixed branch `automation/botocore-bump`: a run
+  with no new release, or one that yields no diff, opens nothing; a run whose bump
+  already matches the open PR's branch leaves it untouched; otherwise the single PR
+  is updated in place rather than a second being opened.
+- **Conservative, advisory semver label.** `semver:{patch,minor,major}` inferred
+  from the botocore version delta and whether any generated client changed (major =
+  botocore MAJOR bumped; minor = a generated client's source moved; patch = only the
+  models/pin moved). It errs toward "review carefully" and does not auto-distinguish
+  additive from breaking API changes — the maintainer sets the real release semver.
+
+**Pin mechanics.** `tools/bump-botocore.py` is the pin-mover: it resolves the latest
+(or a named) botocore from PyPI, re-verifies the `py3-none-any` wheel SHA-256, and
+rewrites `models/manifest.json` + `models/BOTOCORE_VERSION` + `tools/requirements.txt`
+in lockstep (the same three files `sync-models.py` asserts agree). It touches neither
+`models/<svc>/` nor `generated/`; the workflow runs `sync-models.py` and
+`make generate` for those.
+
+**CI-trigger caveat.** A PR created by the default `GITHUB_TOKEN` does not trigger
+`pull_request` workflows. The workflow therefore uses an optional `MODEL_BUMP_TOKEN`
+secret (PAT) when present so the bump PR's CI runs automatically, falling back to
+`GITHUB_TOKEN` (maintainer re-runs CI once by hand) when it is not configured.

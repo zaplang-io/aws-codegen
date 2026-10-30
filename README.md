@@ -243,6 +243,45 @@ deps) and verifies the wheel's SHA-256 against the manifest before extracting.
    diff; update any pinned coverage counts / goldens the model change moves, and
    commit.
 
+### Automated model bumps (#363)
+
+The "Bump all models" procedure above is automated by the scheduled
+[`.github/workflows/model-bump.yml`](.github/workflows/model-bump.yml) workflow —
+weekly (Mondays 06:00 UTC) plus manual `workflow_dispatch` (which takes an optional
+`version` to pin a specific botocore release). Each run:
+
+1. Detects the latest botocore release on PyPI (`tools/bump-botocore.py`).
+2. If it is newer than the pin, rewrites `botocore_version` + `wheel_sha256` across
+   all three pin files in lockstep (verifying the new wheel's SHA-256).
+3. Re-runs `tools/sync-models.py` to refresh `models/`, then `make generate` to
+   regenerate every client.
+4. If — and only if — that produced a diff, opens **or updates in place** a single
+   **review-only** pull request on the fixed `automation/botocore-bump` branch,
+   labelled with a conservative semver-impact guess.
+
+It **never merges and never auto-approves** — the opened PR's own CI (the *CI gate*
++ the *model-sync drift check*) validates the regenerated output, and the maintainer
+merges by hand. It is idempotent and non-spammy: no new botocore release (or no
+resulting diff) opens nothing, and a re-run whose bump is already on the branch
+leaves the open PR untouched rather than churning its CI.
+
+**Semver-impact heuristic** (advisory label; the maintainer sets the real release
+semver):
+
+| Label | When | Rationale |
+|---|---|---|
+| `semver:major` | botocore's **MAJOR** component increased | blunt upstream-breaking signal |
+| `semver:minor` | a **generated client's source changed** | a service's API surface moved (additive vs breaking is *not* auto-distinguished — review the diff) |
+| `semver:patch` | only the **model snapshots / the pin** moved | no client-visible change |
+
+**Enabling PR CI.** The default `GITHUB_TOKEN` cannot trigger `pull_request` CI on
+a token-created PR (GitHub suppresses the event to avoid recursion). To have the
+bump PR's CI run automatically, add a repo secret `MODEL_BUMP_TOKEN` (a PAT or
+fine-grained token with `contents: write` + `pull-requests: write`); the workflow
+uses it when present and falls back to `GITHUB_TOKEN` otherwise (then the maintainer
+re-runs the PR's CI once by hand). Opening PRs with the default token also requires
+*Settings → Actions → "Allow GitHub Actions to create and approve pull requests"*.
+
 ## Repo layout
 
 ```
@@ -254,6 +293,7 @@ generated/      checked-in generated Zap, one zenv PACKAGE per service
 vendor/         pinned aws_core PACKAGE (vendor/aws_core) + smoke mains for the compile gate
 scripts/        compile_check.sh — best-effort zenv consumer + run under the Zap image
 tools/          sync-models.py — snapshot models from pinned botocore;
+                bump-botocore.py — move the pin to the latest botocore (automation);
                 verify_*.py — independent SigV4 oracles for the byte-diff goldens
 tests/          regeneration / determinism / contract / byte-diff / paginator tests
 tests/common/   shared host-only SigV4 signer + generated-source parsers (per-service gates)
